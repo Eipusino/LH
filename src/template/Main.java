@@ -1,21 +1,23 @@
 package template;
 
-import arc.util.Log;
-import arc.util.Time;
+import arc.graphics.Color;
+import arc.graphics.Pixmap;
+import mindustry.Vars;
 import sun.misc.Unsafe;
+import sun.reflect.ReflectionFactory;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.invoke.MethodType;
-import java.lang.invoke.VarHandle;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 public class Main {
+	static ReflectionFactory factory;
 	static Unsafe unsafe;
 	static Lookup lookup;
 
@@ -23,8 +25,8 @@ public class Main {
 
 	public static void main(String... arg) {
 		try {
-			Set<Float> treeSet = new TreeSet<>();
-			treeSet.add(Float.NaN);
+			System.out.println(Integer.MAX_VALUE);
+			System.out.println(1 << 30);
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
@@ -32,6 +34,16 @@ public class Main {
 
 	public static void test() {
 		test++;
+	}
+
+	static void init() throws NoSuchFieldException, IllegalAccessException {
+		factory = ReflectionFactory.getReflectionFactory();
+
+		Field field = Unsafe.class.getDeclaredField("theUnsafe");
+		field.setAccessible(true);
+		unsafe = (Unsafe) field.get(null);
+
+		lookup = (Lookup) unsafe.getObject(Lookup.class, unsafe.staticFieldOffset(Lookup.class.getDeclaredField("IMPL_LOOKUP")));
 	}
 
 	public static void ensureFieldOpen() throws Throwable {
@@ -64,5 +76,10 @@ public class Main {
 		} catch (NoSuchFieldException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	@Retention(RetentionPolicy.RUNTIME)
+	public @interface Null {
+		Class<?>[] classes() default {};
 	}
 }

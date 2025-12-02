@@ -1,3 +1,4 @@
+/*
 package template;
 
 import org.objectweb.asm.ClassWriter;
@@ -11,7 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class GenClass {
-	/*public static void generateFieldUtilsClass(String outputPath) throws IOException {
+	public static void generateFieldUtilsClass(String outputPath) throws IOException {
 		Files.createDirectories(Paths.get(outputPath).getParent());
 
 		ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
@@ -137,5 +138,6 @@ public class GenClass {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}*/
+	}
 }
+*/

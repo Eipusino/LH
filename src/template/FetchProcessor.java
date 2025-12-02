@@ -1,3 +1,4 @@
+/*
 package template;
 
 import java.io.IOException;
@@ -81,3 +82,4 @@ public class FetchProcessor {
 				.replaceAll("@EntityDef\\(*.*\\)*\n*", "");
 	}
 }
+*/

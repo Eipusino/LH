@@ -16,7 +16,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Optional;
 
-import static heavyindustry.util.ObjectUtils.run;
+import static heavyindustry.util.Objects2.run;
 import static heavyindustry.util.Reflects.lookup;
 import static heavyindustry.util.Unsafer.unsafe;
 import static heavyindustry.util.Unsafer2.internalUnsafe;
