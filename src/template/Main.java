@@ -25,8 +25,8 @@ public class Main {
 
 	public static void main(String... arg) {
 		try {
-			System.out.println(Integer.MAX_VALUE);
-			System.out.println(1 << 30);
+			int i = 0;
+			System.out.println(i);
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
