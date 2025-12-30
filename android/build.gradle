@@ -33,7 +33,7 @@ dependencies {
 
 	compileOnly "com.jakewharton.android.repackaged:dalvik-dx:9.0.0_r3"
 
-	compileOnly files("${project(":").projectDir}/libs/HeavyIndustryMod-ussj1lc.jar", "${project(":").projectDir}/libs/android.jar", "${project(":").projectDir}/libs/android-dalvik.jar")
+	compileOnly files("${project(":").projectDir}/libs/HeavyIndustryMod-aeffgc.jar", "${project(":").projectDir}/libs/android.jar", "${project(":").projectDir}/libs/android-dalvik.jar")
 }
 
 jar {
@@ -62,7 +62,7 @@ task jarAndroid(type: Jar) {
 		def d8 = isWindows ? "d8.bat" : "d8"
 
 		//dex and desugar files - this requires d8 in your PATH
-		"$d8 $dependencies --min-api 26 --output ${rootProject.name}Android.jar ${rootProject.name}Android.jar"
+		"$d8 $dependencies --min-api 28 --output ${rootProject.name}Android.jar ${rootProject.name}Android.jar"
 				.execute(null, new File("$buildDir/libs")).waitForProcessOutput(System.out, System.err)
 	}
 }

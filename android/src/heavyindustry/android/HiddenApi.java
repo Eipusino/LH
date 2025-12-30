@@ -1,9 +1,9 @@
 package heavyindustry.android;
 
-import android.os.Build.VERSION;
 import arc.util.Log;
 import arc.util.OS;
 import dalvik.system.VMRuntime;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -22,7 +22,7 @@ public class HiddenApi {
 	public static final long artMethodOffset = 24l;
 
 	public static void setHiddenApiExemptions() {
-		if (VERSION.SDK_INT < 28 && trySetHiddenApiExemptions()) return;
+		if (trySetHiddenApiExemptions()) return;
 		// In higher versions, the setHiddenApiExertions method cannot be directly reflected to obtain it, so the artMethod needs to be modified
 		// Sdk_version>28 (exact number unknown)
 		Method setHiddenApiExemptions = findMethod();
@@ -69,7 +69,7 @@ public class HiddenApi {
 		method.invoke(runtime, (Object) new String[]{"L"});
 	}
 
-	private static Method findMethod() {
+	private static @Nullable Method findMethod() {
 		Method[] methods = VMRuntime.class.getDeclaredMethods();
 		if (methods[0].getName().equals("setHiddenApiExemptions")) {
 			return methods[0];
@@ -118,11 +118,11 @@ public class HiddenApi {
 	}
 
 	public static long addressOf(Object[] array) {
-		try {
-			if (VERSION.SDK_INT < 21) return runtime.addressOf(array);
+		/*try {
+			return runtime.addressOf(array);
 		} catch (Throwable e) {
 			Log.err(e);
-		}
+		}*/
 		return uaddressOf(array);
 	}
 
