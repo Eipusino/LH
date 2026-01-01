@@ -13,6 +13,8 @@ import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.math.BigInteger;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -25,8 +27,13 @@ public class Main {
 
 	public static void main(String... arg) {
 		try {
-			int i = 0;
-			System.out.println(i);
+			BigInteger integer = BigInteger.valueOf(Long.MAX_VALUE);
+			for (int i = 0; i < 100; i++) {
+				integer = integer.add(integer);
+			}
+			System.out.println(integer);
+			ByteBuffer buffer = ByteBuffer.allocate(0);
+			System.out.println(buffer);
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}

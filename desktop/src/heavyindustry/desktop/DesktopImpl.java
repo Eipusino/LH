@@ -2,7 +2,6 @@ package heavyindustry.desktop;
 
 import arc.util.Log;
 import heavyindustry.HVars;
-import heavyindustry.core.DefaultImpl;
 import heavyindustry.util.PlatformImpl;
 
 import java.lang.StackWalker.Option;
@@ -53,9 +52,10 @@ public class DesktopImpl implements PlatformImpl {
 			HVars.hasImplLookup = true;
 		});
 		run(() -> {
-			Demodulator.makeModuleOpen(Object.class.getModule(), "jdk.internal.misc", DesktopImpl.class.getModule());
-			Demodulator.makeModuleOpen(Object.class.getModule(), "jdk.internal.misc", DefaultImpl.class.getModule());
+			Demodulator.init();
+			Demodulator.openModules();
 		});
+		run(Demodulator::ensureFieldOpen);
 		run(() -> {
 			Log.info("Use @", Class.forName("jdk.internal.misc.Unsafe"));
 
