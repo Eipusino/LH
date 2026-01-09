@@ -2,14 +2,10 @@ package heavyindustry.android;
 
 import arc.util.Log;
 import dalvik.system.VMStack;
-import heavyindustry.HVars;
 import heavyindustry.util.PlatformImpl;
 
 import java.lang.invoke.MethodHandles.Lookup;
-import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 
 import static heavyindustry.util.Objects2.run;
 import static heavyindustry.util.Reflects.lookup;
@@ -30,8 +26,6 @@ public class AndroidImpl implements PlatformImpl {
 			Field field = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
 			field.setAccessible(true);
 			unsafe = (sun.misc.Unsafe) field.get(null);
-
-			HVars.hasUnsafe = true;
 		} catch (Throwable e) {
 			Log.err(e);
 
@@ -45,8 +39,6 @@ public class AndroidImpl implements PlatformImpl {
 			Field field = jdk.internal.misc.Unsafe.class.getDeclaredField("theUnsafe");
 			field.setAccessible(true);
 			internalUnsafe = (jdk.internal.misc.Unsafe) field.get(null);
-
-			HVars.hasJDKUnsafe = true;
 		});
 		run(() -> {
 			accessFlags = Class.class.getDeclaredField("accessFlags");
@@ -56,14 +48,7 @@ public class AndroidImpl implements PlatformImpl {
 			Field field = Lookup.class.getDeclaredField("IMPL_LOOKUP");
 			field.setAccessible(true);
 			lookup = (Lookup) field.get(null);
-
-			HVars.hasImplLookup = true;
 		});
-	}
-
-	@Override
-	public void setOverride(AccessibleObject override) {
-		override.setAccessible(true);
 	}
 
 	@Override
@@ -81,20 +66,5 @@ public class AndroidImpl implements PlatformImpl {
 	@Override
 	public Class<?> callerClass() {
 		return VMStack.getStackClass2();
-	}
-
-	@Override
-	public Field[] getFields(Class<?> cls) {
-		return cls.getDeclaredFields();
-	}
-
-	@Override
-	public Method[] getMethods(Class<?> cls) {
-		return cls.getDeclaredMethods();
-	}
-
-	@Override
-	public Constructor<?>[] getConstructors(Class<?> cls) {
-		return cls.getConstructors();
 	}
 }

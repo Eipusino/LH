@@ -1,6 +1,5 @@
 package heavyindustry.android;
 
-import android.os.Build.VERSION;
 import arc.util.Log;
 import arc.util.OS;
 import dalvik.system.VMRuntime;
@@ -25,7 +24,7 @@ public class HiddenApi {
 	private static final String[] values = {"L"};
 
 	public static void setHiddenApiExemptions() {
-		if (VERSION.SDK_INT < 28 && trySetHiddenApiExemptions()) return;
+		//if (VERSION.SDK_INT < 28 && trySetHiddenApiExemptions()) return;
 		// In higher versions, the setHiddenApiExertions method cannot be directly reflected to obtain it, so the artMethod needs to be modified
 		// Sdk_version>28 (exact number unknown)
 		Method setHiddenApiExemptions = findMethod();
@@ -41,8 +40,8 @@ public class HiddenApi {
 		}
 	}
 
-	/** @return true if successful. */
-	private static boolean trySetHiddenApiExemptions() {
+	// @return true if successful.
+	/*private static boolean trySetHiddenApiExemptions() {
 		try {
 			// MAYBE: sdk_version < 28
 			runtime.setHiddenApiExemptions(values);
@@ -65,7 +64,7 @@ public class HiddenApi {
 		}
 
 		return false;
-	}
+	}*/
 
 	private static void invoke(Method method) throws IllegalAccessException, InvocationTargetException {
 		method.setAccessible(true);

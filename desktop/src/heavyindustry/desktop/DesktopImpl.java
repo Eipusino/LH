@@ -1,7 +1,6 @@
 package heavyindustry.desktop;
 
 import arc.util.Log;
-import heavyindustry.HVars;
 import heavyindustry.util.PlatformImpl;
 
 import java.lang.StackWalker.Option;
@@ -9,7 +8,6 @@ import java.lang.StackWalker.StackFrame;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.invoke.MethodType;
-import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -21,9 +19,7 @@ import static heavyindustry.util.Unsafer.unsafe;
 import static heavyindustry.util.Unsafer2.internalUnsafe;
 
 public class DesktopImpl implements PlatformImpl {
-	static MethodHandle getFieldsHandle;
-	static MethodHandle getMethodsHandle;
-	static MethodHandle getConstructorsHandle;
+	static MethodHandle getFieldsHandle, getMethodsHandle, getConstructorsHandle;
 
 	static StackWalker walker;
 
@@ -38,8 +34,6 @@ public class DesktopImpl implements PlatformImpl {
 			Field field = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
 			field.setAccessible(true);
 			unsafe = (sun.misc.Unsafe) field.get(null);
-
-			HVars.hasUnsafe = true;
 		} catch (Throwable e) {
 			Log.err(e);
 
@@ -48,8 +42,6 @@ public class DesktopImpl implements PlatformImpl {
 
 		run(() -> {
 			lookup = (Lookup) unsafe.getObject(Lookup.class, unsafe.staticFieldOffset(Lookup.class.getDeclaredField("IMPL_LOOKUP")));
-
-			HVars.hasImplLookup = true;
 		});
 		run(() -> {
 			Demodulator.init();
@@ -60,28 +52,14 @@ public class DesktopImpl implements PlatformImpl {
 			Log.info("Use @", Class.forName("jdk.internal.misc.Unsafe"));
 
 			internalUnsafe = jdk.internal.misc.Unsafe.getUnsafe();
-
-			HVars.hasJDKUnsafe = true;
 		});
 		run(() -> {
-			if (!HVars.hasImplLookup) return;
-
 			getFieldsHandle = lookup.findVirtual(Class.class, "getDeclaredFields0", MethodType.methodType(Field[].class, boolean.class));
 			getMethodsHandle = lookup.findVirtual(Class.class, "getDeclaredMethods0", MethodType.methodType(Method[].class, boolean.class));
 			getConstructorsHandle = lookup.findVirtual(Class.class, "getDeclaredConstructors0", MethodType.methodType(Constructor[].class, boolean.class));
 		});
 
 		walker = StackWalker.getInstance(Option.RETAIN_CLASS_REFERENCE);
-	}
-
-	@Override
-	public void setPublic(Class<?> cls) {
-		// There's no need to do this
-	}
-
-	@Override
-	public void setOverride(AccessibleObject override) {
-		override.setAccessible(true);
 	}
 
 	@Override
@@ -115,12 +93,13 @@ public class DesktopImpl implements PlatformImpl {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public Constructor<?>[] getConstructors(Class<?> cls) {
+	public <T> Constructor<T>[] getConstructors(Class<T> type) {
 		try {
-			return (Constructor<?>[]) getConstructorsHandle.invokeExact(cls, false);
+			return (Constructor<T>[]) getConstructorsHandle.invokeExact(type, false);
 		} catch (Throwable e) {
-			return cls.getDeclaredConstructors();
+			return PlatformImpl.super.getConstructors(type);
 		}
 	}
 }
