@@ -19,15 +19,15 @@ import static heavyindustry.util.Unsafer.unsafe;
 import static heavyindustry.util.Unsafer2.internalUnsafe;
 
 public class DesktopImpl implements PlatformImpl {
-	static MethodHandle getFieldsHandle, getMethodsHandle, getConstructorsHandle;
+	private static MethodHandle getFieldsHandle, getMethodsHandle, getConstructorsHandle;
 
-	static StackWalker walker;
+	private static StackWalker walker;
 
 	static {
 		init();
 	}
 
-	static void init() {
+	private static void init() {
 		try {
 			Log.info("Use @", Class.forName("sun.misc.Unsafe"));
 

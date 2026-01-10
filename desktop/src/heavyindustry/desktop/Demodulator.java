@@ -20,7 +20,7 @@ import static heavyindustry.util.Reflects.lookup;
  * @author EBwilson
  */
 public final class Demodulator {
-	static MethodHandle implAddOpens;
+	private static MethodHandle implAddOpens;
 
 	private Demodulator() {}
 

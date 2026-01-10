@@ -100,7 +100,7 @@ public class HiddenApi {
 		// The difference between two artMethods (due to continuity)
 		final long sizeArtMethod = minSecond - min;
 
-		Log.debug("sizeArtMethod: " + sizeArtMethod);
+		//Log.debug("sizeArtMethod: " + sizeArtMethod);
 
 		if (sizeArtMethod > 0 && sizeArtMethod < 100) {
 			for (long artMethod = minSecond; artMethod < max; artMethod += sizeArtMethod) {
@@ -110,7 +110,7 @@ public class HiddenApi {
 				unsafe.putLong(addressMethod + artMethodOffset, artMethod);
 				// Android's getName is a native implementation, and by modifying artMethod, the name will naturally change
 				if ("setHiddenApiExemptions".equals(array[0].getName())) {
-					Log.debug("Got: " + array[0]);
+					//Log.debug("Got: " + array[0]);
 
 					return array[0];
 				}

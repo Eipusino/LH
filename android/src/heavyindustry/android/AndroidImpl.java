@@ -13,13 +13,13 @@ import static heavyindustry.util.Unsafer.unsafe;
 import static heavyindustry.util.Unsafer2.internalUnsafe;
 
 public class AndroidImpl implements PlatformImpl {
-	static Field accessFlags;
+	private static Field accessFlags;
 
 	static {
 		init();
 	}
 
-	static void init() {
+	private static void init() {
 		try {
 			Log.info("Use @", Class.forName("sun.misc.Unsafe"));
 
