@@ -1,3 +1,4 @@
+/*
 package template;
 
 import javax.imageio.ImageIO;
@@ -93,3 +94,4 @@ public class PNGMetadataCleaner {
 		}
 	}
 }
+*/

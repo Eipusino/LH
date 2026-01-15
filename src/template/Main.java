@@ -1,92 +1,85 @@
 package template;
 
-import arc.graphics.Color;
-import arc.graphics.Pixmap;
-import mindustry.Vars;
+import arc.util.Time;
 import sun.misc.Unsafe;
-import sun.reflect.ReflectionFactory;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.invoke.MethodType;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.math.BigInteger;
-import java.nio.ByteBuffer;
-import java.util.Arrays;
-import java.util.Map;
+import java.lang.reflect.Method;
 
 public class Main {
-	static ReflectionFactory factory;
-	static Unsafe unsafe;
-	static Lookup lookup;
+	private static final Unsafe unsafe = getUnsafe();
+	private static final Lookup lookup = getLookup();
 
-	static int test;
+	private static MethodHandle clone;
+	private static MethodHandle implAddOpens;
+	private static MethodHandle load;
+	private static Method loadm;
 
 	public static void main(String... arg) {
 		try {
-			BigInteger integer = BigInteger.valueOf(Long.MAX_VALUE);
-			for (int i = 0; i < 100; i++) {
-				integer = integer.add(integer);
-			}
-			System.out.println(integer);
-			ByteBuffer buffer = ByteBuffer.allocate(0);
-			System.out.println(buffer);
+			MethodHandle method = lookup.unreflectConstructor(Main.class.getConstructor(int.class));
+			Object[] params = {1114};
+			System.out.println(Handles.invokeStatic(method, params));
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
 	}
 
-	public static void test() {
-		test++;
-	}
+	@SuppressWarnings("unchecked")
+	private static <T> T clone(T object) {
+		try {
+			return (T) clone.invokeExact(object);
+		} catch (Throwable e) {
+			e.printStackTrace();
 
-	static void init() throws NoSuchFieldException, IllegalAccessException {
-		factory = ReflectionFactory.getReflectionFactory();
-
-		Field field = Unsafe.class.getDeclaredField("theUnsafe");
-		field.setAccessible(true);
-		unsafe = (Unsafe) field.get(null);
-
-		lookup = (Lookup) unsafe.getObject(Lookup.class, unsafe.staticFieldOffset(Lookup.class.getDeclaredField("IMPL_LOOKUP")));
-	}
-
-	public static void ensureFieldOpen() throws Throwable {
-		Class<?> c = Class.forName("jdk.internal.reflect.Reflection");
-
-		Map<?, ?> fieldFilterMap = (Map<?, ?>) lookup.findStaticGetter(c, "fieldFilterMap", Map.class).invokeExact();
-		if (fieldFilterMap != null) {
-			fieldFilterMap.clear();
-		}
-
-		Map<?, ?> methodFilterMap = (Map<?, ?>) lookup.findStaticGetter(c, "methodFilterMap", Map.class).invokeExact();
-		if (methodFilterMap != null) {
-			methodFilterMap.clear();
+			return null;
 		}
 	}
 
-	public static Unsafe getUnsafe() {
+	public Main(int i) {
+
+	}
+
+	static class CA implements Cloneable {
+		static final CA INSTANCE = new CA();
+
+		int number;
+
+		private CA() {}
+
+		public void load() {
+			number++;
+		}
+
+		@Override
+		public CA clone() {
+			try {
+				return null;
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+	}
+
+	private static Unsafe getUnsafe() {
 		try {
 			Field field = Unsafe.class.getDeclaredField("theUnsafe");
 			field.setAccessible(true);
 			return (Unsafe) field.get(null);
-		} catch (NoSuchFieldException | IllegalAccessException e) {
-			throw new RuntimeException(e);
+		} catch (Throwable e) {
+			throw new AssertionError(e);
 		}
 	}
 
-	public static Lookup getLookup() {
+	private static Lookup getLookup() {
 		try {
-			return (Lookup) unsafe.getObject(Lookup.class, unsafe.staticFieldOffset(Lookup.class.getDeclaredField("IMPL_LOOKUP")));
-		} catch (NoSuchFieldException e) {
-			throw new RuntimeException(e);
+			Field field = Lookup.class.getDeclaredField("IMPL_LOOKUP");
+			return (Lookup) unsafe.getObject(unsafe.staticFieldBase(field), unsafe.staticFieldOffset(field));
+		} catch (Throwable e) {
+			throw new AssertionError(e);
 		}
-	}
-
-	@Retention(RetentionPolicy.RUNTIME)
-	public @interface Null {
-		Class<?>[] classes() default {};
 	}
 }

@@ -23,8 +23,18 @@ public class HiddenApi {
 
 	private static final String[] values = {"L"};
 
+	static Object[] oneArray;
+	static int[] intArray;
+
+	static long offset;
+
+	static {
+		oneArray = (Object[]) runtime.newNonMovableArray(Object.class, 1);
+		intArray = (int[]) runtime.newNonMovableArray(int.class, 0);
+		offset = runtime.addressOf(intArray) - vaddressOf(intArray);
+	}
+
 	public static void setHiddenApiExemptions() {
-		//if (VERSION.SDK_INT < 28 && trySetHiddenApiExemptions()) return;
 		// In higher versions, the setHiddenApiExertions method cannot be directly reflected to obtain it, so the artMethod needs to be modified
 		// Sdk_version>28 (exact number unknown)
 		Method setHiddenApiExemptions = findMethod();
@@ -40,32 +50,6 @@ public class HiddenApi {
 		}
 	}
 
-	// @return true if successful.
-	/*private static boolean trySetHiddenApiExemptions() {
-		try {
-			// MAYBE: sdk_version < 28
-			runtime.setHiddenApiExemptions(values);
-
-			return true;
-		} catch (Throwable e) {
-			Log.err(e);
-		}
-
-		try {
-			// Obtaining method through reflection
-			Method method = Class.class.getDeclaredMethod("getDeclaredMethod", String.class, Class[].class);
-			method.setAccessible(true);
-			Method setHiddenApiExemptions = (Method) method.invoke(VMRuntime.class, "setHiddenApiExemptions", new Class[]{String[].class});
-			invoke(setHiddenApiExemptions);
-
-			return true;
-		} catch (Throwable e) {
-			Log.err(e);
-		}
-
-		return false;
-	}*/
-
 	private static void invoke(Method method) throws IllegalAccessException, InvocationTargetException {
 		method.setAccessible(true);
 		method.invoke(runtime, (Object) values);
@@ -76,6 +60,7 @@ public class HiddenApi {
 		if (methods[0].getName().equals("setHiddenApiExemptions")) {
 			return methods[0];
 		}
+
 		int length = methods.length;
 		Method[] array = (Method[]) runtime.newNonMovableArray(Method.class, length);
 		System.arraycopy(methods, 0, array, 0, length);
@@ -119,46 +104,26 @@ public class HiddenApi {
 		return null;
 	}
 
-	public static long addressOf(Object[] array) {
-		/*try {
-			return runtime.addressOf(array);
-		} catch (Throwable e) {
-			Log.err(e);
-		}*/
-		return uaddressOf(array);
-	}
-
-	public static long uaddressOf(Object obj) {
+	public static long addressOf(Object obj) {
 		return vaddressOf(obj) + offset;
 	}
 
 	// ---------Address/Memory Operation---------
-	static long vaddressOf(Object o) {
-		if (o == null) throw new IllegalArgumentException("o is null.");
-		oneArray[0] = o;
+	static long vaddressOf(Object object) {
+		if (object == null) throw new IllegalArgumentException("object is null.");
+		oneArray[0] = object;
 		long baseOffset = unsafe.arrayBaseOffset(Object[].class);
 		return switch (unsafe.arrayIndexScale(Object[].class)) {
-			case 4 -> (unsafe.getInt(oneArray, baseOffset) & 0xFFFFFFFFL) * (OS.is64Bit ? 8 : 1);
+			case 4 -> (unsafe.getInt(oneArray, baseOffset) & 0xffffffffl) * (OS.is64Bit ? 8 : 1);
 			case 8 -> unsafe.getLong(oneArray, baseOffset);
 			default -> throw new UnsupportedOperationException("Unsupported address size: " + unsafe.arrayIndexScale(Object[].class));
 		};
-	}
-
-	static Object[] oneArray;
-	static int[] intArray;
-
-	static long offset;
-
-	static {
-		oneArray = (Object[]) runtime.newNonMovableArray(Object.class, 1);
-		intArray = (int[]) runtime.newNonMovableArray(int.class, 0);
-		offset = runtime.addressOf(intArray) - vaddressOf(intArray);
 	}
 
 	private static void replaceMethod(Method dest, Method src) {
 		long addressDest = unsafe.getLong(dest, artMethodOffset);
 		long addressSrc = unsafe.getLong(src, artMethodOffset);
 
-		unsafe.copyMemory(addressSrc + 4, addressDest + 4, 24);
+		unsafe.copyMemory(addressSrc + 4l, addressDest + 4l, 24l);
 	}
 }

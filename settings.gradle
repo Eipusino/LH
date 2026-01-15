@@ -1,3 +1,3 @@
-include ':android', ':desktop'
+include ':android', ':desktop', ':androidcompiler'
 
 rootProject.name = 'LH'

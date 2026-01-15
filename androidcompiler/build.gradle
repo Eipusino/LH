@@ -1,0 +1,27 @@
+apply plugin: 'java'
+
+sourceSets.main.java.srcDir('src')
+
+repositories {
+	mavenCentral()
+	maven { url "https://raw.githubusercontent.com/Zelaux/MindustryRepo/master/repository" }
+	maven { url 'https://www.jitpack.io' }
+}
+
+java {
+	targetCompatibility = JavaVersion.VERSION_1_8
+	sourceCompatibility = JavaVersion.VERSION_1_8
+}
+
+tasks.withType(JavaCompile).configureEach {
+	options.encoding = "UTF-8"
+}
+
+jar {
+	archiveFileName = "${rootProject.name}Compiler.jar"
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+	from {
+		configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+	}
+}
