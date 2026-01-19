@@ -24,7 +24,10 @@ tasks.withType(JavaCompile).configureEach {
 dependencies {
 	compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
 	compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
-	compileOnly files("${project(":").projectDir}/libs/HeavyIndustryMod-260115a.jar")
+
+	def libsDir = project(":").projectDir
+
+	compileOnly files("$libsDir/libs/HeavyIndustryMod-260119b.jar")
 }
 
 jar {

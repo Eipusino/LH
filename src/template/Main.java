@@ -8,6 +8,7 @@ import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 public class Main {
 	private static final Unsafe unsafe = getUnsafe();
@@ -20,27 +21,25 @@ public class Main {
 
 	public static void main(String... arg) {
 		try {
-			MethodHandle method = lookup.unreflectConstructor(Main.class.getConstructor(int.class));
-			Object[] params = {1114};
-			System.out.println(Handles.invokeStatic(method, params));
+			Class<?>[] classes = {String[].class};
+			System.out.println(isAssignable(classes, lookup.findStatic(Main.class, "main", MethodType.methodType(void.class, String[].class)).type().parameterArray()));
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	private static <T> T clone(T object) {
-		try {
-			return (T) clone.invokeExact(object);
-		} catch (Throwable e) {
-			e.printStackTrace();
+	public Main() {
 
-			return null;
-		}
 	}
 
-	public Main(int i) {
+	public static boolean isAssignable(Class<?>[] sourceTypes, Class<?>[] targetTypes) {
+		if (sourceTypes.length != targetTypes.length) return false;
 
+		for (int i = 0; i < sourceTypes.length; i++) {
+			if (sourceTypes[i] != targetTypes[i] && !targetTypes[i].isAssignableFrom(sourceTypes[i])) return false;
+		}
+
+		return true;
 	}
 
 	static class CA implements Cloneable {

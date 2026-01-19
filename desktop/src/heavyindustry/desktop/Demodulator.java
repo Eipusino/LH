@@ -5,6 +5,7 @@ import heavyindustry.core.HeavyIndustryMod;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodType;
 import java.util.Map;
+import java.util.Set;
 
 import static heavyindustry.util.Reflects.lookup;
 
@@ -20,6 +21,8 @@ import static heavyindustry.util.Reflects.lookup;
  * @author EBwilson
  */
 public final class Demodulator {
+	public static Map<Class<?>, Set<String>> fieldFilterMap, methodFilterMap;
+
 	private static MethodHandle implAddOpens;
 
 	private Demodulator() {}
@@ -50,17 +53,14 @@ public final class Demodulator {
 		//MethodHandle addReads = Reflects.lookup.findStatic(Module.class, "addReads0", MethodType.methodType(void.class, Module.class, Module.class));
 	}
 
+	@SuppressWarnings("unchecked")
 	static void ensureFieldOpen() throws Throwable {
 		Class<?> reflection = Class.forName("jdk.internal.reflect.Reflection");
 
-		Map<?, ?> fieldFilterMap = (Map<?, ?>) lookup.findStaticGetter(reflection, "fieldFilterMap", Map.class).invokeExact();
-		if (fieldFilterMap != null) {
-			fieldFilterMap.clear();
-		}
+		fieldFilterMap = (Map<Class<?>, Set<String>>) lookup.findStaticGetter(reflection, "fieldFilterMap", Map.class).invokeExact();
+		fieldFilterMap.clear();
 
-		Map<?, ?> methodFilterMap = (Map<?, ?>) lookup.findStaticGetter(reflection, "methodFilterMap", Map.class).invokeExact();
-		if (methodFilterMap != null) {
-			methodFilterMap.clear();
-		}
+		methodFilterMap = (Map<Class<?>, Set<String>>) lookup.findStaticGetter(reflection, "methodFilterMap", Map.class).invokeExact();
+		methodFilterMap.clear();
 	}
 }

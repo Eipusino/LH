@@ -19,7 +19,7 @@ import static heavyindustry.util.Unsafer.unsafe;
 import static heavyindustry.util.Unsafer2.internalUnsafe;
 
 public class DesktopImpl implements PlatformImpl {
-	private static MethodHandle getFieldsHandle, getMethodsHandle, getConstructorsHandle;
+	private static MethodHandle getFieldsMethod, getMethodsMethod, getConstructorsMethod;
 
 	private static StackWalker walker;
 
@@ -54,12 +54,40 @@ public class DesktopImpl implements PlatformImpl {
 			internalUnsafe = jdk.internal.misc.Unsafe.getUnsafe();
 		});
 		run(() -> {
-			getFieldsHandle = lookup.findVirtual(Class.class, "getDeclaredFields0", MethodType.methodType(Field[].class, boolean.class));
-			getMethodsHandle = lookup.findVirtual(Class.class, "getDeclaredMethods0", MethodType.methodType(Method[].class, boolean.class));
-			getConstructorsHandle = lookup.findVirtual(Class.class, "getDeclaredConstructors0", MethodType.methodType(Constructor[].class, boolean.class));
+			getFieldsMethod = lookup.findVirtual(Class.class, "getDeclaredFields0", MethodType.methodType(Field[].class, boolean.class));
+			getMethodsMethod = lookup.findVirtual(Class.class, "getDeclaredMethods0", MethodType.methodType(Method[].class, boolean.class));
+			getConstructorsMethod = lookup.findVirtual(Class.class, "getDeclaredConstructors0", MethodType.methodType(Constructor[].class, boolean.class));
 		});
 
 		walker = StackWalker.getInstance(Option.RETAIN_CLASS_REFERENCE);
+	}
+
+	@Override
+	public Field[] getFields(Class<?> type) {
+		try {
+			return (Field[]) getFieldsMethod.invokeExact(type, false);
+		} catch (Throwable e) {
+			return type.getDeclaredFields();
+		}
+	}
+
+	@Override
+	public Method[] getMethods(Class<?> type) {
+		try {
+			return (Method[]) getMethodsMethod.invokeExact(type, false);
+		} catch (Throwable e) {
+			return type.getDeclaredMethods();
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> Constructor<T>[] getConstructors(Class<T> type) {
+		try {
+			return (Constructor<T>[]) getConstructorsMethod.invokeExact(type, false);
+		} catch (Throwable e) {
+			return PlatformImpl.super.getConstructors(type);
+		}
 	}
 
 	@Override
@@ -76,30 +104,7 @@ public class DesktopImpl implements PlatformImpl {
 	}
 
 	@Override
-	public Field[] getFields(Class<?> cls) {
-		try {
-			return (Field[]) getFieldsHandle.invokeExact(cls, false);
-		} catch (Throwable e) {
-			return cls.getDeclaredFields();
-		}
-	}
-
-	@Override
-	public Method[] getMethods(Class<?> cls) {
-		try {
-			return (Method[]) getMethodsHandle.invokeExact(cls, false);
-		} catch (Throwable e) {
-			return cls.getDeclaredMethods();
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T> Constructor<T>[] getConstructors(Class<T> type) {
-		try {
-			return (Constructor<T>[]) getConstructorsHandle.invokeExact(type, false);
-		} catch (Throwable e) {
-			return PlatformImpl.super.getConstructors(type);
-		}
+	public Class<?> defineClass(String name, byte[] bytes, ClassLoader loader) throws ClassFormatError {
+		return internalUnsafe.defineClass(name, bytes, 0, bytes.length, loader, null);
 	}
 }

@@ -1,9 +1,15 @@
 package heavyindustry.android;
 
+import arc.Core;
 import arc.util.Log;
 import dalvik.system.VMStack;
 import heavyindustry.util.PlatformImpl;
+import mindustry.android.AndroidRhinoContext;
+import mindustry.android.AndroidRhinoContext.AndroidContextFactory;
+import rhino.ContextFactory;
+import rhino.GeneratedClassLoader;
 
+import java.io.File;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.Field;
 
@@ -13,7 +19,7 @@ import static heavyindustry.util.Unsafer.unsafe;
 import static heavyindustry.util.Unsafer2.internalUnsafe;
 
 public class AndroidImpl implements PlatformImpl {
-	private static Field accessFlags;
+	private static Field accessFlagsField;
 
 	static {
 		init();
@@ -41,8 +47,8 @@ public class AndroidImpl implements PlatformImpl {
 			internalUnsafe = (jdk.internal.misc.Unsafe) field.get(null);
 		});
 		run(() -> {
-			accessFlags = Class.class.getDeclaredField("accessFlags");
-			accessFlags.setAccessible(true);
+			accessFlagsField = Class.class.getDeclaredField("accessFlags");
+			accessFlagsField.setAccessible(true);
 		});
 		run(() -> {
 			Field field = Lookup.class.getDeclaredField("IMPL_LOOKUP");
@@ -52,11 +58,11 @@ public class AndroidImpl implements PlatformImpl {
 	}
 
 	@Override
-	public void setPublic(Class<?> obj) {
+	public void setPublic(Class<?> type) {
 		try {
-			if (accessFlags != null) {
-				int flags = accessFlags.getInt(obj);
-				accessFlags.setInt(obj, 65535 & ((flags & 65535 & (-17) & (-3)) | 1));
+			if (accessFlagsField != null) {
+				int flags = accessFlagsField.getInt(type);
+				accessFlagsField.setInt(type, 65535 & ((flags & 65535 & (-17) & (-3)) | 1));
 			}
 		} catch (IllegalAccessException e) {
 			throw new RuntimeException(e);
@@ -66,5 +72,15 @@ public class AndroidImpl implements PlatformImpl {
 	@Override
 	public Class<?> callerClass() {
 		return VMStack.getStackClass2();
+	}
+
+	@Override
+	public Class<?> defineClass(String name, byte[] bytes, ClassLoader loader) throws ClassFormatError {
+		if (!(ContextFactory.getGlobal() instanceof AndroidContextFactory)) {
+			AndroidRhinoContext.enter(new File(Core.settings.getDataDirectory() + "/rhino/"));
+		}
+		return ((GeneratedClassLoader) ((AndroidContextFactory) ContextFactory.getGlobal())
+				.createClassLoader(loader))
+				.defineClass(name, bytes);
 	}
 }
