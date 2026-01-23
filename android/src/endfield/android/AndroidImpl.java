@@ -1,9 +1,9 @@
-package heavyindustry.android;
+package endfield.android;
 
 import arc.Core;
 import arc.util.Log;
 import dalvik.system.VMStack;
-import heavyindustry.util.PlatformImpl;
+import endfield.util.PlatformImpl;
 import mindustry.android.AndroidRhinoContext;
 import mindustry.android.AndroidRhinoContext.AndroidContextFactory;
 import rhino.ContextFactory;
@@ -13,10 +13,10 @@ import java.io.File;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.Field;
 
-import static heavyindustry.util.Objects2.run;
-import static heavyindustry.util.Reflects.lookup;
-import static heavyindustry.util.Unsafer.unsafe;
-import static heavyindustry.util.Unsafer2.internalUnsafe;
+import static endfield.util.Objects2.run;
+import static endfield.util.Reflects.lookup;
+import static endfield.util.Unsafer.unsafe;
+import static endfield.util.Unsafer2.internalUnsafe;
 
 public class AndroidImpl implements PlatformImpl {
 	private static Field accessFlagsField;

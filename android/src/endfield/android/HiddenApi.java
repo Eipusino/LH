@@ -1,4 +1,4 @@
-package heavyindustry.android;
+package endfield.android;
 
 import arc.util.Log;
 import arc.util.OS;
@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import static heavyindustry.util.Unsafer.unsafe;
+import static endfield.util.Unsafer.unsafe;
 
 /** Only For Android */
 public class HiddenApi {

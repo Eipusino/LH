@@ -1,13 +1,13 @@
-package heavyindustry.desktop;
+package endfield.desktop;
 
-import heavyindustry.core.HeavyIndustryMod;
+import endfield.core.EndFieldMod;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodType;
 import java.util.Map;
 import java.util.Set;
 
-import static heavyindustry.util.Reflects.lookup;
+import static endfield.util.Reflects.lookup;
 
 /**
  * The anti modularity tool only provides one main method {@link Demodulator#openModule(Module, String, Module)}
@@ -42,7 +42,7 @@ public final class Demodulator {
 	}
 
 	static void openModules() throws Throwable {
-		Module base = Object.class.getModule(), impl = Demodulator.class.getModule(), main = HeavyIndustryMod.class.getModule();
+		Module base = Object.class.getModule(), impl = Demodulator.class.getModule(), main = EndFieldMod.class.getModule();
 
 		openModule(base, "jdk.internal.misc", impl);
 

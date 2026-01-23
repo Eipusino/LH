@@ -36,7 +36,7 @@ dependencies {
 	def libsDir = project(":").projectDir
 
 	compileOnly files(
-			"$libsDir/libs/HeavyIndustryMod-260119b.jar",
+			"$libsDir/libs/EndfieldMod-260123a.jar",
 			"$libsDir/libs/android.jar",
 			"$libsDir/libs/android-dalvik.jar",
 			"$libsDir/libs/mindustry-android.jar"
