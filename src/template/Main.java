@@ -7,6 +7,7 @@ import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 public class Main {
 	private static final Unsafe unsafe = getUnsafe();
@@ -17,10 +18,10 @@ public class Main {
 	private static MethodHandle load;
 	private static Method loadm;
 
+	private Object unl;
+
 	public static void main(String... arg) {
 		try {
-			Class<?>[] classes = {String[].class};
-			System.out.println(isAssignable(classes, lookup.findStatic(Main.class, "main", MethodType.methodType(void.class, String[].class)).type().parameterArray()));
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}

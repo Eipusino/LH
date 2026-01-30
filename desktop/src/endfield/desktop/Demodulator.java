@@ -18,7 +18,7 @@ import static endfield.util.Reflects.lookup;
  * and it is only available on the desktop platform. Any behavior of this class is not allowed on the
  * Android platform.</strong>
  *
- * @author EBwilson
+ * @author Eipusino
  */
 public final class Demodulator {
 	public static Map<Class<?>, Set<String>> fieldFilterMap, methodFilterMap;
@@ -42,15 +42,11 @@ public final class Demodulator {
 	}
 
 	static void openModules() throws Throwable {
-		Module base = Object.class.getModule(), impl = Demodulator.class.getModule(), main = EndFieldMod.class.getModule();
-
-		openModule(base, "jdk.internal.misc", impl);
+		Module base = Object.class.getModule(), main = EndFieldMod.class.getModule();
 
 		openModule(base, "java.lang", main);
 		openModule(base, "java.lang.reflect", main);
 		openModule(base, "jdk.internal.misc", main);
-
-		//MethodHandle addReads = Reflects.lookup.findStatic(Module.class, "addReads0", MethodType.methodType(void.class, Module.class, Module.class));
 	}
 
 	@SuppressWarnings("unchecked")

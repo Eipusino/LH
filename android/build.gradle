@@ -36,15 +36,21 @@ dependencies {
 	def libsDir = project(":").projectDir
 
 	compileOnly files(
-			"$libsDir/libs/EndfieldMod-260123a.jar",
+			"$libsDir/libs/EndfieldMod-260130a.jar",
 			"$libsDir/libs/android.jar",
 			"$libsDir/libs/android-dalvik.jar",
 			"$libsDir/libs/mindustry-android.jar"
 	)
+
+	implementation files("$libsDir/libs/field-utils.jar")
 }
 
 jar {
 	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+	from {
+		configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+	}
 }
 
 task jarAndroid(type: Jar) {

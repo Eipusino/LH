@@ -1,9 +1,12 @@
 package endfield.android;
 
 import arc.Core;
-import arc.util.Log;
 import dalvik.system.VMStack;
+import endfield.android.field.AndroidField;
 import endfield.util.PlatformImpl;
+import endfield.util.Unsafer;
+import endfield.util.Unsafer2;
+import libcore.io.Memory;
 import mindustry.android.AndroidRhinoContext;
 import mindustry.android.AndroidRhinoContext.AndroidContextFactory;
 import rhino.ContextFactory;
@@ -15,45 +18,36 @@ import java.lang.reflect.Field;
 
 import static endfield.util.Objects2.run;
 import static endfield.util.Reflects.lookup;
-import static endfield.util.Unsafer.unsafe;
-import static endfield.util.Unsafer2.internalUnsafe;
 
 public class AndroidImpl implements PlatformImpl {
-	private static Field accessFlagsField;
+	static Field accessFlagsField;
 
 	static {
-		init();
-	}
-
-	private static void init() {
-		try {
-			Log.info("Use @", Class.forName("sun.misc.Unsafe"));
-
-			Field field = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
-			field.setAccessible(true);
-			unsafe = (sun.misc.Unsafe) field.get(null);
-		} catch (Throwable e) {
-			Log.err(e);
-
-			return;
-		}
-
-		run(HiddenApi::setHiddenApiExemptions);
 		run(() -> {
-			Log.info("Use @", Class.forName("jdk.internal.misc.Unsafe"));
+			Class.forName("sun.misc.Unsafe", true, null);
 
-			Field field = jdk.internal.misc.Unsafe.class.getDeclaredField("theUnsafe");
-			field.setAccessible(true);
-			internalUnsafe = (jdk.internal.misc.Unsafe) field.get(null);
+			Unsafer.init();
+
+			run(() -> {
+				HiddenApi.setHiddenApiExemptions();
+
+				run(() -> {
+					Class.forName("jdk.internal.misc.Unsafe", true, null);
+
+					Unsafer2.init();
+				});
+
+				run(() -> {
+					Field field = Lookup.class.getDeclaredField("IMPL_LOOKUP");
+					field.setAccessible(true);
+					lookup = (Lookup) field.get(null);
+				});
+			});
 		});
+
 		run(() -> {
 			accessFlagsField = Class.class.getDeclaredField("accessFlags");
 			accessFlagsField.setAccessible(true);
-		});
-		run(() -> {
-			Field field = Lookup.class.getDeclaredField("IMPL_LOOKUP");
-			field.setAccessible(true);
-			lookup = (Lookup) field.get(null);
 		});
 	}
 
@@ -67,6 +61,26 @@ public class AndroidImpl implements PlatformImpl {
 		} catch (IllegalAccessException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	@Override
+	public long offset(Field field) {
+		return AndroidField.fieldOffset(field);
+	}
+
+	@Override
+	public long staticOffset(Field field) {
+		return AndroidField.fieldOffset(field);
+	}
+
+	@Override
+	public long objectOffset(Field field) {
+		return AndroidField.fieldOffset(field);
+	}
+
+	@Override
+	public void copyMemory(Object srcBase, long srcOffset, Object destBase, long destOffset, long bytes) {
+		Memory.memmove(destBase, (int) destOffset, srcBase, (int) srcOffset, bytes);
 	}
 
 	@Override

@@ -1,7 +1,8 @@
 package endfield.desktop;
 
-import arc.util.Log;
 import endfield.util.PlatformImpl;
+import endfield.util.Unsafer;
+import endfield.util.Unsafer2;
 
 import java.lang.StackWalker.Option;
 import java.lang.StackWalker.StackFrame;
@@ -12,6 +13,7 @@ import java.lang.invoke.VarHandle;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -21,48 +23,41 @@ import static endfield.util.Unsafer.unsafe;
 import static endfield.util.Unsafer2.internalUnsafe;
 
 public class DesktopImpl implements PlatformImpl {
-	private static MethodHandle getFieldsMethod, getMethodsMethod, getConstructorsMethod;
-	private static VarHandle methodParameterTypes, constructorParameterTypes;
+	static MethodHandle getFieldsMethod, getMethodsMethod, getConstructorsMethod;
+	static VarHandle methodParameterTypes, constructorParameterTypes;
 
-	private static StackWalker walker;
+	static StackWalker walker;
 
 	static {
-		init();
-	}
-
-	private static void init() {
-		try {
-			Log.info("Use @", Class.forName("sun.misc.Unsafe"));
-
-			Field field = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
-			field.setAccessible(true);
-			unsafe = (sun.misc.Unsafe) field.get(null);
-		} catch (Throwable e) {
-			Log.err(e);
-
-			return;
-		}
-
 		run(() -> {
-			lookup = (Lookup) unsafe.getObject(Lookup.class, unsafe.staticFieldOffset(Lookup.class.getDeclaredField("IMPL_LOOKUP")));
-		});
-		run(() -> {
-			Demodulator.init();
-			Demodulator.openModules();
-		});
-		run(Demodulator::ensureFieldOpen);
-		run(() -> {
-			Log.info("Use @", Class.forName("jdk.internal.misc.Unsafe"));
+			Class.forName("sun.misc.Unsafe", true, null);
 
-			internalUnsafe = jdk.internal.misc.Unsafe.getUnsafe();
-		});
-		run(() -> {
-			getFieldsMethod = lookup.findVirtual(Class.class, "getDeclaredFields0", MethodType.methodType(Field[].class, boolean.class));
-			getMethodsMethod = lookup.findVirtual(Class.class, "getDeclaredMethods0", MethodType.methodType(Method[].class, boolean.class));
-			getConstructorsMethod = lookup.findVirtual(Class.class, "getDeclaredConstructors0", MethodType.methodType(Constructor[].class, boolean.class));
+			Unsafer.init();
 
-			methodParameterTypes = lookup.findVarHandle(Method.class, "parameterTypes", Class[].class);
-			constructorParameterTypes = lookup.findVarHandle(Constructor.class, "parameterTypes", Class[].class);
+			run(() -> {
+				lookup = (Lookup) unsafe.getObject(Lookup.class, unsafe.staticFieldOffset(Lookup.class.getDeclaredField("IMPL_LOOKUP")));
+
+				run(() -> {
+					getFieldsMethod = lookup.findVirtual(Class.class, "getDeclaredFields0", MethodType.methodType(Field[].class, boolean.class));
+					getMethodsMethod = lookup.findVirtual(Class.class, "getDeclaredMethods0", MethodType.methodType(Method[].class, boolean.class));
+					getConstructorsMethod = lookup.findVirtual(Class.class, "getDeclaredConstructors0", MethodType.methodType(Constructor[].class, boolean.class));
+
+					methodParameterTypes = lookup.findVarHandle(Method.class, "parameterTypes", Class[].class);
+					constructorParameterTypes = lookup.findVarHandle(Constructor.class, "parameterTypes", Class[].class);
+				});
+			});
+			run(() -> {
+				Demodulator.init();
+				Demodulator.openModules();
+
+				run(Demodulator::ensureFieldOpen);
+
+				run(() -> {
+					Class.forName("jdk.internal.misc.Unsafe", true, null);
+
+					Unsafer2.initc();
+				});
+			});
 		});
 
 		walker = StackWalker.getInstance(Option.RETAIN_CLASS_REFERENCE);
@@ -147,6 +142,33 @@ public class DesktopImpl implements PlatformImpl {
 		} catch (ClassNotFoundException e) {
 			return null;
 		}
+	}
+
+	@Override
+	public long offset(Field field) {
+		return (field.getModifiers() & Modifier.STATIC) == 0 ?
+				internalUnsafe.objectFieldOffset(field) :
+				internalUnsafe.staticFieldOffset(field);
+	}
+
+	@Override
+	public long staticOffset(Field field) {
+		return internalUnsafe.staticFieldOffset(field);
+	}
+
+	@Override
+	public long objectOffset(Field field) {
+		return internalUnsafe.objectFieldOffset(field);
+	}
+
+	@Override
+	public void copyMemory(long srcAddress, long dstAddress, long bytes) {
+		internalUnsafe.copyMemory(srcAddress, dstAddress, bytes);
+	}
+
+	@Override
+	public void copyMemory(Object srcBase, long srcOffset, Object destBase, long destOffset, long bytes) {
+		internalUnsafe.copyMemory(srcBase, srcOffset, destBase, destOffset, bytes);
 	}
 
 	@Override
