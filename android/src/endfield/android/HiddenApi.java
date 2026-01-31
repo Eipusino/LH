@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import static endfield.util.Unsafer.unsafe;
+import static endfield.android.Unsafer.unsafe;
 
 /** Only For Android */
 public class HiddenApi {
@@ -34,20 +34,16 @@ public class HiddenApi {
 		offset = runtime.addressOf(intArray) - vaddressOf(intArray);
 	}
 
-	public static void setHiddenApiExemptions() {
+	public static void setHiddenApiExemptions() throws Throwable {
 		// In higher versions, the setHiddenApiExertions method cannot be directly reflected to obtain it, so the artMethod needs to be modified
 		// Sdk_version>28 (exact number unknown)
 		Method setHiddenApiExemptions = findMethod();
 
-		try {
-			if (setHiddenApiExemptions == null) {
-				throw new InternalError("setHiddenApiExemptions not found.");
-			}
-
-			invoke(setHiddenApiExemptions);
-		} catch (Exception e) {
-			Log.err(e);
+		if (setHiddenApiExemptions == null) {
+			throw new InternalError("setHiddenApiExemptions not found.");
 		}
+
+		invoke(setHiddenApiExemptions);
 	}
 
 	private static void invoke(Method method) throws IllegalAccessException, InvocationTargetException {

@@ -1,5 +1,6 @@
 package endfield.desktop;
 
+import arc.util.Log;
 import endfield.core.EndFieldMod;
 
 import java.lang.invoke.MethodHandle;
@@ -7,7 +8,7 @@ import java.lang.invoke.MethodType;
 import java.util.Map;
 import java.util.Set;
 
-import static endfield.util.Reflects.lookup;
+import static endfield.desktop.DesktopImpl.lookup;
 
 /**
  * The anti modularity tool only provides one main method {@link Demodulator#openModule(Module, String, Module)}
@@ -23,7 +24,7 @@ import static endfield.util.Reflects.lookup;
 public final class Demodulator {
 	public static Map<Class<?>, Set<String>> fieldFilterMap, methodFilterMap;
 
-	private static MethodHandle implAddOpens;
+	static MethodHandle implAddOpens;
 
 	private Demodulator() {}
 
@@ -32,12 +33,38 @@ public final class Demodulator {
 		implAddOpens = lookup.findVirtual(Module.class, "implAddOpens", MethodType.methodType(void.class, String.class, Module.class));
 	}
 
+	public static void makeModuleOpen(Module from, Class<?> clazz, Module to) {
+		if (clazz.isArray()) {
+			makeModuleOpen(from, clazz.getComponentType(), to);
+		} else makeModuleOpen(from, clazz.getPackage(), to);
+	}
+
+	public static void makeModuleOpen(Module from, Package pac, Module to) {
+		if (checkOpenModule(from, pac, to)) return;
+
+		makeModuleOpen(from, pac.getName(), to);
+	}
+
 	/**
 	 * @param from To open the module of the package
-	 * @param pn The package name of the module to export the package
+	 * @param pac The package name of the module to export the package
 	 * @param to The module to be exported to.
 	 */
-	public static void openModule(Module from, String pn, Module to) throws Throwable {
+	public static void makeModuleOpen(Module from, String pac, Module to) {
+		try {
+			openModule(from, pac, to);
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public static boolean checkOpenModule(Module from, Package pac, Module to) {
+		if (pac == null) return true;
+
+		return from.isOpen(pac.getName(), to);
+	}
+
+	static void openModule(Module from, String pn, Module to) throws Throwable {
 		implAddOpens.invokeExact(from, pn, to);
 	}
 
@@ -47,16 +74,21 @@ public final class Demodulator {
 		openModule(base, "java.lang", main);
 		openModule(base, "java.lang.reflect", main);
 		openModule(base, "jdk.internal.misc", main);
+		openModule(base, "jdk.internal.reflect", main);
 	}
 
 	@SuppressWarnings("unchecked")
-	static void ensureFieldOpen() throws Throwable {
-		Class<?> reflection = Class.forName("jdk.internal.reflect.Reflection");
+	static void ensureFieldOpen() {
+		try {
+			Class<?> reflection = Class.forName("jdk.internal.reflect.Reflection");
 
-		fieldFilterMap = (Map<Class<?>, Set<String>>) lookup.findStaticGetter(reflection, "fieldFilterMap", Map.class).invokeExact();
-		fieldFilterMap.clear();
+			fieldFilterMap = (Map<Class<?>, Set<String>>) lookup.findStaticGetter(reflection, "fieldFilterMap", Map.class).invokeExact();
+			fieldFilterMap.clear();
 
-		methodFilterMap = (Map<Class<?>, Set<String>>) lookup.findStaticGetter(reflection, "methodFilterMap", Map.class).invokeExact();
-		methodFilterMap.clear();
+			methodFilterMap = (Map<Class<?>, Set<String>>) lookup.findStaticGetter(reflection, "methodFilterMap", Map.class).invokeExact();
+			methodFilterMap.clear();
+		} catch (Throwable e) {
+			Log.err(e);
+		}
 	}
 }
