@@ -66,15 +66,21 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 	protected void initField(Field field) {
 		getters.getDefault2(field, () -> {
 			try {
-				return lookup.unreflectGetter(field);
-			} catch (IllegalAccessException e) {
+				return (field.getModifiers() & Modifier.STATIC) == 0 ?
+						lookup.findGetter(field.getDeclaringClass(), field.getName(), field.getType()) :
+						lookup.findStaticGetter(field.getDeclaringClass(), field.getName(), field.getType());
+				//return lookup.unreflectGetter(field);
+			} catch (IllegalAccessException | NoSuchFieldException e) {
 				throw new RuntimeException(e);
 			}
 		});
 		setters.getDefault2(field, () -> {
 			try {
-				return lookup.unreflectSetter(field);
-			} catch (IllegalAccessException e) {
+				return (field.getModifiers() & Modifier.STATIC) == 0 ?
+						lookup.findSetter(field.getDeclaringClass(), field.getName(), field.getType()) :
+						lookup.findStaticSetter(field.getDeclaringClass(), field.getName(), field.getType());
+				//return lookup.unreflectSetter(field);
+			} catch (IllegalAccessException | NoSuchFieldException e) {
 				throw new RuntimeException(e);
 			}
 		});
