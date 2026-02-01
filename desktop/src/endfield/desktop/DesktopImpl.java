@@ -22,6 +22,8 @@ public class DesktopImpl implements PlatformImpl {
 			Demodulator.init();
 			Demodulator.openModules();
 
+			DesktopClassHelper.init();
+
 			Demodulator.ensureFieldOpen();
 
 			classHelper = new DesktopClassHelper();

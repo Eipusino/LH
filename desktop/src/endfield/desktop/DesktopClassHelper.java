@@ -14,13 +14,13 @@ import static endfield.desktop.DesktopImpl.lookup;
 import static endfield.desktop.Unsafer.unsafe;
 
 public class DesktopClassHelper implements ClassHelper {
-	static MethodHandle getFieldsMethod, getMethodsMethod, getConstructorsMethod;
+	static MethodHandle getFields, getMethods, getConstructors;
 	static VarHandle methodParameterTypes, constructorParameterTypes;
 
 	static void init() throws Throwable {
-		getFieldsMethod = lookup.findVirtual(Class.class, "getDeclaredFields0", MethodType.methodType(Field[].class, boolean.class));
-		getMethodsMethod = lookup.findVirtual(Class.class, "getDeclaredMethods0", MethodType.methodType(Method[].class, boolean.class));
-		getConstructorsMethod = lookup.findVirtual(Class.class, "getDeclaredConstructors0", MethodType.methodType(Constructor[].class, boolean.class));
+		getFields = lookup.findVirtual(Class.class, "getDeclaredFields0", MethodType.methodType(Field[].class, boolean.class));
+		getMethods = lookup.findVirtual(Class.class, "getDeclaredMethods0", MethodType.methodType(Method[].class, boolean.class));
+		getConstructors = lookup.findVirtual(Class.class, "getDeclaredConstructors0", MethodType.methodType(Constructor[].class, boolean.class));
 
 		methodParameterTypes = lookup.findVarHandle(Method.class, "parameterTypes", Class[].class);
 		constructorParameterTypes = lookup.findVarHandle(Constructor.class, "parameterTypes", Class[].class);
@@ -29,7 +29,7 @@ public class DesktopClassHelper implements ClassHelper {
 	@Override
 	public Field getField(Class<?> type, String name) {
 		try {
-			Field[] fields = (Field[]) getFieldsMethod.invokeExact(type, false);
+			Field[] fields = (Field[]) getFields.invokeExact(type, false);
 			for (Field field : fields) {
 				if (field.getName().equals(name)) return field;
 			}
@@ -42,7 +42,7 @@ public class DesktopClassHelper implements ClassHelper {
 	@Override
 	public Method getMethod(Class<?> type, String name, Class<?>... parameterTypes) {
 		try {
-			Method[] methods = (Method[]) getMethodsMethod.invokeExact(type, false);
+			Method[] methods = (Method[]) getMethods.invokeExact(type, false);
 			for (Method method : methods) {
 				if (method.getName().equals(name) && Arrays.equals((Class<?>[]) methodParameterTypes.get(method), parameterTypes)) return method;
 			}
@@ -56,7 +56,7 @@ public class DesktopClassHelper implements ClassHelper {
 	@Override
 	public <T> Constructor<T> getConstructor(Class<T> type, Class<?>... parameterTypes) {
 		try {
-			Constructor<T>[] constructors = (Constructor<T>[]) getConstructorsMethod.invokeExact(type, false);
+			Constructor<T>[] constructors = (Constructor<T>[]) getConstructors.invokeExact(type, false);
 			for (Constructor<T> constructor : constructors) {
 				if (Arrays.equals((Class<?>[]) constructorParameterTypes.get(constructor), parameterTypes)) return constructor;
 			}
@@ -69,7 +69,7 @@ public class DesktopClassHelper implements ClassHelper {
 	@Override
 	public Field[] getFields(Class<?> type) {
 		try {
-			return (Field[]) getFieldsMethod.invokeExact(type, false);
+			return (Field[]) getFields.invokeExact(type, false);
 		} catch (Throwable e) {
 			return type.getDeclaredFields();
 		}
@@ -78,7 +78,7 @@ public class DesktopClassHelper implements ClassHelper {
 	@Override
 	public Method[] getMethods(Class<?> type) {
 		try {
-			return (Method[]) getMethodsMethod.invokeExact(type, false);
+			return (Method[]) getMethods.invokeExact(type, false);
 		} catch (Throwable e) {
 			return type.getDeclaredMethods();
 		}
@@ -88,7 +88,7 @@ public class DesktopClassHelper implements ClassHelper {
 	@Override
 	public <T> Constructor<T>[] getConstructors(Class<T> type) {
 		try {
-			return (Constructor<T>[]) getConstructorsMethod.invokeExact(type, false);
+			return (Constructor<T>[]) getConstructors.invokeExact(type, false);
 		} catch (Throwable e) {
 			return ClassHelper.super.getConstructors(type);
 		}

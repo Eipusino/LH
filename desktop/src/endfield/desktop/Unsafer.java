@@ -21,11 +21,12 @@ public final class Unsafer {
 
 	public static void setByteStatic(Field field, byte value) {
 		long offset = unsafe.staticFieldOffset(field);
+		Object base = unsafe.staticFieldBase(field);
 
 		if (Modifier.isVolatile(field.getModifiers()))
-			unsafe.putByteVolatile(field.getDeclaringClass(), offset, value);
+			unsafe.putByteVolatile(base, offset, value);
 		else
-			unsafe.putByte(field.getDeclaringClass(), offset, value);
+			unsafe.putByte(base, offset, value);
 	}
 
 	public static byte getByte(Field field, Object object) {
@@ -38,10 +39,11 @@ public final class Unsafer {
 
 	public static byte getByteStatic(Field field) {
 		long offset = unsafe.staticFieldOffset(field);
+		Object base = unsafe.staticFieldBase(field);
 
 		return Modifier.isVolatile(field.getModifiers()) ?
-				unsafe.getByteVolatile(field.getDeclaringClass(), offset) :
-				unsafe.getByte(field.getDeclaringClass(), offset);
+				unsafe.getByteVolatile(base, offset) :
+				unsafe.getByte(base, offset);
 	}
 
 	public static void setShort(Field field, Object object, short value) {
@@ -55,11 +57,12 @@ public final class Unsafer {
 
 	public static void setShortStatic(Field field, short value) {
 		long offset = unsafe.staticFieldOffset(field);
+		Object base = unsafe.staticFieldBase(field);
 
 		if (Modifier.isVolatile(field.getModifiers()))
-			unsafe.putShortVolatile(field.getDeclaringClass(), offset, value);
+			unsafe.putShortVolatile(base, offset, value);
 		else
-			unsafe.putShort(field.getDeclaringClass(), offset, value);
+			unsafe.putShort(base, offset, value);
 	}
 
 	public static short getShort(Field field, Object object) {
@@ -72,10 +75,11 @@ public final class Unsafer {
 
 	public static short getShortStatic(Field field) {
 		long offset = unsafe.staticFieldOffset(field);
+		Object base = unsafe.staticFieldBase(field);
 
 		return Modifier.isVolatile(field.getModifiers()) ?
-				unsafe.getShortVolatile(field.getDeclaringClass(), offset) :
-				unsafe.getShort(field.getDeclaringClass(), offset);
+				unsafe.getShortVolatile(base, offset) :
+				unsafe.getShort(base, offset);
 	}
 
 	public static void setInt(Field field, Object object, int value) {
@@ -89,11 +93,12 @@ public final class Unsafer {
 
 	public static void setIntStatic(Field field, int value) {
 		long offset = unsafe.staticFieldOffset(field);
+		Object base = unsafe.staticFieldBase(field);
 
 		if (Modifier.isVolatile(field.getModifiers()))
-			unsafe.putIntVolatile(field.getDeclaringClass(), offset, value);
+			unsafe.putIntVolatile(base, offset, value);
 		else
-			unsafe.putInt(field.getDeclaringClass(), offset, value);
+			unsafe.putInt(base, offset, value);
 	}
 
 	public static int getInt(Field field, Object object) {
@@ -106,10 +111,11 @@ public final class Unsafer {
 
 	public static int getIntStatic(Field field) {
 		long offset = unsafe.staticFieldOffset(field);
+		Object base = unsafe.staticFieldBase(field);
 
 		return Modifier.isVolatile(field.getModifiers()) ?
-				unsafe.getIntVolatile(field.getDeclaringClass(), offset) :
-				unsafe.getInt(field.getDeclaringClass(), offset);
+				unsafe.getIntVolatile(base, offset) :
+				unsafe.getInt(base, offset);
 	}
 
 	public static void setLong(Field field, Object object, long value) {
@@ -123,11 +129,12 @@ public final class Unsafer {
 
 	public static void setLongStatic(Field field, long value) {
 		long offset = unsafe.staticFieldOffset(field);
+		Object base = unsafe.staticFieldBase(field);
 
 		if (Modifier.isVolatile(field.getModifiers()))
-			unsafe.putLongVolatile(field.getDeclaringClass(), offset, value);
+			unsafe.putLongVolatile(base, offset, value);
 		else
-			unsafe.putLong(field.getDeclaringClass(), offset, value);
+			unsafe.putLong(base, offset, value);
 	}
 
 	public static long getLong(Field field, Object object) {
@@ -140,10 +147,11 @@ public final class Unsafer {
 
 	public static long getLongStatic(Field field) {
 		long offset = unsafe.staticFieldOffset(field);
+		Object base = unsafe.staticFieldBase(field);
 
 		return Modifier.isVolatile(field.getModifiers()) ?
-				unsafe.getLongVolatile(field.getDeclaringClass(), offset) :
-				unsafe.getLong(field.getDeclaringClass(), offset);
+				unsafe.getLongVolatile(base, offset) :
+				unsafe.getLong(base, offset);
 	}
 
 	public static void setFloat(Field field, Object object, float value) {
@@ -157,10 +165,11 @@ public final class Unsafer {
 
 	public static void setFloatStatic(Field field, float value) {
 		long offset = unsafe.staticFieldOffset(field);
+		Object base = unsafe.staticFieldBase(field);
 
 		if (Modifier.isVolatile(field.getModifiers())) {
-			unsafe.putFloatVolatile(field.getDeclaringClass(), offset, value);
-		} else unsafe.putFloat(field.getDeclaringClass(), offset, value);
+			unsafe.putFloatVolatile(base, offset, value);
+		} else unsafe.putFloat(base, offset, value);
 	}
 
 	public static float getFloat(Field field, Object object) {
@@ -173,10 +182,11 @@ public final class Unsafer {
 
 	public static float getFloatStatic(Field field) {
 		long offset = unsafe.staticFieldOffset(field);
+		Object base = unsafe.staticFieldBase(field);
 
 		return Modifier.isVolatile(field.getModifiers()) ?
-				unsafe.getFloatVolatile(field.getDeclaringClass(), offset) :
-				unsafe.getFloat(field.getDeclaringClass(), offset);
+				unsafe.getFloatVolatile(base, offset) :
+				unsafe.getFloat(base, offset);
 	}
 
 	public static void setDouble(Field field, Object object, double value) {
@@ -190,11 +200,12 @@ public final class Unsafer {
 
 	public static void setDoubleStatic(Field field, double value) {
 		long offset = unsafe.staticFieldOffset(field);
+		Object base = unsafe.staticFieldBase(field);
 
 		if (Modifier.isVolatile(field.getModifiers()))
-			unsafe.putDoubleVolatile(field.getDeclaringClass(), offset, value);
+			unsafe.putDoubleVolatile(base, offset, value);
 		else
-			unsafe.putDouble(field.getDeclaringClass(), offset, value);
+			unsafe.putDouble(base, offset, value);
 	}
 
 	public static double getDouble(Field field, Object object) {
@@ -207,10 +218,11 @@ public final class Unsafer {
 
 	public static double getDoubleStatic(Field field) {
 		long offset = unsafe.staticFieldOffset(field);
+		Object base = unsafe.staticFieldBase(field);
 
 		return Modifier.isVolatile(field.getModifiers()) ?
-				unsafe.getDoubleVolatile(field.getDeclaringClass(), offset) :
-				unsafe.getDouble(field.getDeclaringClass(), offset);
+				unsafe.getDoubleVolatile(base, offset) :
+				unsafe.getDouble(base, offset);
 	}
 
 	public static void setChar(Field field, Object object, char value) {
@@ -224,11 +236,12 @@ public final class Unsafer {
 
 	public static void setCharStatic(Field field, char value) {
 		long offset = unsafe.staticFieldOffset(field);
+		Object base = unsafe.staticFieldBase(field);
 
 		if (Modifier.isVolatile(field.getModifiers()))
-			unsafe.putCharVolatile(field.getDeclaringClass(), offset, value);
+			unsafe.putCharVolatile(base, offset, value);
 		else
-			unsafe.putChar(field.getDeclaringClass(), offset, value);
+			unsafe.putChar(base, offset, value);
 	}
 
 	public static char getChar(Field field, Object object) {
@@ -241,10 +254,11 @@ public final class Unsafer {
 
 	public static char getCharStatic(Field field) {
 		long offset = unsafe.staticFieldOffset(field);
+		Object base = unsafe.staticFieldBase(field);
 
 		return Modifier.isVolatile(field.getModifiers()) ?
-				unsafe.getCharVolatile(field.getDeclaringClass(), offset) :
-				unsafe.getChar(field.getDeclaringClass(), offset);
+				unsafe.getCharVolatile(base, offset) :
+				unsafe.getChar(base, offset);
 	}
 
 	public static void setBoolean(Field field, Object object, boolean value) {
@@ -258,11 +272,12 @@ public final class Unsafer {
 
 	public static void setBooleanStatic(Field field, boolean value) {
 		long offset = unsafe.staticFieldOffset(field);
+		Object base = unsafe.staticFieldBase(field);
 
 		if (Modifier.isVolatile(field.getModifiers()))
-			unsafe.putBooleanVolatile(field.getDeclaringClass(), offset, value);
+			unsafe.putBooleanVolatile(base, offset, value);
 		else
-			unsafe.putBoolean(field.getDeclaringClass(), offset, value);
+			unsafe.putBoolean(base, offset, value);
 	}
 
 	public static boolean getBoolean(Field field, Object object) {
@@ -275,10 +290,11 @@ public final class Unsafer {
 
 	public static boolean getBooleanStatic(Field field) {
 		long offset = unsafe.staticFieldOffset(field);
+		Object base = unsafe.staticFieldBase(field);
 
 		return Modifier.isVolatile(field.getModifiers()) ?
-				unsafe.getBooleanVolatile(field.getDeclaringClass(), offset) :
-				unsafe.getBoolean(field.getDeclaringClass(), offset);
+				unsafe.getBooleanVolatile(base, offset) :
+				unsafe.getBoolean(base, offset);
 	}
 
 	public static void setReference(Field field, Object object, Object value) {
@@ -292,11 +308,12 @@ public final class Unsafer {
 
 	public static void setReferenceStatic(Field field, Object value) {
 		long offset = unsafe.staticFieldOffset(field);
+		Object base = unsafe.staticFieldBase(field);
 
 		if (Modifier.isVolatile(field.getModifiers()))
-			unsafe.putReferenceVolatile(field.getDeclaringClass(), offset, value);
+			unsafe.putReferenceVolatile(base, offset, value);
 		else
-			unsafe.putReference(field.getDeclaringClass(), offset, value);
+			unsafe.putReference(base, offset, value);
 	}
 
 	public static Object getReference(Field field, Object object) {
@@ -309,82 +326,84 @@ public final class Unsafer {
 
 	public static Object getReferenceStatic(Field field) {
 		long offset = unsafe.staticFieldOffset(field);
+		Object base = unsafe.staticFieldBase(field);
 
 		return Modifier.isVolatile(field.getModifiers()) ?
-				unsafe.getReferenceVolatile(field.getDeclaringClass(), offset) :
-				unsafe.getReference(field.getDeclaringClass(), offset);
+				unsafe.getReferenceVolatile(base, offset) :
+				unsafe.getReference(base, offset);
 	}
 
 	public static void set(Field field, Object object, Object value) {
 		long offset = unsafe.objectFieldOffset(field);
 		Class<?> clazz = field.getType();
-		if (Modifier.isVolatile(field.getModifiers())) {
-			if (clazz.isPrimitive()) {
-				if (clazz == int.class) unsafe.putIntVolatile(object, offset, (int) value);
-				else if (clazz == float.class) unsafe.putFloatVolatile(object, offset, (float) value);
-				else if (clazz == boolean.class) unsafe.putBooleanVolatile(object, offset, (boolean) value);
-				else if (clazz == byte.class) unsafe.putByteVolatile(object, offset, (byte) value);
-				else if (clazz == long.class) unsafe.putLongVolatile(object, offset, (long) value);
-				else if (clazz == double.class) unsafe.putDoubleVolatile(object, offset, (double) value);
-				else if (clazz == char.class) unsafe.putCharVolatile(object, offset, (char) value);
-				else if (clazz == short.class) unsafe.putShortVolatile(object, offset, (short) value);
-				else throw new IllegalArgumentException("unknown type of field " + field);
-			} else {
-				unsafe.putReferenceVolatile(object, offset, value);
-			}
-		} else {
-			doPut(value, object, offset, clazz);
-		}
+		if (Modifier.isVolatile(field.getModifiers()))
+			put1(value, object, offset, clazz);
+		else
+			put0(value, object, offset, clazz);
 	}
 
 	public static void setStatic(Field field, Object value) {
 		Object base = unsafe.staticFieldBase(field);
 		long offset = unsafe.staticFieldOffset(field);
 		Class<?> clazz = field.getType();
-
-		doPut(value, base, offset, clazz);
-	}
-
-	static void doPut(Object value, Object base, long offset, Class<?> clazz) {
-		if (clazz.isPrimitive()) {
-			if (clazz == int.class) unsafe.putInt(base, offset, (int) value);
-			else if (clazz == float.class) unsafe.putFloat(base, offset, (float) value);
-			else if (clazz == boolean.class) unsafe.putBoolean(base, offset, (boolean) value);
-			else if (clazz == byte.class) unsafe.putByte(base, offset, (byte) value);
-			else if (clazz == double.class) unsafe.putDouble(base, offset, (double) value);
-			else if (clazz == long.class) unsafe.putLong(base, offset, (long) value);
-			else if (clazz == char.class) unsafe.putChar(base, offset, (char) value);
-			else if (clazz == short.class) unsafe.putShort(base, offset, (short) value);
-			else throw new IllegalArgumentException("unknown type of field " + clazz);
-		} else {
-			unsafe.putReference(base, offset, value);
-		}
+		if (Modifier.isVolatile(field.getModifiers()))
+			put1(value, base, offset, clazz);
+		else
+			put0(value, base, offset, clazz);
 	}
 
 	public static Object get(Field field, Object object) {
 		long offset = unsafe.objectFieldOffset(field);
 		Class<?> clazz = field.getType();
 
-		if (Modifier.isVolatile(field.getModifiers())) {
-			if (clazz.isPrimitive()) {
-				if (clazz == int.class) return unsafe.getIntVolatile(object, offset);
-				else if (clazz == float.class) return unsafe.getFloatVolatile(object, offset);
-				else if (clazz == boolean.class) return unsafe.getBooleanVolatile(object, offset);
-				else if (clazz == byte.class) return unsafe.getByteVolatile(object, offset);
-				else if (clazz == long.class) return unsafe.getLongVolatile(object, offset);
-				else if (clazz == double.class) return unsafe.getDoubleVolatile(object, offset);
-				else if (clazz == char.class) return unsafe.getCharVolatile(object, offset);
-				else if (clazz == short.class) return unsafe.getShortVolatile(object, offset);
-				else throw new IllegalArgumentException("unknown type of field " + field);
-			} else {
-				return unsafe.getReferenceVolatile(object, offset);
-			}
+		return Modifier.isVolatile(field.getModifiers()) ?
+				get1(object, offset, clazz) :
+				get0(object, offset, clazz);
+	}
+
+	public static Object getStatic(Field field) {
+		Object base = unsafe.staticFieldBase(field);
+		long offset = unsafe.staticFieldOffset(field);
+		Class<?> clazz = field.getType();
+
+		return Modifier.isVolatile(field.getModifiers()) ?
+				get1(base, offset, clazz) :
+				get0(base, offset, clazz);
+	}
+
+	static void put0(Object value, Object object, long offset, Class<?> clazz) {
+		if (clazz.isPrimitive()) {
+			if (clazz == int.class) unsafe.putInt(object, offset, (int) value);
+			else if (clazz == float.class) unsafe.putFloat(object, offset, (float) value);
+			else if (clazz == boolean.class) unsafe.putBoolean(object, offset, (boolean) value);
+			else if (clazz == byte.class) unsafe.putByte(object, offset, (byte) value);
+			else if (clazz == double.class) unsafe.putDouble(object, offset, (double) value);
+			else if (clazz == long.class) unsafe.putLong(object, offset, (long) value);
+			else if (clazz == char.class) unsafe.putChar(object, offset, (char) value);
+			else if (clazz == short.class) unsafe.putShort(object, offset, (short) value);
+			else throw new IllegalArgumentException("unknown type of field " + clazz);
 		} else {
-			return doGet(object, offset, clazz);
+			unsafe.putReference(object, offset, value);
 		}
 	}
 
-	static Object doGet(Object object, long offset, Class<?> clazz) {
+	static void put1(Object value, Object object, long offset, Class<?> clazz) {
+		if (clazz.isPrimitive()) {
+			if (clazz == int.class) unsafe.putIntVolatile(object, offset, (int) value);
+			else if (clazz == float.class) unsafe.putFloatVolatile(object, offset, (float) value);
+			else if (clazz == boolean.class) unsafe.putBooleanVolatile(object, offset, (boolean) value);
+			else if (clazz == byte.class) unsafe.putByteVolatile(object, offset, (byte) value);
+			else if (clazz == long.class) unsafe.putLongVolatile(object, offset, (long) value);
+			else if (clazz == double.class) unsafe.putDoubleVolatile(object, offset, (double) value);
+			else if (clazz == char.class) unsafe.putCharVolatile(object, offset, (char) value);
+			else if (clazz == short.class) unsafe.putShortVolatile(object, offset, (short) value);
+			else throw new IllegalArgumentException("unknown type of field " + clazz);
+		} else {
+			unsafe.putReferenceVolatile(object, offset, value);
+		}
+	}
+
+	static Object get0(Object object, long offset, Class<?> clazz) {
 		if (clazz.isPrimitive()) {
 			if (clazz == int.class) return unsafe.getInt(object, offset);
 			else if (clazz == float.class) return unsafe.getFloat(object, offset);
@@ -400,11 +419,19 @@ public final class Unsafer {
 		}
 	}
 
-	public static Object getStatic(Field field) {
-		Object base = unsafe.staticFieldBase(field);
-		long offset = unsafe.staticFieldOffset(field);
-		Class<?> clazz = field.getType();
-
-		return doGet(base, offset, clazz);
+	static Object get1(Object object, long offset, Class<?> clazz) {
+		if (clazz.isPrimitive()) {
+			if (clazz == int.class) return unsafe.getIntVolatile(object, offset);
+			else if (clazz == float.class) return unsafe.getFloatVolatile(object, offset);
+			else if (clazz == boolean.class) return unsafe.getBooleanVolatile(object, offset);
+			else if (clazz == byte.class) return unsafe.getByteVolatile(object, offset);
+			else if (clazz == long.class) return unsafe.getLongVolatile(object, offset);
+			else if (clazz == double.class) return unsafe.getDoubleVolatile(object, offset);
+			else if (clazz == char.class) return unsafe.getCharVolatile(object, offset);
+			else if (clazz == short.class) return unsafe.getShortVolatile(object, offset);
+			else throw new IllegalArgumentException("unknown type of field " + clazz);
+		} else {
+			return unsafe.getReferenceVolatile(object, offset);
+		}
 	}
 }

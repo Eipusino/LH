@@ -43,15 +43,15 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 
 		if (isStatic) {
 			Field f = classHelper.getField(clazz, name);
-			if (f != null && Modifier.isStatic(f.getModifiers())) {
+			if (f != null && (f.getModifiers() & Modifier.STATIC) != 0) {
 				f.setAccessible(true);
 				return f;
 			}
 		} else {
 			Class<?> curr = clazz;
-			while (curr != null) {
-				Field f = classHelper.getField(clazz, name);
-				if (f != null && !Modifier.isStatic(f.getModifiers())) {
+			while (curr != Object.class) {
+				Field f = classHelper.getField(curr, name);
+				if (f != null && (f.getModifiers() & Modifier.STATIC) == 0) {
 					f.setAccessible(true);
 					return f;
 				}
@@ -109,7 +109,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 	@Override
 	public void setByteStatic(Class<?> clazz, String name, byte value) {
 		try {
-			Field field = getField(clazz, name, false);
+			Field field = getField(clazz, name, true);
 			if (useUnsafe) {
 				Unsafer.setByteStatic(field, value);
 			} else {
@@ -180,7 +180,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 	@Override
 	public void setShortStatic(Class<?> clazz, String name, short value) {
 		try {
-			Field field = getField(clazz, name, false);
+			Field field = getField(clazz, name, true);
 			if (useUnsafe) {
 				Unsafer.setShortStatic(field, value);
 			} else {
@@ -251,7 +251,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 	@Override
 	public void setIntStatic(Class<?> clazz, String name, int value) {
 		try {
-			Field field = getField(clazz, name, false);
+			Field field = getField(clazz, name, true);
 			if (useUnsafe) {
 				Unsafer.setIntStatic(field, value);
 			} else {
@@ -321,7 +321,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 	@Override
 	public void setLongStatic(Class<?> clazz, String name, long value) {
 		try {
-			Field field = getField(clazz, name, false);
+			Field field = getField(clazz, name, true);
 			if (useUnsafe) {
 				Unsafer.setLongStatic(field, value);
 			} else {
@@ -391,7 +391,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 	@Override
 	public void setFloatStatic(Class<?> clazz, String name, float value) {
 		try {
-			Field field = getField(clazz, name, false);
+			Field field = getField(clazz, name, true);
 
 			if (useUnsafe) {
 				Unsafer.setFloatStatic(field, value);
@@ -463,7 +463,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 	@Override
 	public void setDoubleStatic(Class<?> clazz, String name, double value) {
 		try {
-			Field field = getField(clazz, name, false);
+			Field field = getField(clazz, name, true);
 			if (useUnsafe) {
 				Unsafer.setDoubleStatic(field, value);
 			} else {
@@ -534,7 +534,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 	@Override
 	public void setCharStatic(Class<?> clazz, String name, char value) {
 		try {
-			Field field = getField(clazz, name, false);
+			Field field = getField(clazz, name, true);
 
 			if (useUnsafe) {
 				Unsafer.setCharStatic(field, value);
@@ -606,7 +606,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 	@Override
 	public void setBooleanStatic(Class<?> clazz, String name, boolean value) {
 		try {
-			Field field = getField(clazz, name, false);
+			Field field = getField(clazz, name, true);
 
 			if (useUnsafe) {
 				Unsafer.setBooleanStatic(field, value);
@@ -678,7 +678,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 	@Override
 	public void setObjectStatic(Class<?> clazz, String name, Object value) {
 		try {
-			Field field = getField(clazz, name, false);
+			Field field = getField(clazz, name, true);
 
 			if (useUnsafe) {
 				Unsafer.setReferenceStatic(field, value);
@@ -752,7 +752,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 	@Override
 	public void setStatic(Class<?> clazz, String name, Object value) {
 		try {
-			Field field = getField(clazz, name, false);
+			Field field = getField(clazz, name, true);
 
 			if (useUnsafe) {
 				Unsafer.setStatic(field, value);
