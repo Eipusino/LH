@@ -1,27 +1,23 @@
 package endfield.desktop;
 
-import dynamilize.DynamicMaker;
 import endfield.util.AccessibleHelper;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 
 public class DesktopAccessibleHelper implements AccessibleHelper {
+	static Field override;
+
 	@Override
 	public void makeAccessible(AccessibleObject object) {
-		if (object instanceof Method method) {
-			Demodulator.makeModuleOpen(method.getReturnType().getModule(), method.getReturnType(), DynamicMaker.class.getModule());
-
-			for (Class<?> type : method.getParameterTypes()) {
-				Demodulator.makeModuleOpen(type.getModule(), type, DynamicMaker.class.getModule());
+		try {
+			if (override == null) {
+				override = AccessibleObject.class.getDeclaredField("override");
+				override.setAccessible(true);
 			}
-
-			method.setAccessible(true);
-		} else if (object instanceof Field field) {
-			Demodulator.makeModuleOpen(field.getType().getModule(), field.getType(), DynamicMaker.class.getModule());
-
-			field.setAccessible(true);
+			override.setBoolean(object, true);
+		} catch (NoSuchFieldException | IllegalAccessException e) {
+			throw new RuntimeException(e);
 		}
 	}
 

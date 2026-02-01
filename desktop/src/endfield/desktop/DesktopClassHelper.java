@@ -17,7 +17,7 @@ public class DesktopClassHelper implements ClassHelper {
 	static MethodHandle getFields, getMethods, getConstructors;
 	static VarHandle methodParameterTypes, constructorParameterTypes;
 
-	static void init() throws Throwable {
+	static void init() throws NoSuchFieldException, NoSuchMethodException, IllegalAccessException {
 		getFields = lookup.findVirtual(Class.class, "getDeclaredFields0", MethodType.methodType(Field[].class, boolean.class));
 		getMethods = lookup.findVirtual(Class.class, "getDeclaredMethods0", MethodType.methodType(Method[].class, boolean.class));
 		getConstructors = lookup.findVirtual(Class.class, "getDeclaredConstructors0", MethodType.methodType(Constructor[].class, boolean.class));

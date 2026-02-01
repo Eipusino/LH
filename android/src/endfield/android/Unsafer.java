@@ -1,6 +1,6 @@
 package endfield.android;
 
-import endfield.android.field.AndroidField;
+import endfield.android.util.field.AndroidField;
 import sun.misc.Unsafe;
 
 import java.lang.reflect.Field;

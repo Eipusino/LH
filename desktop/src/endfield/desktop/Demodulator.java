@@ -1,12 +1,9 @@
 package endfield.desktop;
 
-import arc.util.Log;
 import endfield.core.EndFieldMod;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodType;
-import java.util.Map;
-import java.util.Set;
 
 import static endfield.desktop.DesktopImpl.lookup;
 
@@ -22,14 +19,14 @@ import static endfield.desktop.DesktopImpl.lookup;
  * @author Eipusino
  */
 public final class Demodulator {
-	public static Map<Class<?>, Set<String>> fieldFilterMap, methodFilterMap;
+	//public static Map<Class<?>, Set<String>> fieldFilterMap;
 
 	static MethodHandle implAddOpens;
 
 	private Demodulator() {}
 
 	// The exceptions thrown during initialization are collectively handled in a try-catch block.
-	public static void init() throws NoSuchMethodException, IllegalAccessException {
+	static void init() throws NoSuchMethodException, IllegalAccessException {
 		implAddOpens = lookup.findVirtual(Module.class, "implAddOpens", MethodType.methodType(void.class, String.class, Module.class));
 	}
 
@@ -77,18 +74,16 @@ public final class Demodulator {
 		openModule(base, "jdk.internal.reflect", main);
 	}
 
-	@SuppressWarnings("unchecked")
+	// We directly call the private native method within Class to bypass filtering, so there is no need to do so.
+	/*@SuppressWarnings("unchecked")
 	static void ensureFieldOpen() {
 		try {
 			Class<?> reflection = Class.forName("jdk.internal.reflect.Reflection");
 
 			fieldFilterMap = (Map<Class<?>, Set<String>>) lookup.findStaticGetter(reflection, "fieldFilterMap", Map.class).invokeExact();
 			fieldFilterMap.clear();
-
-			methodFilterMap = (Map<Class<?>, Set<String>>) lookup.findStaticGetter(reflection, "methodFilterMap", Map.class).invokeExact();
-			methodFilterMap.clear();
 		} catch (Throwable e) {
 			Log.err(e);
 		}
-	}
+	}*/
 }

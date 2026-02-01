@@ -19,7 +19,7 @@ public class AndroidMethodInvokeHelper implements MethodInvokeHelper {
 	protected static final Prov<CollectionObjectMap<FunctionType, Constructor<?>>> prov3 = () -> new CollectionObjectMap<>(FunctionType.class, Constructor.class);
 
 	protected Method getMethod(Class<?> clazz, String name, FunctionType argTypes) {
-		CollectionObjectMap<FunctionType, Method> map = methodPool.getDefault2(clazz, prov1).getDefault2(name, prov2);
+		CollectionObjectMap<FunctionType, Method> map = methodPool.get(clazz, prov1).get(name, prov2);
 
 		FunctionType type = FunctionType.inst(argTypes);
 		Method res = map.get(type);
@@ -76,7 +76,7 @@ public class AndroidMethodInvokeHelper implements MethodInvokeHelper {
 
 	@SuppressWarnings("unchecked")
 	protected <T> Constructor<T> getConstructor(Class<T> type, FunctionType argsType) {
-		CollectionObjectMap<FunctionType, Constructor<?>> map = cstrMap.getDefault2(type, prov3);
+		CollectionObjectMap<FunctionType, Constructor<?>> map = cstrMap.get(type, prov3);
 
 		Constructor<T> res = (Constructor<T>) map.get(argsType);
 		if (res != null) return res;

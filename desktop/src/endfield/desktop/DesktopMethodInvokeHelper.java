@@ -20,7 +20,7 @@ public class DesktopMethodInvokeHelper implements MethodInvokeHelper {
 	protected static final Prov<CollectionObjectMap<FunctionType, MethodHandle>> prov2 = () -> new CollectionObjectMap<>(FunctionType.class, MethodHandle.class);
 
 	protected MethodHandle getMethod(Class<?> clazz, String name, FunctionType argTypes) {
-		CollectionObjectMap<FunctionType, MethodHandle> map = methodPool.getDefault2(clazz, prov1).getDefault2(name, prov2);
+		CollectionObjectMap<FunctionType, MethodHandle> map = methodPool.get(clazz, prov1).get(name, prov2);
 
 		FunctionType type = FunctionType.inst(argTypes);
 		MethodHandle res = map.get(type);
@@ -85,7 +85,7 @@ public class DesktopMethodInvokeHelper implements MethodInvokeHelper {
 	}
 
 	protected MethodHandle getConstructor(Class<?> type, FunctionType argsType) {
-		CollectionObjectMap<FunctionType, MethodHandle> map = methodPool.getDefault2(type, prov1).getDefault2("<init>", prov2);
+		CollectionObjectMap<FunctionType, MethodHandle> map = methodPool.get(type, prov1).get("<init>", prov2);
 
 		MethodHandle res = map.get(argsType);
 		if (res != null) return res;

@@ -1,6 +1,5 @@
 package endfield.android;
 
-import arc.util.Log;
 import arc.util.OS;
 import dalvik.system.VMRuntime;
 import org.jetbrains.annotations.Nullable;
@@ -114,12 +113,5 @@ public class HiddenApi {
 			case 8 -> unsafe.getLong(oneArray, baseOffset);
 			default -> throw new UnsupportedOperationException("Unsupported address size: " + unsafe.arrayIndexScale(Object[].class));
 		};
-	}
-
-	private static void replaceMethod(Method dest, Method src) {
-		long addressDest = unsafe.getLong(dest, artMethodOffset);
-		long addressSrc = unsafe.getLong(src, artMethodOffset);
-
-		unsafe.copyMemory(addressSrc + 4l, addressDest + 4l, 24l);
 	}
 }

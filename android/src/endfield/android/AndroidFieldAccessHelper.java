@@ -1,6 +1,5 @@
 package endfield.android;
 
-import arc.util.Log;
 import endfield.util.CollectionObjectMap;
 import endfield.util.FieldAccessHelper;
 
@@ -15,17 +14,8 @@ public class AndroidFieldAccessHelper implements FieldAccessHelper {
 
 	static Field accessFlags;
 
-	static {
-		try {
-			accessFlags = Field.class.getDeclaredField("accessFlags");
-			accessFlags.setAccessible(true);
-		} catch (Throwable e) {
-			exceptionHandler.get(e);
-		}
-	}
-
 	public Field getField(Class<?> clazz, String name, boolean isStatic) throws NoSuchFieldException {
-		Field field = fieldMap.getDefault(clazz, empty).get(name);
+		Field field = fieldMap.get(clazz, empty).get(name);
 		if (field != null) return field;
 
 		try {
@@ -49,15 +39,20 @@ public class AndroidFieldAccessHelper implements FieldAccessHelper {
 	}
 
 	protected Field getField0(Class<?> clazz, String name) throws NoSuchFieldException {
-		Field field;
-		field = clazz.getDeclaredField(name);
+		Field field = clazz.getDeclaredField(name);
 		field.setAccessible(true);
 
-		if ((field.getModifiers() & Modifier.FINAL) != 0 && accessFlags != null) {
+		if ((field.getModifiers() & Modifier.FINAL) != 0) {
 			try {
-				accessFlags.setInt(field, accessFlags.getInt(field) & ~Modifier.FINAL);
-			} catch (IllegalAccessException e) {
-				throw new RuntimeException(e);
+				if (accessFlags == null) {
+					accessFlags = Field.class.getDeclaredField("accessFlags");
+					accessFlags.setAccessible(true);
+				}
+
+				int flags = accessFlags.getInt(field);
+				accessFlags.setInt(field, flags & ~Modifier.FINAL);
+			} catch (NoSuchFieldException | IllegalAccessException e) {
+				exceptionHandler.get(e);
 			}
 		}
 
