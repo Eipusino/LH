@@ -2,7 +2,7 @@ package endfield.android;
 
 import arc.func.Cons;
 import arc.util.Log;
-import endfield.util.AccessibleHelper;
+import endfield.util.DefaultAccessibleHelper;
 import endfield.util.PlatformImpl;
 
 import java.lang.reflect.AccessibleObject;
@@ -25,20 +25,10 @@ public class AndroidImpl implements PlatformImpl {
 				Log.err(e);
 			}
 		} catch (Throwable e) {
-			Log.err(e);
+			Log.err("It seems you platform is special. (But don't worry)", e);
 		}
 
-		accessibleHelper = new AccessibleHelper() {
-			@Override
-			public void makeAccessible(AccessibleObject object) {
-				object.setAccessible(true);
-			}
-
-			@Override
-			public void makeClassAccessible(Class<?> clazz) {
-				//no action
-			}
-		};
+		accessibleHelper = new DefaultAccessibleHelper();
 		classHelper = new AndroidClassHelper();
 		fieldAccessHelper = new AndroidFieldAccessHelper();
 		methodInvokeHelper = new AndroidMethodInvokeHelper();

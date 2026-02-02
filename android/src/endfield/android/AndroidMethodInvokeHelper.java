@@ -18,7 +18,7 @@ public class AndroidMethodInvokeHelper implements MethodInvokeHelper {
 	protected static final Prov<CollectionObjectMap<FunctionType, Method>> prov2 = () -> new CollectionObjectMap<>(FunctionType.class, Method.class);
 	protected static final Prov<CollectionObjectMap<FunctionType, Constructor<?>>> prov3 = () -> new CollectionObjectMap<>(FunctionType.class, Constructor.class);
 
-	protected Method getMethod(Class<?> clazz, String name, FunctionType argTypes) {
+	protected Method getMethod(Class<?> clazz, String name, FunctionType argTypes) throws NoSuchMethodException {
 		CollectionObjectMap<FunctionType, Method> map = methodPool.get(clazz, prov1).get(name, prov2);
 
 		FunctionType type = FunctionType.inst(argTypes);
@@ -35,8 +35,7 @@ public class AndroidMethodInvokeHelper implements MethodInvokeHelper {
 		while (curr != null) {
 			try {
 				res = curr.getDeclaredMethod(name, argTypes.getTypes());
-			} catch (Throwable ignored) {
-			}
+			} catch (Throwable ignored) {}
 
 			if (res != null) {
 				res.setAccessible(true);
@@ -69,14 +68,14 @@ public class AndroidMethodInvokeHelper implements MethodInvokeHelper {
 		}
 
 		if (res == null)
-			throw new RuntimeException("no such method " + name + " in class: " + clazz + " with assignable parameter: " + argTypes);
+			throw new NoSuchMethodException("no such method " + name + " in class: " + clazz + " with assignable parameter: " + argTypes);
 
 		return res;
 	}
 
 	@SuppressWarnings("unchecked")
-	protected <T> Constructor<T> getConstructor(Class<T> type, FunctionType argsType) {
-		CollectionObjectMap<FunctionType, Constructor<?>> map = cstrMap.get(type, prov3);
+	protected <T> Constructor<T> getConstructor(Class<T> clazz, FunctionType argsType) {
+		CollectionObjectMap<FunctionType, Constructor<?>> map = cstrMap.get(clazz, prov3);
 
 		Constructor<T> res = (Constructor<T>) map.get(argsType);
 		if (res != null) return res;
@@ -86,14 +85,13 @@ public class AndroidMethodInvokeHelper implements MethodInvokeHelper {
 		}
 
 		try {
-			res = type.getConstructor(argsType.getTypes());
+			res = clazz.getConstructor(argsType.getTypes());
 			res.setAccessible(true);
-		} catch (NoSuchMethodException ignored) {
-		}
+		} catch (NoSuchMethodException ignored) {}
 
 		if (res != null) return res;
 
-		for (Constructor<?> constructor : type.getDeclaredConstructors()) {
+		for (Constructor<?> constructor : clazz.getDeclaredConstructors()) {
 			FunctionType functionType;
 			if ((functionType = FunctionType.from(constructor)).match(argsType.getTypes())) {
 				map.put(functionType, constructor);
@@ -107,16 +105,16 @@ public class AndroidMethodInvokeHelper implements MethodInvokeHelper {
 
 		if (res != null) return res;
 
-		throw new RuntimeException("no such constructor in class: " + type + " with assignable parameter: " + argsType);
+		throw new RuntimeException("no such constructor in class: " + clazz + " with assignable parameter: " + argsType);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T invoke(Object owner, String method, Object... args) {
+	public <T> T invoke(Object object, String name, Object... args) {
 		FunctionType type = FunctionType.inst(args);
 		try {
-			return (T) getMethod(owner.getClass(), method, type).invoke(owner, args);
-		} catch (IllegalAccessException | InvocationTargetException e) {
+			return (T) getMethod(object.getClass(), name, type).invoke(object, args);
+		} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
 			throw new RuntimeException(e);
 		} finally {
 			type.recycle();
@@ -125,11 +123,11 @@ public class AndroidMethodInvokeHelper implements MethodInvokeHelper {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T invokeStatic(Class<?> clazz, String method, Object... args) {
+	public <T> T invokeStatic(Class<?> clazz, String name, Object... args) {
 		FunctionType type = FunctionType.inst(args);
 		try {
-			return (T) getMethod(clazz, method, type).invoke(null, args);
-		} catch (IllegalAccessException | InvocationTargetException e) {
+			return (T) getMethod(clazz, name, type).invoke(null, args);
+		} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
 			throw new RuntimeException(e);
 		} finally {
 			type.recycle();
@@ -137,10 +135,48 @@ public class AndroidMethodInvokeHelper implements MethodInvokeHelper {
 	}
 
 	@Override
-	public <T> T newInstance(Class<T> type, Object... args) {
+	public <T> T newInstance(Class<T> clazz, Object... args) {
 		FunctionType funcType = FunctionType.inst(args);
 		try {
-			return getConstructor(type, funcType).newInstance(args);
+			return getConstructor(clazz, funcType).newInstance(args);
+		} catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
+			throw new RuntimeException(e);
+		} finally {
+			funcType.recycle();
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T invoke(Object object, String name, Class<?>[] parameterTypes, Object... args) {
+		FunctionType type = FunctionType.inst(parameterTypes);
+		try {
+			return (T) getMethod(object.getClass(), name, type).invoke(object, args);
+		} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+			throw new RuntimeException(e);
+		} finally {
+			type.recycle();
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T invokeStatic(Class<?> clazz, String name, Class<?>[] parameterTypes, Object... args) {
+		FunctionType type = FunctionType.inst(parameterTypes);
+		try {
+			return (T) getMethod(clazz, name, type).invoke(null, args);
+		} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+			throw new RuntimeException(e);
+		} finally {
+			type.recycle();
+		}
+	}
+
+	@Override
+	public <T> T newInstance(Class<T> clazz, Class<?>[] parameterTypes, Object... args) {
+		FunctionType funcType = FunctionType.inst(parameterTypes);
+		try {
+			return getConstructor(clazz, funcType).newInstance(args);
 		} catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
 			throw new RuntimeException(e);
 		} finally {

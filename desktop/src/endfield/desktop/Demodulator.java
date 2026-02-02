@@ -8,7 +8,7 @@ import java.lang.invoke.MethodType;
 import static endfield.desktop.DesktopImpl.lookup;
 
 /**
- * The anti modularity tool only provides one main method {@link Demodulator#openModule(Module, String, Module)}
+ * The anti modularity tool only provides one main method {@link Demodulator#makeModuleOpen(Module, String, Module)}
  * to force software packages that open modules to the required modules.
  * <p>This class behavior may completely break the modular access protection and is inherently insecure. If it is
  * not necessary, please try to avoid using this class.

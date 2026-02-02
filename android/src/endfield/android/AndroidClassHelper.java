@@ -11,6 +11,7 @@ import java.io.File;
 import java.lang.reflect.Field;
 
 import static endfield.android.AndroidImpl.exceptionHandler;
+import static endfield.android.Unsafer.unsafe;
 
 public class AndroidClassHelper implements ClassHelper {
 	static Field accessFlags;
@@ -23,6 +24,16 @@ public class AndroidClassHelper implements ClassHelper {
 		return ((GeneratedClassLoader) ((AndroidContextFactory) ContextFactory.getGlobal())
 				.createClassLoader(loader))
 				.defineClass(name, bytes);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T allocateInstance(Class<? extends T> clazz) {
+		try {
+			return (T) unsafe.allocateInstance(clazz);
+		} catch (InstantiationException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override

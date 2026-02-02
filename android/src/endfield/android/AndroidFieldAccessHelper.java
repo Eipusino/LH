@@ -20,12 +20,12 @@ public class AndroidFieldAccessHelper implements FieldAccessHelper {
 
 		try {
 			if (isStatic) {
-				return getField0(clazz, name);
+				return getField(clazz, name);
 			} else {
 				Class<?> curr = clazz;
-				while (curr != null) {
+				while (curr != Object.class) {
 					try {
-						return getField0(curr, name);
+						return getField(curr, name);
 					} catch (NoSuchFieldException ignored) {}
 
 					curr = curr.getSuperclass();
@@ -38,7 +38,7 @@ public class AndroidFieldAccessHelper implements FieldAccessHelper {
 		throw new NoSuchFieldException("field " + name + " was not found in class: " + clazz);
 	}
 
-	protected Field getField0(Class<?> clazz, String name) throws NoSuchFieldException {
+	protected Field getField(Class<?> clazz, String name) throws NoSuchFieldException {
 		Field field = clazz.getDeclaredField(name);
 		field.setAccessible(true);
 
@@ -71,7 +71,7 @@ public class AndroidFieldAccessHelper implements FieldAccessHelper {
 	@Override
 	public void setByteStatic(Class<?> clazz, String name, byte value) {
 		try {
-			getField(clazz, name, false).setByte(null, value);
+			getField(clazz, name, true).setByte(null, value);
 		} catch (IllegalAccessException | NoSuchFieldException e) {
 			throw new RuntimeException(e);
 		}
@@ -89,7 +89,7 @@ public class AndroidFieldAccessHelper implements FieldAccessHelper {
 	@Override
 	public byte getByteStatic(Class<?> clazz, String name) {
 		try {
-			return getField(clazz, name, false).getByte(null);
+			return getField(clazz, name, true).getByte(null);
 		} catch (IllegalAccessException | NoSuchFieldException e) {
 			throw new RuntimeException(e);
 		}
@@ -107,7 +107,7 @@ public class AndroidFieldAccessHelper implements FieldAccessHelper {
 	@Override
 	public void setShortStatic(Class<?> clazz, String name, short value) {
 		try {
-			getField(clazz, name, false).setShort(null, value);
+			getField(clazz, name, true).setShort(null, value);
 		} catch (IllegalAccessException | NoSuchFieldException e) {
 			throw new RuntimeException(e);
 		}
@@ -125,7 +125,7 @@ public class AndroidFieldAccessHelper implements FieldAccessHelper {
 	@Override
 	public short getShortStatic(Class<?> clazz, String name) {
 		try {
-			return getField(clazz, name, false).getShort(null);
+			return getField(clazz, name, true).getShort(null);
 		} catch (IllegalAccessException | NoSuchFieldException e) {
 			throw new RuntimeException(e);
 		}
@@ -143,7 +143,7 @@ public class AndroidFieldAccessHelper implements FieldAccessHelper {
 	@Override
 	public void setIntStatic(Class<?> clazz, String name, int value) {
 		try {
-			getField(clazz, name, false).setInt(null, value);
+			getField(clazz, name, true).setInt(null, value);
 		} catch (IllegalAccessException | NoSuchFieldException e) {
 			throw new RuntimeException(e);
 		}
@@ -161,7 +161,7 @@ public class AndroidFieldAccessHelper implements FieldAccessHelper {
 	@Override
 	public int getIntStatic(Class<?> clazz, String name) {
 		try {
-			return getField(clazz, name, false).getInt(null);
+			return getField(clazz, name, true).getInt(null);
 		} catch (IllegalAccessException | NoSuchFieldException e) {
 			throw new RuntimeException(e);
 		}
@@ -179,7 +179,7 @@ public class AndroidFieldAccessHelper implements FieldAccessHelper {
 	@Override
 	public void setLongStatic(Class<?> clazz, String name, long value) {
 		try {
-			getField(clazz, name, false).setLong(null, value);
+			getField(clazz, name, true).setLong(null, value);
 		} catch (IllegalAccessException | NoSuchFieldException e) {
 			throw new RuntimeException(e);
 		}
@@ -197,7 +197,7 @@ public class AndroidFieldAccessHelper implements FieldAccessHelper {
 	@Override
 	public long getLongStatic(Class<?> clazz, String name) {
 		try {
-			return getField(clazz, name, false).getLong(null);
+			return getField(clazz, name, true).getLong(null);
 		} catch (IllegalAccessException | NoSuchFieldException e) {
 			throw new RuntimeException(e);
 		}
@@ -215,7 +215,7 @@ public class AndroidFieldAccessHelper implements FieldAccessHelper {
 	@Override
 	public void setFloatStatic(Class<?> clazz, String name, float value) {
 		try {
-			getField(clazz, name, false).setFloat(null, value);
+			getField(clazz, name, true).setFloat(null, value);
 		} catch (IllegalAccessException | NoSuchFieldException e) {
 			throw new RuntimeException(e);
 		}
@@ -233,7 +233,7 @@ public class AndroidFieldAccessHelper implements FieldAccessHelper {
 	@Override
 	public float getFloatStatic(Class<?> clazz, String name) {
 		try {
-			return getField(clazz, name, false).getFloat(null);
+			return getField(clazz, name, true).getFloat(null);
 		} catch (IllegalAccessException | NoSuchFieldException e) {
 			throw new RuntimeException(e);
 		}
@@ -251,7 +251,7 @@ public class AndroidFieldAccessHelper implements FieldAccessHelper {
 	@Override
 	public void setDoubleStatic(Class<?> clazz, String name, double value) {
 		try {
-			getField(clazz, name, false).setDouble(null, value);
+			getField(clazz, name, true).setDouble(null, value);
 		} catch (IllegalAccessException | NoSuchFieldException e) {
 			throw new RuntimeException(e);
 		}
@@ -269,7 +269,7 @@ public class AndroidFieldAccessHelper implements FieldAccessHelper {
 	@Override
 	public double getDoubleStatic(Class<?> clazz, String name) {
 		try {
-			return getField(clazz, name, false).getDouble(null);
+			return getField(clazz, name, true).getDouble(null);
 		} catch (IllegalAccessException | NoSuchFieldException e) {
 			throw new RuntimeException(e);
 		}
@@ -287,7 +287,7 @@ public class AndroidFieldAccessHelper implements FieldAccessHelper {
 	@Override
 	public void setCharStatic(Class<?> clazz, String name, char value) {
 		try {
-			getField(clazz, name, false).setChar(null, value);
+			getField(clazz, name, true).setChar(null, value);
 		} catch (IllegalAccessException | NoSuchFieldException e) {
 			throw new RuntimeException(e);
 		}
@@ -305,7 +305,7 @@ public class AndroidFieldAccessHelper implements FieldAccessHelper {
 	@Override
 	public char getCharStatic(Class<?> clazz, String name) {
 		try {
-			return getField(clazz, name, false).getChar(null);
+			return getField(clazz, name, true).getChar(null);
 		} catch (IllegalAccessException | NoSuchFieldException e) {
 			throw new RuntimeException(e);
 		}
@@ -323,7 +323,7 @@ public class AndroidFieldAccessHelper implements FieldAccessHelper {
 	@Override
 	public void setBooleanStatic(Class<?> clazz, String name, boolean value) {
 		try {
-			getField(clazz, name, false).setBoolean(null, value);
+			getField(clazz, name, true).setBoolean(null, value);
 		} catch (IllegalAccessException | NoSuchFieldException e) {
 			throw new RuntimeException(e);
 		}
@@ -341,7 +341,7 @@ public class AndroidFieldAccessHelper implements FieldAccessHelper {
 	@Override
 	public boolean getBooleanStatic(Class<?> clazz, String name) {
 		try {
-			return getField(clazz, name, false).getBoolean(null);
+			return getField(clazz, name, true).getBoolean(null);
 		} catch (IllegalAccessException | NoSuchFieldException e) {
 			throw new RuntimeException(e);
 		}
@@ -359,8 +359,7 @@ public class AndroidFieldAccessHelper implements FieldAccessHelper {
 	@Override
 	public void setObjectStatic(Class<?> clazz, String name, Object value) {
 		try {
-			Field field = getField(clazz, name, true);
-			field.set(null, value);
+			getField(clazz, name, true).set(null, value);
 		} catch (IllegalAccessException | NoSuchFieldException e) {
 			throw new RuntimeException(e);
 		}

@@ -31,6 +31,15 @@ public class Main {
 
 	}
 
+
+	public int getModifiers(Field field) {
+		return field.getModifiers();
+	}
+
+	public static boolean isFinalOrStatic(Field field) {
+		return (field.getModifiers() & (Modifier.FINAL | Modifier.STATIC)) != 0;
+	}
+
 	public static boolean isAssignable(Class<?>[] sourceTypes, Class<?>[] targetTypes) {
 		if (sourceTypes.length != targetTypes.length) return false;
 

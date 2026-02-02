@@ -365,19 +365,19 @@ public final class Unsafer {
 				get0(base, offset, clazz);
 	}
 
-	static void put0(Object value, Object base, long offset, Class<?> clazz) {
+	static void put0(Object value, Object object, long offset, Class<?> clazz) {
 		if (clazz.isPrimitive()) {
-			if (clazz == int.class) unsafe.putInt(base, offset, (int) value);
-			else if (clazz == float.class) unsafe.putFloat(base, offset, (float) value);
-			else if (clazz == boolean.class) unsafe.putBoolean(base, offset, (boolean) value);
-			else if (clazz == byte.class) unsafe.putByte(base, offset, (byte) value);
-			else if (clazz == double.class) unsafe.putDouble(base, offset, (double) value);
-			else if (clazz == long.class) unsafe.putLong(base, offset, (long) value);
-			else if (clazz == char.class) unsafe.putChar(base, offset, (char) value);
-			else if (clazz == short.class) unsafe.putShort(base, offset, (short) value);
+			if (clazz == int.class) unsafe.putInt(object, offset, (int) value);
+			else if (clazz == float.class) unsafe.putFloat(object, offset, (float) value);
+			else if (clazz == boolean.class) unsafe.putBoolean(object, offset, (boolean) value);
+			else if (clazz == byte.class) unsafe.putByte(object, offset, (byte) value);
+			else if (clazz == double.class) unsafe.putDouble(object, offset, (double) value);
+			else if (clazz == long.class) unsafe.putLong(object, offset, (long) value);
+			else if (clazz == char.class) unsafe.putChar(object, offset, (char) value);
+			else if (clazz == short.class) unsafe.putShort(object, offset, (short) value);
 			else throw new IllegalArgumentException("unknown type of field " + clazz);
 		} else {
-			unsafe.putObject(base, offset, value);
+			unsafe.putObject(object, offset, value);
 		}
 	}
 
