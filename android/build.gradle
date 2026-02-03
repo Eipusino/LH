@@ -9,8 +9,8 @@ repositories {
 }
 
 java {
-	targetCompatibility = JavaVersion.VERSION_17
-	sourceCompatibility = JavaVersion.VERSION_17
+	targetCompatibility = JavaVersion.VERSION_16
+	sourceCompatibility = JavaVersion.VERSION_16
 }
 
 ext {
@@ -36,7 +36,7 @@ dependencies {
 	def libsDir = project(":").projectDir
 
 	compileOnly files(
-			"$libsDir/libs/EndfieldMod-260202b.jar",
+			"$libsDir/libs/EndfieldMod-260203a.jar",
 			"$libsDir/libs/android.jar",
 			"$libsDir/libs/android-dalvik.jar",
 			"$libsDir/libs/mindustry-android.jar"
