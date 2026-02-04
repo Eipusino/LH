@@ -5,13 +5,17 @@ import dynamilize.FunctionType;
 import endfield.util.CollectionObjectMap;
 import endfield.util.MethodInvokeHelper;
 import endfield.util.Reflects;
-import endfield.util.misc.ObjectHolder;
+import endfield.util.holder.ObjectHolder;
 
 import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
 import static endfield.Vars2.classHelper;
+import static endfield.desktop.DesktopClassHelper.ctypes;
+import static endfield.desktop.DesktopClassHelper.mtypes;
+import static endfield.desktop.DesktopClassHelper.ptypes;
 import static endfield.desktop.DesktopImpl.lookup;
 
 public class DesktopMethodInvokeHelper implements MethodInvokeHelper {
@@ -45,7 +49,7 @@ public class DesktopMethodInvokeHelper implements MethodInvokeHelper {
 			} catch (IllegalAccessException ignored) {}
 
 			if (res != null) {
-				map.put(FunctionType.inst(res.type().parameterArray()), res);
+				map.put(inst(res.type()), res);
 				break;
 			}
 
@@ -62,7 +66,7 @@ public class DesktopMethodInvokeHelper implements MethodInvokeHelper {
 				Class<?>[] methodArgs = method.getParameterTypes();
 
 				FunctionType t;
-				if ((t = FunctionType.from(method)).match(methodArgs)) {
+				if ((t = from(method)).match(methodArgs)) {
 					method.setAccessible(true);
 
 					res = lookup.unreflect(method);
@@ -103,7 +107,7 @@ public class DesktopMethodInvokeHelper implements MethodInvokeHelper {
 
 		for (Constructor<?> constructor : classHelper.getConstructors(clazz)) {
 			FunctionType functionType;
-			if ((functionType = FunctionType.from(constructor)).match(argsType.getTypes())) {
+			if ((functionType = from(constructor)).match(argsType.getTypes())) {
 				constructor.setAccessible(true);
 
 				res = lookup.unreflectConstructor(constructor);
@@ -195,5 +199,17 @@ public class DesktopMethodInvokeHelper implements MethodInvokeHelper {
 		} finally {
 			type.recycle();
 		}
+	}
+
+	public static FunctionType inst(MethodType methodType) {
+		return FunctionType.inst((Class<?>[]) ptypes.get(methodType));
+	}
+
+	public static FunctionType from(Method method) {
+		return FunctionType.inst((Class<?>[]) mtypes.get(method));
+	}
+
+	public static FunctionType from(Constructor<?> constructor) {
+		return FunctionType.inst((Class<?>[]) ctypes.get(constructor));
 	}
 }

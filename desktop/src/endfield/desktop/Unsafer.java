@@ -297,7 +297,7 @@ public final class Unsafer {
 				unsafe.getBoolean(base, offset);
 	}
 
-	public static void setReference(Field field, Object object, Object value) {
+	public static void setObject(Field field, Object object, Object value) {
 		long offset = unsafe.objectFieldOffset(field);
 
 		if (Modifier.isVolatile(field.getModifiers()))
@@ -306,7 +306,7 @@ public final class Unsafer {
 			unsafe.putReference(object, offset, value);
 	}
 
-	public static void setReferenceStatic(Field field, Object value) {
+	public static void setObjectStatic(Field field, Object value) {
 		long offset = unsafe.staticFieldOffset(field);
 		Object base = unsafe.staticFieldBase(field);
 
@@ -316,7 +316,7 @@ public final class Unsafer {
 			unsafe.putReference(base, offset, value);
 	}
 
-	public static Object getReference(Field field, Object object) {
+	public static Object getObject(Field field, Object object) {
 		long offset = unsafe.objectFieldOffset(field);
 
 		return Modifier.isVolatile(field.getModifiers()) ?
@@ -324,7 +324,7 @@ public final class Unsafer {
 				unsafe.getReference(object, offset);
 	}
 
-	public static Object getReferenceStatic(Field field) {
+	public static Object getObjectStatic(Field field) {
 		long offset = unsafe.staticFieldOffset(field);
 		Object base = unsafe.staticFieldBase(field);
 

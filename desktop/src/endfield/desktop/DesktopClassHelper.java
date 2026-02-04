@@ -15,15 +15,16 @@ import static endfield.desktop.Unsafer.unsafe;
 
 public class DesktopClassHelper implements ClassHelper {
 	static MethodHandle getFields, getMethods, getConstructors;
-	static VarHandle methodParameterTypes, constructorParameterTypes;
+	static VarHandle mtypes, ctypes, ptypes;
 
 	static void init() throws NoSuchFieldException, NoSuchMethodException, IllegalAccessException {
 		getFields = lookup.findVirtual(Class.class, "getDeclaredFields0", MethodType.methodType(Field[].class, boolean.class));
 		getMethods = lookup.findVirtual(Class.class, "getDeclaredMethods0", MethodType.methodType(Method[].class, boolean.class));
 		getConstructors = lookup.findVirtual(Class.class, "getDeclaredConstructors0", MethodType.methodType(Constructor[].class, boolean.class));
 
-		methodParameterTypes = lookup.findVarHandle(Method.class, "parameterTypes", Class[].class);
-		constructorParameterTypes = lookup.findVarHandle(Constructor.class, "parameterTypes", Class[].class);
+		mtypes = lookup.findVarHandle(Method.class, "parameterTypes", Class[].class);
+		ctypes = lookup.findVarHandle(Constructor.class, "parameterTypes", Class[].class);
+		ptypes = lookup.findVarHandle(MethodType.class, "ptypes", Class[].class);
 	}
 
 	@Override
@@ -44,7 +45,7 @@ public class DesktopClassHelper implements ClassHelper {
 		try {
 			Method[] methods = (Method[]) getMethods.invokeExact(type, false);
 			for (Method method : methods) {
-				if (method.getName().equals(name) && Arrays.equals((Class<?>[]) methodParameterTypes.get(method), parameterTypes)) return method;
+				if (method.getName().equals(name) && Arrays.equals((Class<?>[]) DesktopClassHelper.mtypes.get(method), parameterTypes)) return method;
 			}
 			return null;
 		} catch (Throwable e) {
@@ -58,7 +59,7 @@ public class DesktopClassHelper implements ClassHelper {
 		try {
 			Constructor<T>[] constructors = (Constructor<T>[]) getConstructors.invokeExact(type, false);
 			for (Constructor<T> constructor : constructors) {
-				if (Arrays.equals((Class<?>[]) constructorParameterTypes.get(constructor), parameterTypes)) return constructor;
+				if (Arrays.equals((Class<?>[]) ctypes.get(constructor), parameterTypes)) return constructor;
 			}
 			return null;
 		} catch (Throwable e) {

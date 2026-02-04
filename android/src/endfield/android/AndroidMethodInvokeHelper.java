@@ -4,7 +4,7 @@ import arc.func.Prov;
 import dynamilize.FunctionType;
 import endfield.util.CollectionObjectMap;
 import endfield.util.MethodInvokeHelper;
-import endfield.util.misc.ObjectHolder;
+import endfield.util.holder.ObjectHolder;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
