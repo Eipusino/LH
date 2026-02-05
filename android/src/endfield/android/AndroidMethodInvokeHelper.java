@@ -74,7 +74,7 @@ public class AndroidMethodInvokeHelper implements MethodInvokeHelper {
 	}
 
 	@SuppressWarnings("unchecked")
-	protected <T> Constructor<T> getConstructor(Class<T> clazz, FunctionType argsType) {
+	protected <T> Constructor<T> getConstructor(Class<T> clazz, FunctionType argsType) throws NoSuchMethodException {
 		CollectionObjectMap<FunctionType, Constructor<?>> map = cstrMap.get(clazz, prov3);
 
 		Constructor<T> res = (Constructor<T>) map.get(argsType);
@@ -105,7 +105,7 @@ public class AndroidMethodInvokeHelper implements MethodInvokeHelper {
 
 		if (res != null) return res;
 
-		throw new RuntimeException("no such constructor in class: " + clazz + " with assignable parameter: " + argsType);
+		throw new NoSuchMethodException("no such constructor in class: " + clazz + " with assignable parameter: " + argsType);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -139,7 +139,7 @@ public class AndroidMethodInvokeHelper implements MethodInvokeHelper {
 		FunctionType funcType = FunctionType.inst(args);
 		try {
 			return getConstructor(clazz, funcType).newInstance(args);
-		} catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
+		} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
 			throw new RuntimeException(e);
 		} finally {
 			funcType.recycle();
@@ -177,7 +177,7 @@ public class AndroidMethodInvokeHelper implements MethodInvokeHelper {
 		FunctionType funcType = FunctionType.inst(parameterTypes);
 		try {
 			return getConstructor(clazz, funcType).newInstance(args);
-		} catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
+		} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
 			throw new RuntimeException(e);
 		} finally {
 			funcType.recycle();

@@ -39,14 +39,12 @@ public class DesktopMethodInvokeHelper implements MethodInvokeHelper {
 		Class<?> curr = clazz;
 
 		while (curr != null) {
-			try {
-				Method method = classHelper.getMethod(curr, name, argTypes.getTypes());
+			Method method = classHelper.getMethod(curr, name, argTypes.getTypes());
 
-				if (method != null) {
-					method.setAccessible(true);
-					res = lookup.unreflect(method);
-				}
-			} catch (IllegalAccessException ignored) {}
+			if (method != null) {
+				method.setAccessible(true);
+				res = lookup.unreflect(method);
+			}
 
 			if (res != null) {
 				map.put(inst(res.type()), res);
@@ -85,7 +83,7 @@ public class DesktopMethodInvokeHelper implements MethodInvokeHelper {
 		return res;
 	}
 
-	protected MethodHandle getConstructor(Class<?> clazz, FunctionType argsType) throws IllegalAccessException {
+	protected MethodHandle getConstructor(Class<?> clazz, FunctionType argsType) throws IllegalAccessException, NoSuchMethodException {
 		CollectionObjectMap<FunctionType, MethodHandle> map = methodPool.get(clazz, prov1).get("<init>", prov2);
 
 		MethodHandle res = map.get(argsType);
@@ -95,13 +93,11 @@ public class DesktopMethodInvokeHelper implements MethodInvokeHelper {
 			if (entry.key.match(argsType.getTypes())) return entry.value;
 		}
 
-		try {
-			Constructor<?> met = clazz.getConstructor(argsType.getTypes());
-
-			met.setAccessible(true);
-
-			res = lookup.unreflectConstructor(met);
-		} catch (NoSuchMethodException | IllegalAccessException ignored) {}
+		Constructor<?> cstr = classHelper.getConstructor(clazz, argsType.getTypes());
+		if (cstr != null) {
+			cstr.setAccessible(true);
+			res = lookup.unreflectConstructor(cstr);
+		}
 
 		if (res != null) return res;
 
@@ -120,7 +116,7 @@ public class DesktopMethodInvokeHelper implements MethodInvokeHelper {
 
 		if (res != null) return res;
 
-		throw new NoSuchMethodError("no such constructor in class: " + clazz + " with assignable parameter: " + argsType);
+		throw new NoSuchMethodException("no such constructor in class: " + clazz + " with assignable parameter: " + argsType);
 	}
 
 	@SuppressWarnings("unchecked")
