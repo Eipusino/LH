@@ -16,6 +16,7 @@ import static endfield.Vars2.accessibleHelper;
 import static endfield.Vars2.classHelper;
 import static endfield.Vars2.fieldAccessHelper;
 import static endfield.Vars2.methodInvokeHelper;
+import static endfield.desktop.Unsafer.unsafe;
 
 public class DesktopImpl implements PlatformImpl {
 	static Lookup lookup;
@@ -50,5 +51,20 @@ public class DesktopImpl implements PlatformImpl {
 				}
 			};
 		}
+	}
+
+	@Override
+	public Lookup lookup(Class<?> clazz) {
+		return lookup;
+	}
+
+	@Override
+	public void copyMemory(long srcAddr, long dstAddr, long bytes) {
+		unsafe.copyMemory(srcAddr, dstAddr, bytes);
+	}
+
+	@Override
+	public void copyMemory(Object srcBase, long srcOffset, Object destBase, long destOffset, long bytes) {
+		unsafe.copyMemory(srcBase, srcOffset, destBase, destOffset, bytes);
 	}
 }
