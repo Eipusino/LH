@@ -17,7 +17,9 @@ tasks.withType(JavaCompile).configureEach {
 	options.encoding = "UTF-8"
 
 	options.compilerArgs.addAll([
-			"--add-exports", "java.base/jdk.internal.misc=ALL-UNNAMED"
+			"--add-exports", "java.base/jdk.internal.misc=ALL-UNNAMED",
+			"--add-exports", "java.base/jdk.internal.module=ALL-UNNAMED",
+			"--add-exports", "java.base/jdk.internal.reflect=ALL-UNNAMED"
 	])
 }
 
@@ -27,7 +29,9 @@ dependencies {
 
 	def libsDir = project(":").projectDir
 
-	compileOnly files("$libsDir/libs/EndfieldMod-260208a.jar")
+	compileOnly files(
+			"$libsDir/libs/EndfieldMod-260209b.jar"
+	)
 }
 
 jar {

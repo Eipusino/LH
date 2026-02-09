@@ -9,6 +9,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Objects;
 
 import static endfield.desktop.DesktopImpl.lookup;
 import static endfield.desktop.Unsafer.unsafe;
@@ -98,6 +99,8 @@ public class DesktopClassHelper implements ClassHelper {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T allocateInstance(Class<? extends T> clazz) {
+		Objects.requireNonNull(clazz);
+
 		try {
 			return (T) unsafe.allocateInstance(clazz);
 		} catch (InstantiationException e) {

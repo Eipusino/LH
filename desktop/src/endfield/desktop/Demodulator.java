@@ -1,6 +1,7 @@
 package endfield.desktop;
 
 import endfield.core.EndFieldMod;
+import jdk.internal.module.Modules;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodType;
@@ -8,7 +9,7 @@ import java.lang.invoke.MethodType;
 import static endfield.desktop.DesktopImpl.lookup;
 
 /**
- * The anti modularity tool only provides one main method {@link Demodulator#makeModuleOpen(Module, String, Module)}
+ * The anti modularity tool only provides one main method {@link Demodulator#makeOpenModule(Module, String, Module)}
  * to force software packages that open modules to the required modules.
  * <p>This class behavior may completely break the modular access protection and is inherently insecure. If it is
  * not necessary, please try to avoid using this class.
@@ -30,16 +31,18 @@ public final class Demodulator {
 		implAddOpens = lookup.findVirtual(Module.class, "implAddOpens", MethodType.methodType(void.class, String.class, Module.class));
 	}
 
-	public static void makeModuleOpen(Module from, Class<?> clazz, Module to) {
+	public static void makeOpenModule(Module from, Class<?> clazz, Module to) {
 		if (clazz.isArray()) {
-			makeModuleOpen(from, clazz.getComponentType(), to);
-		} else makeModuleOpen(from, clazz.getPackage(), to);
+			makeOpenModule(from, clazz.getComponentType(), to);
+		} else {
+			makeOpenModule(from, clazz.getPackage(), to);
+		}
 	}
 
-	public static void makeModuleOpen(Module from, Package pac, Module to) {
-		if (checkOpenModule(from, pac, to)) return;
+	public static void makeOpenModule(Module from, Package pac, Module to) {
+		if (pac == null) return;
 
-		makeModuleOpen(from, pac.getName(), to);
+		makeOpenModule(from, pac.getName(), to);
 	}
 
 	/**
@@ -47,18 +50,16 @@ public final class Demodulator {
 	 * @param pac The package name of the module to export the package
 	 * @param to The module to be exported to.
 	 */
-	public static void makeModuleOpen(Module from, String pac, Module to) {
-		try {
-			openModule(from, pac, to);
-		} catch (Throwable e) {
-			throw new RuntimeException(e);
-		}
+	public static void makeOpenModule(Module from, String pac, Module to) {
+		if (from.isOpen(pac, to)) return;
+
+		Modules.addExports(from, pac, to);
 	}
 
-	public static boolean checkOpenModule(Module from, Package pac, Module to) {
-		if (pac == null) return true;
+	public static void makeOpenModule(Module from, String pac) {
+		if (from.isOpen(pac)) return;
 
-		return from.isOpen(pac.getName(), to);
+		Modules.addExports(from, pac);
 	}
 
 	static void openModule(Module from, String pn, Module to) throws Throwable {
@@ -71,6 +72,7 @@ public final class Demodulator {
 		openModule(base, "java.lang", main);
 		openModule(base, "java.lang.reflect", main);
 		openModule(base, "jdk.internal.misc", main);
+		openModule(base, "jdk.internal.module", main);
 		openModule(base, "jdk.internal.reflect", main);
 	}
 
@@ -78,9 +80,7 @@ public final class Demodulator {
 	/*@SuppressWarnings("unchecked")
 	static void ensureFieldOpen() {
 		try {
-			Class<?> reflection = Class.forName("jdk.internal.reflect.Reflection");
-
-			fieldFilterMap = (Map<Class<?>, Set<String>>) lookup.findStaticGetter(reflection, "fieldFilterMap", Map.class).invokeExact();
+			fieldFilterMap = (Map<Class<?>, Set<String>>) lookup.findStaticGetter(Reflection.class, "fieldFilterMap", Map.class).invokeExact();
 			fieldFilterMap.clear();
 		} catch (Throwable e) {
 			Log.err(e);

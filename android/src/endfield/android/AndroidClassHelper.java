@@ -9,6 +9,7 @@ import rhino.GeneratedClassLoader;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.util.Objects;
 
 import static endfield.android.AndroidImpl.exceptionHandler;
 import static endfield.android.Unsafer.unsafe;
@@ -29,6 +30,8 @@ public class AndroidClassHelper implements ClassHelper {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T allocateInstance(Class<? extends T> clazz) {
+		Objects.requireNonNull(clazz);
+
 		try {
 			return (T) unsafe.allocateInstance(clazz);
 		} catch (InstantiationException e) {
