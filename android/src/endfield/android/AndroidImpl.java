@@ -18,6 +18,7 @@ import static endfield.Vars2.fieldAccessHelper;
 import static endfield.Vars2.methodInvokeHelper;
 import static endfield.android.Unsafer.unsafe;
 
+@SuppressWarnings("removal")
 public class AndroidImpl implements PlatformImpl {
 	public static final int ALL_MODES = Lookup.PUBLIC | Lookup.PRIVATE | Lookup.PROTECTED | Lookup.PACKAGE;
 
@@ -40,7 +41,7 @@ public class AndroidImpl implements PlatformImpl {
 			Log.infoTag("Unsafe", "getUnsafe: " + unsafe);
 
 			try {
-				HiddenApi.setHiddenApiExemptions();
+				HiddenApi.load();
 			} catch (Throwable e) {
 				Log.err(e);
 			}

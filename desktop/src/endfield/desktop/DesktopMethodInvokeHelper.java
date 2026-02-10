@@ -61,7 +61,7 @@ public class DesktopMethodInvokeHelper implements MethodInvokeHelper {
 		while (curr != null) {
 			for (Method method : classHelper.getMethods(curr)) {
 				if (!method.getName().equals(name)) continue;
-				Class<?>[] methodArgs = method.getParameterTypes();
+				Class<?>[] methodArgs = (Class<?>[]) mtypes.get(method);
 
 				FunctionType t;
 				if ((t = from(method)).match(methodArgs)) {

@@ -4,12 +4,12 @@ import arc.util.OS;
 import dalvik.system.VMRuntime;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import static endfield.android.Unsafer.unsafe;
 
 /** Only For Android */
+@SuppressWarnings("removal")
 public class HiddenApi {
 	public static final VMRuntime runtime = VMRuntime.getRuntime();
 
@@ -20,7 +20,27 @@ public class HiddenApi {
 	 */
 	public static final long artMethodOffset = 24l;
 
-	private static final String[] values = {"L"};
+	static final String[] values = {
+			"Ldalvik/system/BaseDexClassLoader;",
+			"Ldalvik/system/VMRuntime;",
+			"Ldalvik/system/VMStack;",
+			"Ljava/lang/Class;->accessFlags:I",
+			"Ljava/lang/Class;->getDeclaredFieldsUnchecked(Z)[Ljava/lang/reflect/Field;",
+			"Ljava/lang/Class;->getDeclaredMethodsUnchecked(Z)[Ljava/lang/reflect/Method;",
+			"Ljava/lang/invoke/MethodHandles$Lookup;-><init>(Ljava/lang/Class;I)V",
+			"Ljava/lang/reflect/AccessibleObject;->override:Z",
+			"Ljava/lang/reflect/Executable;->accessFlags:I",
+			"Ljava/lang/reflect/Field;->accessFlags:I",
+			"Ljava/lang/reflect/Field;->getArtField()J",
+			"Ljava/lang/reflect/Field;->getOffset()I",
+			"Ljava/nio/Buffer;->address:J",
+			"Ljdk/internal/misc/Unsafe;",
+			"Llibcore/io/Memory;",
+			"Lsun/misc/Unsafe;"
+	};
+	//static final String[] values = {"L"};
+
+	static Method setHiddenApiExemptions;
 
 	static Object[] oneArray;
 	static int[] intArray;
@@ -33,21 +53,17 @@ public class HiddenApi {
 		offset = runtime.addressOf(intArray) - vaddressOf(intArray);
 	}
 
-	public static void setHiddenApiExemptions() throws Throwable {
+	static void load() throws Throwable {
 		// In higher versions, the setHiddenApiExertions method cannot be directly reflected to obtain it, so the artMethod needs to be modified
 		// Sdk_version>28 (exact number unknown)
-		Method setHiddenApiExemptions = findMethod();
+		setHiddenApiExemptions = findMethod();
 
 		if (setHiddenApiExemptions == null) {
 			throw new InternalError("setHiddenApiExemptions not found.");
 		}
 
-		invoke(setHiddenApiExemptions);
-	}
-
-	private static void invoke(Method method) throws IllegalAccessException, InvocationTargetException {
-		method.setAccessible(true);
-		method.invoke(runtime, (Object) values);
+		setHiddenApiExemptions.setAccessible(true);
+		setHiddenApiExemptions.invoke(runtime, (Object) values);
 	}
 
 	private static @Nullable Method findMethod() {
@@ -104,7 +120,7 @@ public class HiddenApi {
 	}
 
 	// ---------Address/Memory Operation---------
-	static long vaddressOf(Object object) {
+	public static long vaddressOf(Object object) {
 		if (object == null) throw new IllegalArgumentException("object is null.");
 		oneArray[0] = object;
 		long baseOffset = unsafe.arrayBaseOffset(Object[].class);

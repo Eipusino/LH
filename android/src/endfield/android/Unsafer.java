@@ -6,6 +6,7 @@ import sun.misc.Unsafe;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+@SuppressWarnings("removal")
 public final class Unsafer {
 	static final Unsafe unsafe;
 
