@@ -11,6 +11,7 @@ import sun.reflect.ReflectionFactory;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.AccessibleObject;
+import java.nio.Buffer;
 
 import static endfield.Vars2.accessibleHelper;
 import static endfield.Vars2.classHelper;
@@ -59,12 +60,9 @@ public class DesktopImpl implements PlatformImpl {
 	}
 
 	@Override
-	public void copyMemory(long srcAddr, long dstAddr, long bytes) {
-		unsafe.copyMemory(srcAddr, dstAddr, bytes);
-	}
-
-	@Override
-	public void copyMemory(Object srcBase, long srcOffset, Object destBase, long destOffset, long bytes) {
-		unsafe.copyMemory(srcBase, srcOffset, destBase, destOffset, bytes);
+	public void putBuffer(Buffer src, int srcOffset, Buffer dst, int dstOffset, int numBytes) {
+		long srcAddress = addressOf(src);
+		long dstAddress = addressOf(dst);
+		unsafe.copyMemory(srcAddress + srcOffset, dstAddress + dstOffset, numBytes);
 	}
 }

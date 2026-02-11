@@ -10,6 +10,8 @@ import libcore.io.Memory;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.Buffer;
+import java.util.Objects;
 import java.util.function.Function;
 
 import static endfield.Vars2.accessibleHelper;
@@ -37,14 +39,10 @@ public class AndroidImpl implements PlatformImpl {
 	};
 
 	static {
-		try {
-			Log.infoTag("Unsafe", "getUnsafe: " + unsafe);
+		Log.infoTag("Unsafe", "getUnsafe: " + unsafe);
 
-			try {
-				HiddenApi.load();
-			} catch (Throwable e) {
-				Log.err(e);
-			}
+		try {
+			HiddenApi.load();
 		} catch (Throwable e) {
 			Log.err("It seems you platform is special. (But don't worry)", e);
 		}
@@ -69,12 +67,10 @@ public class AndroidImpl implements PlatformImpl {
 	}
 
 	@Override
-	public void copyMemory(long srcAddr, long dstAddr, long bytes) {
-		unsafe.copyMemory(srcAddr, dstAddr, bytes);
-	}
+	public void putBuffer(Buffer src, int srcOffset, Buffer dst, int dstOffset, int numBytes) {
+		Objects.requireNonNull(src);
+		Objects.requireNonNull(dst);
 
-	@Override
-	public void copyMemory(Object srcBase, long srcOffset, Object destBase, long destOffset, long bytes) {
-		Memory.memmove(destBase, (int) destOffset, srcBase, (int) srcOffset, bytes);
+		Memory.memmove(dst, dstOffset, src, srcOffset, numBytes);
 	}
 }

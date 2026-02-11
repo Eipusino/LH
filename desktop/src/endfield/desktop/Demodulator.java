@@ -74,6 +74,7 @@ public final class Demodulator {
 		openModule(base, "jdk.internal.misc", main);
 		openModule(base, "jdk.internal.module", main);
 		openModule(base, "jdk.internal.reflect", main);
+		openModule(base, "sun.nio.ch", main);
 	}
 
 	// We directly call the private native method within Class to bypass filtering, so there is no need to do so.

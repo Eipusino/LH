@@ -25,8 +25,6 @@ public class HiddenApi {
 			"Ldalvik/system/VMRuntime;",
 			"Ldalvik/system/VMStack;",
 			"Ljava/lang/Class;->accessFlags:I",
-			"Ljava/lang/Class;->getDeclaredFieldsUnchecked(Z)[Ljava/lang/reflect/Field;",
-			"Ljava/lang/Class;->getDeclaredMethodsUnchecked(Z)[Ljava/lang/reflect/Method;",
 			"Ljava/lang/invoke/MethodHandles$Lookup;-><init>(Ljava/lang/Class;I)V",
 			"Ljava/lang/reflect/AccessibleObject;->override:Z",
 			"Ljava/lang/reflect/Executable;->accessFlags:I",
@@ -34,10 +32,13 @@ public class HiddenApi {
 			"Ljava/lang/reflect/Field;->getArtField()J",
 			"Ljava/lang/reflect/Field;->getOffset()I",
 			"Ljava/nio/Buffer;->address:J",
+			"Ljava/nio/ByteBuffer;->putBuffer(ILjava/nio/ByteBuffer;II)V",
 			"Ljdk/internal/misc/Unsafe;",
 			"Llibcore/io/Memory;",
-			"Lsun/misc/Unsafe;"
+			"Lsun/misc/Unsafe;",
+			"Lsun/nio/ch/DirectBuffer;"
 	};
+	// Not using the 'L' wildcard is to ensure basic security and prevent strange issues caused by things we don't want to call in certain parts of the program.
 	//static final String[] values = {"L"};
 
 	static Method setHiddenApiExemptions;
@@ -58,15 +59,11 @@ public class HiddenApi {
 		// Sdk_version>28 (exact number unknown)
 		setHiddenApiExemptions = findMethod();
 
-		if (setHiddenApiExemptions == null) {
-			throw new InternalError("setHiddenApiExemptions not found.");
-		}
-
 		setHiddenApiExemptions.setAccessible(true);
 		setHiddenApiExemptions.invoke(runtime, (Object) values);
 	}
 
-	private static @Nullable Method findMethod() {
+	private static Method findMethod() throws NoSuchMethodException {
 		Method[] methods = VMRuntime.class.getDeclaredMethods();
 		if (methods[0].getName().equals("setHiddenApiExemptions")) {
 			return methods[0];
@@ -112,7 +109,8 @@ public class HiddenApi {
 				}
 			}
 		}
-		return null;
+
+		throw new NoSuchMethodException();
 	}
 
 	public static long addressOf(Object obj) {
