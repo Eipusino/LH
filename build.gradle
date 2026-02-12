@@ -10,19 +10,12 @@ repositories {
 	maven { url 'https://www.jitpack.io' }
 }
 
-java {
-	targetCompatibility = JavaVersion.VERSION_17
-	sourceCompatibility = JavaVersion.VERSION_17
-}
-
 ext {
 	isWindows = System.getProperty("os.name").toLowerCase().contains("windows")
 	sdkRoot = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
 }
 
 dependencies {
-	implementation "com.github.Anuken.Arc:arc-core:$mindustryVersion"
-	implementation "com.github.Anuken.Mindustry:core:$mindustryVersion"
 	implementation "org.ow2.asm:asm:9.6"
 	implementation "org.ow2.asm:asm-commons:9.6"
 }

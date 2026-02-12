@@ -1,16 +1,16 @@
 package template;
 
-import sun.misc.Unsafe;
+import sun.reflect.ReflectionFactory;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.invoke.MethodType;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 public class Main {
-	private static final Unsafe unsafe = getUnsafe();
 	private static final Lookup lookup = getLookup();
 
 	private static MethodHandle clone;
@@ -20,8 +20,9 @@ public class Main {
 
 	private Object unl;
 
-	public static void main(String... arg) {
+	static void main(String... arg) {
 		try {
+			System.out.println(Main.class.getModule());
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
@@ -71,20 +72,11 @@ public class Main {
 		}
 	}
 
-	private static Unsafe getUnsafe() {
-		try {
-			Field field = Unsafe.class.getDeclaredField("theUnsafe");
-			field.setAccessible(true);
-			return (Unsafe) field.get(null);
-		} catch (Throwable e) {
-			throw new AssertionError(e);
-		}
-	}
-
 	private static Lookup getLookup() {
 		try {
-			Field field = Lookup.class.getDeclaredField("IMPL_LOOKUP");
-			return (Lookup) unsafe.getObject(unsafe.staticFieldBase(field), unsafe.staticFieldOffset(field));
+			return (Lookup) ReflectionFactory.getReflectionFactory()
+					.newConstructorForSerialization(Lookup.class, Lookup.class.getDeclaredConstructor(Class.class, Class.class, int.class))
+					.newInstance(Main.class, null, -1);
 		} catch (Throwable e) {
 			throw new AssertionError(e);
 		}

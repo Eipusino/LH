@@ -2,7 +2,6 @@ package endfield.android;
 
 import arc.util.OS;
 import dalvik.system.VMRuntime;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Method;
 
@@ -28,6 +27,8 @@ public class HiddenApi {
 			"Ljava/lang/invoke/MethodHandles$Lookup;-><init>(Ljava/lang/Class;I)V",
 			"Ljava/lang/reflect/AccessibleObject;->override:Z",
 			"Ljava/lang/reflect/Executable;->accessFlags:I",
+			"Ljava/lang/reflect/Executable;->artMethod:J",
+			"Ljava/lang/reflect/Executable;->getArtMethod()J",
 			"Ljava/lang/reflect/Field;->accessFlags:I",
 			"Ljava/lang/reflect/Field;->getArtField()J",
 			"Ljava/lang/reflect/Field;->getOffset()I",

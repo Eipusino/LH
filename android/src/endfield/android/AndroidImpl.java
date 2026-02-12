@@ -2,8 +2,8 @@ package endfield.android;
 
 import arc.func.Cons;
 import arc.util.Log;
+import endfield.util.AccessibleHelper;
 import endfield.util.CollectionObjectMap;
-import endfield.util.DefaultAccessibleHelper;
 import endfield.util.PlatformImpl;
 import libcore.io.Memory;
 
@@ -22,17 +22,14 @@ import static endfield.android.Unsafer.unsafe;
 
 @SuppressWarnings("removal")
 public class AndroidImpl implements PlatformImpl {
-	public static final int ALL_MODES = Lookup.PUBLIC | Lookup.PRIVATE | Lookup.PROTECTED | Lookup.PACKAGE;
-
 	static final Cons<Throwable> exceptionHandler = e -> {};
-
-	static final CollectionObjectMap<Class<?>, Lookup> lookupMap = new CollectionObjectMap<>(Class.class, Lookup.class);
 
 	static Constructor<Lookup> constructor;
 
-	static final Function<Class<?>, Lookup> initialer = clazz -> {
+	static final CollectionObjectMap<Class<?>, Lookup> lookupMap = new CollectionObjectMap<>(Class.class, Lookup.class);
+	static final Function<Class<?>, Lookup> lookupBuilder = clazz -> {
 		try {
-			return constructor.newInstance(clazz, ALL_MODES);
+			return constructor.newInstance(clazz, 15);
 		} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
 			throw new RuntimeException(e);
 		}
@@ -47,7 +44,7 @@ public class AndroidImpl implements PlatformImpl {
 			Log.err("It seems you platform is special. (But don't worry)", e);
 		}
 
-		accessibleHelper = new DefaultAccessibleHelper();
+		accessibleHelper = new AccessibleHelper() {};
 		classHelper = new AndroidClassHelper();
 		fieldAccessHelper = new AndroidFieldAccessHelper();
 		methodInvokeHelper = new AndroidMethodInvokeHelper();
@@ -63,7 +60,7 @@ public class AndroidImpl implements PlatformImpl {
 	// Due to the lack of TRUSTED lookup in Android, each class needs to create an ALL_MODES lookup.
 	@Override
 	public Lookup lookup(Class<?> clazz) {
-		return lookupMap.computeIfAbsent(clazz, initialer);
+		return lookupMap.computeIfAbsent(clazz, lookupBuilder);
 	}
 
 	@Override
