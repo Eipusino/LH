@@ -23,7 +23,7 @@ public class DesktopAccessibleHelper implements AccessibleHelper {
 
 	@Override
 	public void makeClassAccessible(Class<?> clazz) {
-		try {
+		/*try {
 			if (modifiersField == null) {
 				modifiersField = Class.class.getDeclaredField("modifiers");
 				modifiersField.setAccessible(true);
@@ -31,6 +31,6 @@ public class DesktopAccessibleHelper implements AccessibleHelper {
 			char flags = modifiersField.getChar(clazz);
 		} catch (NoSuchFieldException | IllegalAccessException e) {
 			throw new RuntimeException(e);
-		}
+		}*/
 	}
 }

@@ -5,20 +5,32 @@ public final class VMStack {
 	private VMStack() {}
 
 	@Deprecated
-	public native static ClassLoader getCallingClassLoader();
+	public static ClassLoader getCallingClassLoader() {
+		throw new RuntimeException("Stub!");
+	}
 
 	@Deprecated
 	public static Class<?> getStackClass1() {
 		throw new RuntimeException("Stub!");
 	}
 
-	public native static Class<?> getStackClass2();
+	public static Class<?> getStackClass2() {
+		throw new RuntimeException("Stub!");
+	}
 
-	public native static ClassLoader getClosestUserClassLoader();
+	public static ClassLoader getClosestUserClassLoader() {
+		throw new RuntimeException("Stub!");
+	}
 
-	public native static StackTraceElement[] getThreadStackTrace(Thread t);
+	public static StackTraceElement[] getThreadStackTrace(Thread t) {
+		throw new RuntimeException("Stub!");
+	}
 
-	public native static AnnotatedStackTraceElement[] getAnnotatedThreadStackTrace(Thread t);
+	public static AnnotatedStackTraceElement[] getAnnotatedThreadStackTrace(Thread t) {
+		throw new RuntimeException("Stub!");
+	}
 
-	public native static int fillStackTraceElements(Thread t, StackTraceElement[] stackTraceElements);
+	public static int fillStackTraceElements(Thread t, StackTraceElement[] stackTraceElements) {
+		throw new RuntimeException("Stub!");
+	}
 }

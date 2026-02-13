@@ -28,25 +28,45 @@ public final class VMRuntime {
 		throw new RuntimeException("Stub!");
 	}
 
-	public native String[] properties();
+	public String[] properties() {
+		throw new RuntimeException("Stub!");
+	}
 
-	public native String bootClassPath();
+	public String bootClassPath() {
+		throw new RuntimeException("Stub!");
+	}
 
-	public native String classPath();
+	public String classPath() {
+		throw new RuntimeException("Stub!");
+	}
 
-	public native String vmVersion();
+	public String vmVersion() {
+		throw new RuntimeException("Stub!");
+	}
 
-	public native String vmLibrary();
+	public String vmLibrary() {
+		throw new RuntimeException("Stub!");
+	}
 
-	public native String vmInstructionSet();
+	public String vmInstructionSet() {
+		throw new RuntimeException("Stub!");
+	}
 
-	public native boolean is64Bit();
+	public boolean is64Bit() {
+		throw new RuntimeException("Stub!");
+	}
 
-	public native boolean isCheckJniEnabled();
+	public boolean isCheckJniEnabled() {
+		throw new RuntimeException("Stub!");
+	}
 
-	public native float getTargetHeapUtilization();
+	public float getTargetHeapUtilization() {
+		throw new RuntimeException("Stub!");
+	}
 
-	public native long getFinalizerTimeoutMs();
+	public long getFinalizerTimeoutMs() {
+		throw new RuntimeException("Stub!");
+	}
 
 	public float setTargetHeapUtilization(float newTarget) {
 		throw new RuntimeException("Stub!");
@@ -107,31 +127,53 @@ public final class VMRuntime {
 		throw new RuntimeException("Stub!");
 	}
 
-	public native void setHiddenApiExemptions(String[] signaturePrefixes);
+	public void setHiddenApiExemptions(String[] signaturePrefixes) {
+		throw new RuntimeException("Stub!");
+	}
 
-	public native void setHiddenApiAccessLogSamplingRate(int rate);
+	public void setHiddenApiAccessLogSamplingRate(int rate) {
+		throw new RuntimeException("Stub!");
+	}
 
-	public native Object newNonMovableArray(Class<?> componentType, int length);
+	public Object newNonMovableArray(Class<?> componentType, int length) {
+		throw new RuntimeException("Stub!");
+	}
 
-	public native Object newUnpaddedArray(Class<?> componentType, int minLength);
+	public Object newUnpaddedArray(Class<?> componentType, int minLength) {
+		throw new RuntimeException("Stub!");
+	}
 
-	public native long addressOf(Object array);
+	public long addressOf(Object array) {
+		throw new RuntimeException("Stub!");
+	}
 
-	public native void clearGrowthLimit();
+	public void clearGrowthLimit() {
+		throw new RuntimeException("Stub!");
+	}
 
-	public native void clampGrowthLimit();
+	public void clampGrowthLimit() {
+		throw new RuntimeException("Stub!");
+	}
 
-	public native boolean isNativeDebuggable();
+	public boolean isNativeDebuggable() {
+		throw new RuntimeException("Stub!");
+	}
 
-	public native boolean isJavaDebuggable();
+	public boolean isJavaDebuggable() {
+		throw new RuntimeException("Stub!");
+	}
 
-	public native void registerNativeAllocation(long bytes);
+	public void registerNativeAllocation(long bytes) {
+		throw new RuntimeException("Stub!");
+	}
 
 	public void registerNativeAllocation(int bytes) {
 		throw new RuntimeException("Stub!");
 	}
 
-	public native void registerNativeFree(long bytes);
+	public void registerNativeFree(long bytes) {
+		throw new RuntimeException("Stub!");
+	}
 
 	@Deprecated
 	public void registerNativeFree(int bytes) {
@@ -142,29 +184,49 @@ public final class VMRuntime {
 		throw new RuntimeException("Stub!");
 	}
 
-	public native void notifyNativeAllocationsInternal();
+	public void notifyNativeAllocationsInternal() {
+		throw new RuntimeException("Stub!");
+	}
 
 	public static void runFinalization(long timeout) {
 		throw new RuntimeException("Stub!");
 	}
 
-	public native void requestConcurrentGC();
+	public void requestConcurrentGC() {
+		throw new RuntimeException("Stub!");
+	}
 
-	public native void requestHeapTrim();
+	public void requestHeapTrim() {
+		throw new RuntimeException("Stub!");
+	}
 
-	public native void trimHeap();
+	public void trimHeap() {
+		throw new RuntimeException("Stub!");
+	}
 
-	public native void startHeapTaskProcessor();
+	public void startHeapTaskProcessor() {
+		throw new RuntimeException("Stub!");
+	}
 
-	public native void stopHeapTaskProcessor();
+	public void stopHeapTaskProcessor() {
+		throw new RuntimeException("Stub!");
+	}
 
-	public native void runHeapTasks();
+	public void runHeapTasks() {
+		throw new RuntimeException("Stub!");
+	}
 
-	public native void updateProcessState(int state);
+	public void updateProcessState(int state) {
+		throw new RuntimeException("Stub!");
+	}
 
-	public native void notifyStartupCompleted();
+	public void notifyStartupCompleted() {
+		throw new RuntimeException("Stub!");
+	}
 
-	public native void preloadDexCaches();
+	public void preloadDexCaches() {
+		throw new RuntimeException("Stub!");
+	}
 
 	public static final int CODE_PATH_TYPE_PRIMARY_APK = 1 << 0;
 
@@ -172,7 +234,9 @@ public final class VMRuntime {
 
 	public static final int CODE_PATH_TYPE_SECONDARY_DEX = 1 << 2;
 
-	public static native void registerAppInfo(String packageName, String currentProfileFile, String referenceProfileFile, String[] appCodePaths, int codePathsType);
+	public static void registerAppInfo(String packageName, String currentProfileFile, String referenceProfileFile, String[] appCodePaths, int codePathsType) {
+		throw new RuntimeException("Stub!");
+	}
 
 	public static String getInstructionSet(String abi) {
 		throw new RuntimeException("Stub!");
@@ -186,17 +250,29 @@ public final class VMRuntime {
 		throw new RuntimeException("Stub!");
 	}
 
-	public static native boolean isBootClassPathOnDisk(String instructionSet);
+	public static boolean isBootClassPathOnDisk(String instructionSet) {
+		throw new RuntimeException("Stub!");
+	}
 
-	public static native void bootCompleted();
+	public static void bootCompleted() {
+		throw new RuntimeException("Stub!");
+	}
 
-	public static native void resetJitCounters();
+	public static void resetJitCounters() {
+		throw new RuntimeException("Stub!");
+	}
 
-	public static native String getCurrentInstructionSet();
+	public static String getCurrentInstructionSet() {
+		throw new RuntimeException("Stub!");
+	}
 
-	public static native void registerSensitiveThread();
+	public static void registerSensitiveThread() {
+		throw new RuntimeException("Stub!");
+	}
 
-	public static native void setSystemDaemonThreadPriority();
+	public static void setSystemDaemonThreadPriority() {
+		throw new RuntimeException("Stub!");
+	}
 
 	public static void setNonSdkApiUsageConsumer(Consumer<String> consumer) {
 		throw new RuntimeException("Stub!");
@@ -214,15 +290,25 @@ public final class VMRuntime {
 		throw new RuntimeException("Stub!");
 	}
 
-	public static native void setDedupeHiddenApiWarnings(boolean dedupe);
+	public static void setDedupeHiddenApiWarnings(boolean dedupe) {
+		throw new RuntimeException("Stub!");
+	}
 
-	public static native void setProcessPackageName(String packageName);
+	public static void setProcessPackageName(String packageName) {
+		throw new RuntimeException("Stub!");
+	}
 
-	public static native void setProcessDataDirectory(String dataDir);
+	public static void setProcessDataDirectory(String dataDir) {
+		throw new RuntimeException("Stub!");
+	}
 
-	public static native boolean isValidClassLoaderContext(String encodedClassLoaderContext);
+	public static boolean isValidClassLoaderContext(String encodedClassLoaderContext) {
+		throw new RuntimeException("Stub!");
+	}
 
-	public static native DexFile.OptimizationInfo getBaseApkOptimizationInfo();
+	public static DexFile.OptimizationInfo getBaseApkOptimizationInfo() {
+		throw new RuntimeException("Stub!");
+	}
 
 	public static boolean isVTrunkStableFlagEnabled() {
 		throw new RuntimeException("Stub!");
@@ -232,5 +318,7 @@ public final class VMRuntime {
 		throw new RuntimeException("Stub!");
 	}
 
-	public static native long getFullGcCount();
+	public static long getFullGcCount() {
+		throw new RuntimeException("Stub!");
+	}
 }

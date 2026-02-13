@@ -55,7 +55,9 @@ public class DexFile {
 	}
 
 	@Deprecated
-	public static native boolean isDexOptNeeded(String fileName) throws FileNotFoundException, IOException;
+	public static boolean isDexOptNeeded(String fileName) throws FileNotFoundException, IOException {
+		throw new RuntimeException("Stub!");
+	}
 
 	@Deprecated
 	public static final int NO_DEXOPT_NEEDED = 0;
@@ -74,7 +76,9 @@ public class DexFile {
 	}
 
 	@Deprecated
-	public static native int getDexOptNeeded(String fileName, String instructionSet, String compilerFilter, String classLoaderContext, boolean newProfile, boolean downgrade) throws FileNotFoundException, IOException;
+	public static int getDexOptNeeded(String fileName, String instructionSet, String compilerFilter, String classLoaderContext, boolean newProfile, boolean downgrade) throws FileNotFoundException, IOException {
+		throw new RuntimeException("Stub!");
+	}
 
 	public static final class OptimizationInfo {
 		private OptimizationInfo(String status, String reason) {
@@ -107,21 +111,37 @@ public class DexFile {
 		throw new RuntimeException("Stub!");
 	}
 
-	public static native String[] getDexFileOutputPaths(String fileName, String instructionSet) throws FileNotFoundException;
+	public static String[] getDexFileOutputPaths(String fileName, String instructionSet) throws FileNotFoundException {
+		throw new RuntimeException("Stub!");
+	}
 
-	public native static boolean isValidCompilerFilter(String filter);
+	public static boolean isValidCompilerFilter(String filter) {
+		throw new RuntimeException("Stub!");
+	}
 
-	public native static boolean isProfileGuidedCompilerFilter(String filter);
+	public static boolean isProfileGuidedCompilerFilter(String filter) {
+		throw new RuntimeException("Stub!");
+	}
 
-	public native static boolean isVerifiedCompilerFilter(String filter);
+	public static boolean isVerifiedCompilerFilter(String filter) {
+		throw new RuntimeException("Stub!");
+	}
 
-	public native static boolean isOptimizedCompilerFilter(String filter);
+	public static boolean isOptimizedCompilerFilter(String filter) {
+		throw new RuntimeException("Stub!");
+	}
 
-	public static native boolean isReadOnlyJavaDclEnforced();
+	public static boolean isReadOnlyJavaDclEnforced() {
+		throw new RuntimeException("Stub!");
+	}
 
-	public native static String getNonProfileGuidedCompilerFilter(String filter);
+	public static String getNonProfileGuidedCompilerFilter(String filter) {
+		throw new RuntimeException("Stub!");
+	}
 
-	public native static String getSafeModeCompilerFilter(String filter);
+	public static String getSafeModeCompilerFilter(String filter) {
+		throw new RuntimeException("Stub!");
+	}
 
 	public long getStaticSizeOfDexFile() {
 		throw new RuntimeException("Stub!");
