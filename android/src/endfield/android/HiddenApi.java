@@ -42,7 +42,7 @@ public class HiddenApi {
 	// Not using the 'L' wildcard is to ensure basic security and prevent strange issues caused by things we don't want to call in certain parts of the program.
 	//static final String[] values = {"L"};
 
-	static Method setHiddenApiExemptions;
+	static Method setHiddenApiExemptionsMethod;
 
 	static Object[] oneArray;
 	static int[] intArray;
@@ -58,10 +58,10 @@ public class HiddenApi {
 	static void load() throws Throwable {
 		// In higher versions, the setHiddenApiExertions method cannot be directly reflected to obtain it, so the artMethod needs to be modified
 		// Sdk_version>28 (exact number unknown)
-		setHiddenApiExemptions = findMethod();
+		setHiddenApiExemptionsMethod = findMethod();
 
-		setHiddenApiExemptions.setAccessible(true);
-		setHiddenApiExemptions.invoke(runtime, (Object) values);
+		setHiddenApiExemptionsMethod.setAccessible(true);
+		setHiddenApiExemptionsMethod.invoke(runtime, (Object) values);
 	}
 
 	private static Method findMethod() throws NoSuchMethodException {

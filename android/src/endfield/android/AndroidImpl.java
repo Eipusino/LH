@@ -44,7 +44,7 @@ public class AndroidImpl implements PlatformImpl {
 			Log.err("It seems you platform is special. (But don't worry)", e);
 		}
 
-		accessibleHelper = new AccessibleHelper() {};
+		accessibleHelper = new AndroidAccessibleHelper();
 		classHelper = new AndroidClassHelper();
 		fieldAccessHelper = new AndroidFieldAccessHelper();
 		methodInvokeHelper = new AndroidMethodInvokeHelper();

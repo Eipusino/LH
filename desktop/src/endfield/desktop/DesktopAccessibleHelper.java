@@ -6,16 +6,16 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 
 public class DesktopAccessibleHelper implements AccessibleHelper {
-	static Field override;
+	static Field overrideField, modifiersField;
 
 	@Override
 	public void makeAccessible(AccessibleObject object) {
 		try {
-			if (override == null) {
-				override = AccessibleObject.class.getDeclaredField("override");
-				override.setAccessible(true);
+			if (overrideField == null) {
+				overrideField = AccessibleObject.class.getDeclaredField("override");
+				overrideField.setAccessible(true);
 			}
-			override.setBoolean(object, true);
+			overrideField.setBoolean(object, true);
 		} catch (NoSuchFieldException | IllegalAccessException e) {
 			throw new RuntimeException(e);
 		}
@@ -23,6 +23,14 @@ public class DesktopAccessibleHelper implements AccessibleHelper {
 
 	@Override
 	public void makeClassAccessible(Class<?> clazz) {
-		//no action
+		try {
+			if (modifiersField == null) {
+				modifiersField = Class.class.getDeclaredField("modifiers");
+				modifiersField.setAccessible(true);
+			}
+			char flags = modifiersField.getChar(clazz);
+		} catch (NoSuchFieldException | IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }
