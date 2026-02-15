@@ -55,7 +55,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 			}
 		}
 
-		throw new NoSuchFieldException();
+		throw new NoSuchFieldException("field " + name + " was not found in class: " + clazz);
 	}
 
 	protected MethodHandle getter(Field field) {
