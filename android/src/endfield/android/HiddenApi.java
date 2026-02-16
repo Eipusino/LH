@@ -24,6 +24,7 @@ public class HiddenApi {
 			"Ldalvik/system/VMRuntime;",
 			"Ldalvik/system/VMStack;",
 			"Ljava/lang/Class;->accessFlags:I",
+			"Ljava/lang/Object;->internalClone()Ljava/lang/Object;",
 			"Ljava/lang/invoke/MethodHandles$Lookup;-><init>(Ljava/lang/Class;I)V",
 			"Ljava/lang/reflect/AccessibleObject;->override:Z",
 			"Ljava/lang/reflect/Executable;->accessFlags:I",

@@ -9,8 +9,10 @@ import endfield.util.DefaultMethodInvokeHelper;
 import endfield.util.PlatformImpl;
 import sun.reflect.ReflectionFactory;
 
+import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodHandles.Lookup;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.AccessibleObject;
 import java.nio.Buffer;
 
@@ -22,6 +24,7 @@ import static endfield.desktop.Unsafer.unsafe;
 
 public class DesktopImpl implements PlatformImpl {
 	static Lookup lookup;
+	static MethodHandle clone;
 
 	static {
 		try {
@@ -68,6 +71,20 @@ public class DesktopImpl implements PlatformImpl {
 	@Override
 	public Lookup lookup(Class<?> clazz) {
 		return lookup;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T clone(T object) {
+		try {
+			if (clone == null) {
+				clone = lookup.findVirtual(Object.class, "clone", MethodType.methodType(Object.class));
+			}
+
+			return (T) clone.invokeExact(object);
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override

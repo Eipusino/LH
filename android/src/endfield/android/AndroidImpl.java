@@ -2,7 +2,6 @@ package endfield.android;
 
 import arc.func.Cons;
 import arc.util.Log;
-import endfield.util.AccessibleHelper;
 import endfield.util.CollectionObjectMap;
 import endfield.util.PlatformImpl;
 import libcore.io.Memory;
@@ -10,6 +9,7 @@ import libcore.io.Memory;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.Buffer;
 import java.util.Objects;
 import java.util.function.Function;
@@ -34,6 +34,7 @@ public class AndroidImpl implements PlatformImpl {
 			throw new RuntimeException(e);
 		}
 	};
+	static Method clone;
 
 	static {
 		Log.infoTag("Unsafe", "getUnsafe: " + unsafe);
@@ -54,6 +55,21 @@ public class AndroidImpl implements PlatformImpl {
 			constructor.setAccessible(true);
 		} catch (Throwable e) {
 			Log.err(e);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T clone(T object) {
+		try {
+			if (clone == null) {
+				clone = Object.class.getDeclaredMethod("internalClone");
+				clone.setAccessible(true);
+			}
+
+			return (T) clone.invoke(object);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 
