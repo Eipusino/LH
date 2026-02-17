@@ -1,38 +1,16 @@
 package endfield.desktop;
 
-import arc.util.Log;
 import endfield.util.CollectionObjectMap;
 import endfield.util.FieldAccessHelper;
 
-import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import static endfield.Vars2.classHelper;
-import static endfield.desktop.DesktopImpl.lookup;
 
-public class DesktopFieldAccessHelper implements FieldAccessHelper {
+public class UnsafeFieldAccessHelper implements FieldAccessHelper {
 	protected static final CollectionObjectMap<String, Field> empty = new CollectionObjectMap<>(String.class, Field.class);
 	protected static final CollectionObjectMap<Class<?>, CollectionObjectMap<String, Field>> fieldMap = new CollectionObjectMap<>(Class.class, CollectionObjectMap.class);
-
-	protected static final CollectionObjectMap<Field, MethodHandle> getters = new CollectionObjectMap<>(Field.class, MethodHandle.class);
-	protected static final CollectionObjectMap<Field, MethodHandle> setters = new CollectionObjectMap<>(Field.class, MethodHandle.class);
-
-	protected static final boolean useUnsafe;
-
-	static {
-		boolean tmp;
-
-		try {
-			Log.infoTag("Unsafe", "getUnsafe: " + Unsafer.unsafe);
-			tmp = true;
-		} catch (Throwable e) {
-			Log.err(e);
-
-			tmp = false;
-		}
-		useUnsafe = tmp;
-	}
 
 	public Field getField(Class<?> clazz, String name, boolean isStatic) throws NoSuchFieldException {
 		Field field = fieldMap.get(clazz, empty).get(name);
@@ -58,39 +36,12 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 		throw new NoSuchFieldException("field " + name + " was not found in class: " + clazz);
 	}
 
-	protected MethodHandle getter(Field field) {
-		return getters.get(field, () -> {
-			try {
-				return (field.getModifiers() & Modifier.STATIC) == 0 ?
-						lookup.findGetter(field.getDeclaringClass(), field.getName(), field.getType()) :
-						lookup.findStaticGetter(field.getDeclaringClass(), field.getName(), field.getType());
-				//return lookup.unreflectGetter(field);
-			} catch (IllegalAccessException | NoSuchFieldException e) {
-				throw new RuntimeException(e);
-			}
-		});
-	}
-
-	protected MethodHandle setter(Field field) {
-		return setters.get(field, () -> {
-			try {
-				return (field.getModifiers() & Modifier.STATIC) == 0 ?
-						lookup.findSetter(field.getDeclaringClass(), field.getName(), field.getType()) :
-						lookup.findStaticSetter(field.getDeclaringClass(), field.getName(), field.getType());
-				//return lookup.unreflectSetter(field);
-			} catch (IllegalAccessException | NoSuchFieldException e) {
-				throw new RuntimeException(e);
-			}
-		});
-	}
-
 	@Override
 	public void setByte(Object object, String name, byte value) {
 		try {
 			Field field = getField(object.getClass(), name, false);
 
-			if (useUnsafe) Unsafer.setByte(field, object, value);
-			else setter(field).invoke(object, value);
+			Unsafer.setByte(field, object, value);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -101,8 +52,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 		try {
 			Field field = getField(clazz, name, true);
 
-			if (useUnsafe) Unsafer.setByteStatic(field, value);
-			else setter(field).invoke(value);
+			Unsafer.setByteStatic(field, value);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -113,7 +63,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 		try {
 			Field field = getField(object.getClass(), name, false);
 
-			return useUnsafe ? Unsafer.getByte(field, object) : (byte) getter(field).invoke(object);
+			return Unsafer.getByte(field, object);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -124,7 +74,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 		try {
 			Field field = getField(clazz, name, true);
 
-			return useUnsafe ? Unsafer.getByteStatic(field) : (byte) getter(field).invoke();
+			return Unsafer.getByteStatic(field);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -135,8 +85,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 		try {
 			Field field = getField(object.getClass(), name, false);
 
-			if (useUnsafe) Unsafer.setShort(field, object, value);
-			else setter(field).invoke(object, value);
+			Unsafer.setShort(field, object, value);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -147,8 +96,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 		try {
 			Field field = getField(clazz, name, true);
 
-			if (useUnsafe) Unsafer.setShortStatic(field, value);
-			else setter(field).invoke(value);
+			Unsafer.setShortStatic(field, value);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -159,7 +107,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 		try {
 			Field field = getField(object.getClass(), name, false);
 
-			return useUnsafe ? Unsafer.getShort(field, object) : (short) getter(field).invoke(object);
+			return Unsafer.getShort(field, object);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -170,7 +118,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 		try {
 			Field field = getField(clazz, name, true);
 
-			return useUnsafe ? Unsafer.getShortStatic(field) : (short) getter(field).invoke();
+			return Unsafer.getShortStatic(field);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -181,8 +129,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 		try {
 			Field field = getField(object.getClass(), name, false);
 
-			if (useUnsafe) Unsafer.setInt(field, object, value);
-			else setter(field).invoke(object, value);
+			Unsafer.setInt(field, object, value);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -193,8 +140,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 		try {
 			Field field = getField(clazz, name, true);
 
-			if (useUnsafe) Unsafer.setIntStatic(field, value);
-			else setter(field).invoke(value);
+			Unsafer.setIntStatic(field, value);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -205,7 +151,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 		try {
 			Field field = getField(object.getClass(), name, false);
 
-			return useUnsafe ? Unsafer.getInt(field, object) : (int) getter(field).invoke(object);
+			return Unsafer.getInt(field, object);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -216,7 +162,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 		try {
 			Field field = getField(clazz, name, true);
 
-			return useUnsafe ? Unsafer.getIntStatic(field) : (int) getter(field).invoke();
+			return Unsafer.getIntStatic(field);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -227,8 +173,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 		try {
 			Field field = getField(object.getClass(), name, false);
 
-			if (useUnsafe) Unsafer.setLong(field, object, value);
-			else setter(field).invoke(object, value);
+			Unsafer.setLong(field, object, value);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -239,8 +184,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 		try {
 			Field field = getField(clazz, name, true);
 
-			if (useUnsafe) Unsafer.setLongStatic(field, value);
-			else setter(field).invoke(value);
+			Unsafer.setLongStatic(field, value);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -251,7 +195,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 		try {
 			Field field = getField(object.getClass(), name, false);
 
-			return useUnsafe ? Unsafer.getLong(field, object) : (long) getter(field).invoke(object);
+			return Unsafer.getLong(field, object);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -262,7 +206,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 		try {
 			Field field = getField(clazz, name, true);
 
-			return useUnsafe ? Unsafer.getLongStatic(field) : (long) getter(field).invoke();
+			return Unsafer.getLongStatic(field);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -273,8 +217,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 		try {
 			Field field = getField(object.getClass(), name, false);
 
-			if (useUnsafe) Unsafer.setFloat(field, object, value);
-			else setter(field).invoke(object, value);
+			Unsafer.setFloat(field, object, value);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -285,8 +228,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 		try {
 			Field field = getField(clazz, name, true);
 
-			if (useUnsafe) Unsafer.setFloatStatic(field, value);
-			else setter(field).invoke(value);
+			Unsafer.setFloatStatic(field, value);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -297,7 +239,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 		try {
 			Field field = getField(object.getClass(), name, false);
 
-			return useUnsafe ? Unsafer.getFloat(field, object) : (float) getter(field).invoke(object);
+			return Unsafer.getFloat(field, object);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -308,7 +250,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 		try {
 			Field field = getField(clazz, name, true);
 
-			return useUnsafe ? Unsafer.getFloatStatic(field) : (float) getter(field).invoke();
+			return Unsafer.getFloatStatic(field);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -319,8 +261,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 		try {
 			Field field = getField(object.getClass(), name, false);
 
-			if (useUnsafe) Unsafer.setDouble(field, object, value);
-			else setter(field).invoke(object, value);
+			Unsafer.setDouble(field, object, value);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -331,8 +272,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 		try {
 			Field field = getField(clazz, name, true);
 
-			if (useUnsafe) Unsafer.setDoubleStatic(field, value);
-			else setter(field).invoke(value);
+			Unsafer.setDoubleStatic(field, value);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -343,7 +283,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 		try {
 			Field field = getField(object.getClass(), name, false);
 
-			return useUnsafe ? Unsafer.getDouble(field, object) : (double) getter(field).invoke(object);
+			return Unsafer.getDouble(field, object);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -354,7 +294,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 		try {
 			Field field = getField(clazz, name, true);
 
-			return useUnsafe ? Unsafer.getDoubleStatic(field) : (double) getter(field).invoke();
+			return Unsafer.getDoubleStatic(field);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -365,8 +305,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 		try {
 			Field field = getField(object.getClass(), name, false);
 
-			if (useUnsafe) Unsafer.setChar(field, object, value);
-			else setter(field).invoke(object, value);
+			Unsafer.setChar(field, object, value);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -377,8 +316,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 		try {
 			Field field = getField(clazz, name, true);
 
-			if (useUnsafe) Unsafer.setCharStatic(field, value);
-			else setter(field).invoke(value);
+			Unsafer.setCharStatic(field, value);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -389,7 +327,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 		try {
 			Field field = getField(object.getClass(), name, false);
 
-			return useUnsafe ? Unsafer.getChar(field, object) : (char) getter(field).invoke(object);
+			return Unsafer.getChar(field, object);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -400,7 +338,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 		try {
 			Field field = getField(clazz, name, true);
 
-			return useUnsafe ? Unsafer.getCharStatic(field) : (char) getter(field).invoke();
+			return Unsafer.getCharStatic(field);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -411,8 +349,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 		try {
 			Field field = getField(object.getClass(), name, false);
 
-			if (useUnsafe) Unsafer.setBoolean(field, object, value);
-			else setter(field).invoke(object, value);
+			Unsafer.setBoolean(field, object, value);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -423,8 +360,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 		try {
 			Field field = getField(clazz, name, true);
 
-			if (useUnsafe) Unsafer.setBooleanStatic(field, value);
-			else setter(field).invoke(value);
+			Unsafer.setBooleanStatic(field, value);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -435,7 +371,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 		try {
 			Field field = getField(object.getClass(), name, false);
 
-			return useUnsafe ? Unsafer.getBoolean(field, object) : (boolean) getter(field).invoke(object);
+			return Unsafer.getBoolean(field, object);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -445,7 +381,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 	public boolean getBooleanStatic(Class<?> clazz, String name) {
 		try {
 			Field field = getField(clazz, name, true);
-			return useUnsafe ? Unsafer.getBooleanStatic(field) : (boolean) getter(field).invoke();
+			return Unsafer.getBooleanStatic(field);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -456,8 +392,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 		try {
 			Field field = getField(object.getClass(), name, false);
 
-			if (useUnsafe) Unsafer.setObject(field, object, value);
-			else setter(field).invoke(object, value);
+			Unsafer.setObject(field, object, value);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -468,8 +403,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 		try {
 			Field field = getField(clazz, name, true);
 
-			if (useUnsafe) Unsafer.setObjectStatic(field, value);
-			else setter(field).invoke(value);
+			Unsafer.setObjectStatic(field, value);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -481,7 +415,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 		try {
 			Field field = getField(object.getClass(), name, false);
 
-			return useUnsafe ? (T) Unsafer.getObject(field, object) : (T) getter(field).invoke(object);
+			return (T) Unsafer.getObject(field, object);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -493,7 +427,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 		try {
 			Field field = getField(clazz, name, true);
 
-			return useUnsafe ? (T) Unsafer.getObjectStatic(field) : (T) getter(field).invoke();
+			return (T) Unsafer.getObjectStatic(field);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -504,8 +438,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 		try {
 			Field field = getField(object.getClass(), name, false);
 
-			if (useUnsafe) Unsafer.set(field, object, value);
-			else setter(field).invoke(object, value);
+			Unsafer.set(field, object, value);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -516,8 +449,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 		try {
 			Field field = getField(clazz, name, true);
 
-			if (useUnsafe) Unsafer.setStatic(field, value);
-			else setter(field).invoke(value);
+			Unsafer.setStatic(field, value);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -529,7 +461,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 		try {
 			Field field = getField(object.getClass(), name, false);
 
-			return useUnsafe ? (T) Unsafer.get(field, object) : (T) getter(field).invoke(object);
+			return (T) Unsafer.get(field, object);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -541,7 +473,7 @@ public class DesktopFieldAccessHelper implements FieldAccessHelper {
 		try {
 			Field field = getField(clazz, name, true);
 
-			return useUnsafe ? (T) Unsafer.getStatic(field) : (T) getter(field).invoke();
+			return (T) Unsafer.getStatic(field);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}

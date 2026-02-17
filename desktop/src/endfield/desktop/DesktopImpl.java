@@ -38,7 +38,13 @@ public class DesktopImpl implements PlatformImpl {
 			DesktopClassHelper.init();
 
 			classHelper = new DesktopClassHelper();
-			fieldAccessHelper = new DesktopFieldAccessHelper();
+			try {
+				Log.infoTag("Unsafe", "getUnsafe: " + Unsafer.unsafe);
+
+				fieldAccessHelper = new UnsafeFieldAccessHelper();
+			} catch (Throwable e) {
+				fieldAccessHelper = new MethodHandleFieldAccessHelper();
+			}
 			methodInvokeHelper = new DesktopMethodInvokeHelper();
 			accessibleHelper = new DesktopAccessibleHelper();
 		} catch (Throwable e) {
