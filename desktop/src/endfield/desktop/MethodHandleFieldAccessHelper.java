@@ -509,4 +509,330 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 			throw new RuntimeException(e);
 		}
 	}
+
+	@Override
+	public void setByte(Object object, Field field, byte value, boolean access) {
+		try {
+			setter(field).invoke(object, value);
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void setByteStatic(Field field, byte value, boolean access) {
+		try {
+			setter(field).invoke(value);
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public byte getByte(Object object, Field field, boolean access) {
+		try {
+			return (byte) getter(field).invoke(object);
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public byte getByteStatic(Field field, boolean access) {
+		try {
+			return (byte) getter(field).invoke();
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void setShort(Object object, Field field, short value, boolean access) {
+		try {
+			setter(field).invoke(object, value);
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void setShortStatic(Field field, short value, boolean access) {
+		try {
+			setter(field).invoke(value);
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public short getShort(Object object, Field field, boolean access) {
+		try {
+			return (short) getter(field).invoke(object);
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public short getShortStatic(Field field, boolean access) {
+		try {
+			return (short) getter(field).invoke();
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void setInt(Object object, Field field, int value, boolean access) {
+		try {
+			setter(field).invoke(object, value);
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void setIntStatic(Field field, int value, boolean access) {
+		try {
+			setter(field).invoke(value);
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public int getInt(Object object, Field field, boolean access) {
+		try {
+			return (int) getter(field).invoke(object);
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public int getIntStatic(Field field, boolean access) {
+		try {
+			return (int) getter(field).invoke();
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void setLong(Object object, Field field, long value, boolean access) {
+		try {
+			setter(field).invoke(object, value);
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void setLongStatic(Field field, long value, boolean access) {
+		try {
+			setter(field).invoke(value);
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public long getLong(Object object, Field field, boolean access) {
+		try {
+			return (long) getter(field).invoke(object);
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public long getLongStatic(Field field, boolean access) {
+		try {
+			return (long) getter(field).invoke();
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void setFloat(Object object, Field field, float value, boolean access) {
+		try {
+			setter(field).invoke(object, value);
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void setFloatStatic(Field field, float value, boolean access) {
+		try {
+			setter(field).invoke(value);
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public float getFloat(Object object, Field field, boolean access) {
+		try {
+			return (float) getter(field).invoke(object);
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public float getFloatStatic(Field field, boolean access) {
+		try {
+			return (float) getter(field).invoke();
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void setDouble(Object object, Field field, double value, boolean access) {
+		try {
+			setter(field).invoke(object, value);
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void setDoubleStatic(Field field, double value, boolean access) {
+		try {
+			setter(field).invoke(value);
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public double getDouble(Object object, Field field, boolean access) {
+		try {
+			return (double) getter(field).invoke(object);
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public double getDoubleStatic(Field field, boolean access) {
+		try {
+			return (double) getter(field).invoke();
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void setChar(Object object, Field field, char value, boolean access) {
+		try {
+			setter(field).invoke(object, value);
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void setCharStatic(Field field, char value, boolean access) {
+		try {
+			setter(field).invoke(value);
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public char getChar(Object object, Field field, boolean access) {
+		try {
+			return (char) getter(field).invoke(object);
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public char getCharStatic(Field field, boolean access) {
+		try {
+			return (char) getter(field).invoke();
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void setBoolean(Object object, Field field, boolean value, boolean access) {
+		try {
+			setter(field).invoke(object, value);
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void setBooleanStatic(Field field, boolean value, boolean access) {
+		try {
+			setter(field).invoke(value);
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public boolean getBoolean(Object object, Field field, boolean access) {
+		try {
+			return (boolean) getter(field).invoke(object);
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public boolean getBooleanStatic(Field field, boolean access) {
+		try {
+			return (boolean) getter(field).invoke();
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void set(Object object, Field field, Object value, boolean access) {
+		try {
+			setter(field).invoke(object, value);
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void setStatic(Field field, Object value, boolean access) {
+		try {
+			setter(field).invoke(value);
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T get(Object object, Field field, boolean access) {
+		try {
+			return (T) getter(field).invoke(object);
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T getStatic(Field field, boolean access) {
+		try {
+			return (T) getter(field).invoke();
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
 }

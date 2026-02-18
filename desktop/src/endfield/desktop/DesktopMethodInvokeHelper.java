@@ -160,7 +160,7 @@ public class DesktopMethodInvokeHelper implements MethodInvokeHelper {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T invoke(Object object, String name, Class<?>[] parameterTypes, Object... args) {
+	public <T> T invokeWithAsType(Object object, String name, Class<?>[] parameterTypes, Object... args) {
 		FunctionType type = FunctionType.inst(parameterTypes);
 		try {
 			return (T) Reflects.invokeVirtual(object, getMethod(object.getClass(), name, type), args);
@@ -173,7 +173,7 @@ public class DesktopMethodInvokeHelper implements MethodInvokeHelper {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T invokeStatic(Class<?> clazz, String name, Class<?>[] parameterTypes, Object... args) {
+	public <T> T invokeStaticWithAsType(Class<?> clazz, String name, Class<?>[] parameterTypes, Object... args) {
 		FunctionType type = FunctionType.inst(parameterTypes);
 		try {
 			return (T) Reflects.invokeStatic(getMethod(clazz, name, type), args);
@@ -186,7 +186,7 @@ public class DesktopMethodInvokeHelper implements MethodInvokeHelper {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T newInstance(Class<T> clazz, Class<?>[] parameterTypes, Object... args) {
+	public <T> T newInstanceWithAsType(Class<T> clazz, Class<?>[] parameterTypes, Object... args) {
 		FunctionType type = FunctionType.inst(parameterTypes);
 		try {
 			return (T) Reflects.invokeStatic(getConstructor(clazz, type), args);
