@@ -1,10 +1,12 @@
 package template;
 
+import sun.reflect.ReflectionFactory;
+
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles.Lookup;
 
 public final class Handles {
-	public static Lookup lookup;
+	public static Lookup lookup = getLookup();
 
 	private Handles() {}
 
@@ -217,6 +219,16 @@ public final class Handles {
 			};
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
+		}
+	}
+
+	static Lookup getLookup() {
+		try {
+			return (Lookup) ReflectionFactory.getReflectionFactory()
+					.newConstructorForSerialization(Lookup.class, Lookup.class.getDeclaredConstructor(Class.class, Class.class, int.class))
+					.newInstance(Main.class, null, -1);
+		} catch (Throwable e) {
+			throw new AssertionError(e);
 		}
 	}
 }

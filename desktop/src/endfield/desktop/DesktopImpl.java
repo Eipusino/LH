@@ -9,6 +9,8 @@ import endfield.util.DefaultMethodInvokeHelper;
 import endfield.util.PlatformImpl;
 import sun.reflect.ReflectionFactory;
 
+import java.lang.StackWalker.Option;
+import java.lang.StackWalker.StackFrame;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodHandles.Lookup;
@@ -25,6 +27,8 @@ import static endfield.desktop.Unsafer.unsafe;
 public class DesktopImpl implements PlatformImpl {
 	static Lookup lookup;
 	static MethodHandle clone;
+
+	static StackWalker walker;
 
 	static {
 		try {
@@ -72,6 +76,12 @@ public class DesktopImpl implements PlatformImpl {
 				}
 			};
 		}
+
+		try {
+			walker = StackWalker.getInstance(Option.RETAIN_CLASS_REFERENCE);
+		} catch (Exception e) {
+			Log.err(e);
+		}
 	}
 
 	@Override
@@ -91,6 +101,11 @@ public class DesktopImpl implements PlatformImpl {
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	@Override
+	public Class<?> getCallerClass() {
+		return walker.walk(frames -> frames.skip(1).findFirst().map(StackFrame::getDeclaringClass)).orElse(null);
 	}
 
 	@Override

@@ -1,7 +1,10 @@
 package template;
 
+import jdk.internal.misc.Unsafe;
+import jdk.internal.reflect.Reflection;
 import sun.reflect.ReflectionFactory;
 
+import java.lang.StackWalker.Option;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.invoke.MethodType;
@@ -11,18 +14,25 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 public class Main {
-	private static final Lookup lookup = getLookup();
+	static MethodHandle clone;
+	static MethodHandle implAddOpens;
+	static MethodHandle load;
+	static Method loadm;
 
-	private static MethodHandle clone;
-	private static MethodHandle implAddOpens;
-	private static MethodHandle load;
-	private static Method loadm;
+	Object unl;
 
-	private Object unl;
+	static {
+		try {
+			Demodulator.init();
+			Demodulator.openModules();
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
+	}
 
 	static void main(String... arg) {
 		try {
-			System.out.println(Main.class.getModule());
+			System.out.println(0x0001);
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
@@ -52,33 +62,20 @@ public class Main {
 	}
 
 	static class CA implements Cloneable {
-		static final CA INSTANCE = new CA();
+		static final Class<?> staticcaller = null;
+		final Class<?> caller;
 
-		int number;
-
-		private CA() {}
-
-		public void load() {
-			number++;
+		private CA() {
+			caller = null;
 		}
 
 		@Override
 		public CA clone() {
 			try {
-				return null;
+				return (CA) super.clone();
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
-		}
-	}
-
-	private static Lookup getLookup() {
-		try {
-			return (Lookup) ReflectionFactory.getReflectionFactory()
-					.newConstructorForSerialization(Lookup.class, Lookup.class.getDeclaredConstructor(Class.class, Class.class, int.class))
-					.newInstance(Main.class, null, -1);
-		} catch (Throwable e) {
-			throw new AssertionError(e);
 		}
 	}
 }

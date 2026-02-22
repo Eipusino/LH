@@ -20,11 +20,19 @@ dependencies {
 	implementation "org.ow2.asm:asm-commons:9.6"
 }
 
+java {
+	targetCompatibility = JavaVersion.VERSION_25
+	sourceCompatibility = JavaVersion.VERSION_25
+}
+
 tasks.withType(JavaCompile).configureEach {
 	options.encoding = "UTF-8"
 
 	options.compilerArgs.addAll([
-			"--add-exports", "java.base/jdk.internal.misc=ALL-UNNAMED"
+			"--add-exports", "java.base/jdk.internal.misc=template",
+			"--add-exports", "java.base/jdk.internal.module=template",
+			"--add-exports", "java.base/jdk.internal.reflect=template",
+			"--add-exports", "java.base/sun.nio.ch=template"
 	])
 }
 

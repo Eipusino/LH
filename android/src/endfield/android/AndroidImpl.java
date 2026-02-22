@@ -2,6 +2,7 @@ package endfield.android;
 
 import arc.func.Cons;
 import arc.util.Log;
+import dalvik.system.VMStack;
 import endfield.util.CollectionObjectMap;
 import endfield.util.PlatformImpl;
 import libcore.io.Memory;
@@ -77,6 +78,11 @@ public class AndroidImpl implements PlatformImpl {
 	@Override
 	public Lookup lookup(Class<?> clazz) {
 		return lookupMap.computeIfAbsent(clazz, lookupBuilder);
+	}
+
+	@Override
+	public Class<?> getCallerClass() {
+		return VMStack.getStackClass2();
 	}
 
 	@Override
