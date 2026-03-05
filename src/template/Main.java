@@ -25,14 +25,15 @@ public class Main {
 		try {
 			Demodulator.init();
 			Demodulator.openModules();
+			Reflect.init();
 		} catch (Throwable e) {
-			e.printStackTrace();
+			throw new ExceptionInInitializerError(e);
 		}
 	}
 
 	static void main(String... arg) {
 		try {
-			System.out.println(0x0001);
+			Test.test();
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
@@ -40,11 +41,6 @@ public class Main {
 
 	public Main() {
 
-	}
-
-
-	public int getModifiers(Field field) {
-		return field.getModifiers();
 	}
 
 	public static boolean isFinalOrStatic(Field field) {

@@ -197,6 +197,36 @@ public class DesktopMethodInvokeHelper implements MethodInvokeHelper {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T invoke(Method method, Object object, Object... args) {
+		try {
+			return (T) Reflects.invokeVirtual(object, lookup.unreflect(method), args);
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T invokeStatic(Method method, Object... args) {
+		try {
+			return (T) Reflects.invokeStatic(lookup.unreflect(method), args);
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T newInstance(Constructor<T> constructor, Object... args) {
+		try {
+			return (T) Reflects.invokeStatic(lookup.unreflectConstructor(constructor), args);
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 	public static FunctionType inst(MethodType methodType) {
 		return FunctionType.inst((Class<?>[]) ptypes.get(methodType));
 	}

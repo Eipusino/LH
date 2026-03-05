@@ -37,13 +37,13 @@ dependencies {
 	def libsDir = project(":").projectDir
 
 	compileOnly files(
-			"$libsDir/libs/EndfieldMod-260222a.jar",
+			"$libsDir/libs/EndfieldMod-260305b.jar",
 			"$libsDir/libs/android.jar",
 			"$libsDir/libs/android-dalvik.jar",
 			"$libsDir/libs/mindustry-android.jar"
 	)
 
-	implementation files("$libsDir/libs/field-utils.jar")
+	implementation files("$libsDir/libs/field-utils.jar", "$libsDir/libs/hiddenapibypass.jar")
 }
 
 jar {

@@ -4,11 +4,92 @@ import sun.reflect.ReflectionFactory;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles.Lookup;
+import java.lang.invoke.MethodType;
+import java.lang.invoke.VarHandle;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 
-public final class Handles {
+public final class Reflect {
 	public static Lookup lookup = getLookup();
 
-	private Handles() {}
+	static MethodHandle getFields, getMethods, getConstructors;
+	static VarHandle mtypes, ctypes, ptypes;
+
+	private Reflect() {}
+
+	static void init() throws NoSuchFieldException, NoSuchMethodException, IllegalAccessException {
+		getFields = lookup.findVirtual(Class.class, "getDeclaredFields0", MethodType.methodType(Field[].class, boolean.class));
+		getMethods = lookup.findVirtual(Class.class, "getDeclaredMethods0", MethodType.methodType(Method[].class, boolean.class));
+		getConstructors = lookup.findVirtual(Class.class, "getDeclaredConstructors0", MethodType.methodType(Constructor[].class, boolean.class));
+
+		mtypes = lookup.findVarHandle(Method.class, "parameterTypes", Class[].class);
+		ctypes = lookup.findVarHandle(Constructor.class, "parameterTypes", Class[].class);
+		ptypes = lookup.findVarHandle(MethodType.class, "ptypes", Class[].class);
+	}
+
+	public static Field getField(Class<?> type, String name) {
+		try {
+			Field[] fields = (Field[]) getFields.invokeExact(type, false);
+			for (Field field : fields) {
+				if (field.getName().equals(name)) return field;
+			}
+			return null;
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public static Method getMethod(Class<?> type, String name, Class<?>... parameterTypes) {
+		try {
+			Method[] methods = (Method[]) getMethods.invokeExact(type, false);
+			for (Method method : methods) {
+				if (method.getName().equals(name) && Arrays.equals((Class<?>[]) mtypes.get(method), parameterTypes)) return method;
+			}
+			return null;
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> Constructor<T> getConstructor(Class<T> type, Class<?>... parameterTypes) {
+		try {
+			Constructor<T>[] constructors = (Constructor<T>[]) getConstructors.invokeExact(type, false);
+			for (Constructor<T> constructor : constructors) {
+				if (Arrays.equals((Class<?>[]) ctypes.get(constructor), parameterTypes)) return constructor;
+			}
+			return null;
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public static Field[] getFields(Class<?> type) {
+		try {
+			return (Field[]) getFields.invokeExact(type, false);
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public static Method[] getMethods(Class<?> type) {
+		try {
+			return (Method[]) getMethods.invokeExact(type, false);
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> Constructor<T>[] getConstructors(Class<T> type) {
+		try {
+			return (Constructor<T>[]) getConstructors.invokeExact(type, false);
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	public static Object invokeStatic(MethodHandle handle, Object... args) {
 		try {

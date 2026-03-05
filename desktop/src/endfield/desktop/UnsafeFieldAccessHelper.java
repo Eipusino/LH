@@ -480,206 +480,206 @@ public class UnsafeFieldAccessHelper implements FieldAccessHelper {
 	}
 
 	@Override
-	public void setByte(Object object, Field field, byte value, boolean access) {
+	public void setByte(Object object, Field field, byte value) {
 		Unsafer.setByte(field, object, value);
 	}
 
 	@Override
-	public void setByteStatic(Field field, byte value, boolean access) {
+	public void setByteStatic(Field field, byte value) {
 		Unsafer.setByteStatic(field, value);
 	}
 
 	@Override
-	public byte getByte(Object object, Field field, boolean access) {
+	public byte getByte(Object object, Field field) {
 		return Unsafer.getByte(field, object);
 	}
 
 	@Override
-	public byte getByteStatic(Field field, boolean access) {
+	public byte getByteStatic(Field field) {
 		return Unsafer.getByteStatic(field);
 	}
 
 	@Override
-	public void setShort(Object object, Field field, short value, boolean access) {
+	public void setShort(Object object, Field field, short value) {
 		Unsafer.setShort(field, object, value);
 	}
 
 	@Override
-	public void setShortStatic(Field field, short value, boolean access) {
+	public void setShortStatic(Field field, short value) {
 		Unsafer.setShortStatic(field, value);
 	}
 
 	@Override
-	public short getShort(Object object, Field field, boolean access) {
+	public short getShort(Object object, Field field) {
 		return Unsafer.getShort(field, object);
 	}
 
 	@Override
-	public short getShortStatic(Field field, boolean access) {
+	public short getShortStatic(Field field) {
 		return Unsafer.getShortStatic(field);
 	}
 
 	@Override
-	public void setInt(Object object, Field field, int value, boolean access) {
+	public void setInt(Object object, Field field, int value) {
 		Unsafer.setInt(field, object, value);
 	}
 
 	@Override
-	public void setIntStatic(Field field, int value, boolean access) {
+	public void setIntStatic(Field field, int value) {
 		Unsafer.setIntStatic(field, value);
 	}
 
 	@Override
-	public int getInt(Object object, Field field, boolean access) {
+	public int getInt(Object object, Field field) {
 		return Unsafer.getInt(field, object);
 	}
 
 	@Override
-	public int getIntStatic(Field field, boolean access) {
+	public int getIntStatic(Field field) {
 		return Unsafer.getIntStatic(field);
 	}
 
 	@Override
-	public void setLong(Object object, Field field, long value, boolean access) {
+	public void setLong(Object object, Field field, long value) {
 		Unsafer.setLong(field, object, value);
 	}
 
 	@Override
-	public void setLongStatic(Field field, long value, boolean access) {
+	public void setLongStatic(Field field, long value) {
 		Unsafer.setLongStatic(field, value);
 	}
 
 	@Override
-	public long getLong(Object object, Field field, boolean access) {
+	public long getLong(Object object, Field field) {
 		return Unsafer.getLong(field, object);
 	}
 
 	@Override
-	public long getLongStatic(Field field, boolean access) {
+	public long getLongStatic(Field field) {
 		return Unsafer.getLongStatic(field);
 	}
 
 	@Override
-	public void setFloat(Object object, Field field, float value, boolean access) {
+	public void setFloat(Object object, Field field, float value) {
 		Unsafer.setFloat(field, object, value);
 	}
 
 	@Override
-	public void setFloatStatic(Field field, float value, boolean access) {
+	public void setFloatStatic(Field field, float value) {
 		Unsafer.setFloatStatic(field, value);
 	}
 
 	@Override
-	public float getFloat(Object object, Field field, boolean access) {
+	public float getFloat(Object object, Field field) {
 		return Unsafer.getFloat(field, object);
 	}
 
 	@Override
-	public float getFloatStatic(Field field, boolean access) {
+	public float getFloatStatic(Field field) {
 		return Unsafer.getFloatStatic(field);
 	}
 
 	@Override
-	public void setDouble(Object object, Field field, double value, boolean access) {
+	public void setDouble(Object object, Field field, double value) {
 		Unsafer.setDouble(field, object, value);
 	}
 
 	@Override
-	public void setDoubleStatic(Field field, double value, boolean access) {
+	public void setDoubleStatic(Field field, double value) {
 		Unsafer.setDoubleStatic(field, value);
 	}
 
 	@Override
-	public double getDouble(Object object, Field field, boolean access) {
+	public double getDouble(Object object, Field field) {
 		return Unsafer.getDouble(field, object);
 	}
 
 	@Override
-	public double getDoubleStatic(Field field, boolean access) {
+	public double getDoubleStatic(Field field) {
 		return Unsafer.getDoubleStatic(field);
 	}
 
 	@Override
-	public void setChar(Object object, Field field, char value, boolean access) {
+	public void setChar(Object object, Field field, char value) {
 		Unsafer.setChar(field, object, value);
 	}
 
 	@Override
-	public void setCharStatic(Field field, char value, boolean access) {
+	public void setCharStatic(Field field, char value) {
 		Unsafer.setCharStatic(field, value);
 	}
 
 	@Override
-	public char getChar(Object object, Field field, boolean access) {
+	public char getChar(Object object, Field field) {
 		return Unsafer.getChar(field, object);
 	}
 
 	@Override
-	public char getCharStatic(Field field, boolean access) {
+	public char getCharStatic(Field field) {
 		return Unsafer.getCharStatic(field);
 	}
 
 	@Override
-	public void setBoolean(Object object, Field field, boolean value, boolean access) {
+	public void setBoolean(Object object, Field field, boolean value) {
 		Unsafer.setBoolean(field, object, value);
 	}
 
 	@Override
-	public void setBooleanStatic(Field field, boolean value, boolean access) {
+	public void setBooleanStatic(Field field, boolean value) {
 		Unsafer.setBooleanStatic(field, value);
 	}
 
 	@Override
-	public boolean getBoolean(Object object, Field field, boolean access) {
+	public boolean getBoolean(Object object, Field field) {
 		return Unsafer.getBoolean(field, object);
 	}
 
 	@Override
-	public boolean getBooleanStatic(Field field, boolean access) {
+	public boolean getBooleanStatic(Field field) {
 		return Unsafer.getBooleanStatic(field);
 	}
 
 	@Override
-	public void setObject(Object object, Field field, Object value, boolean access) {
+	public void setObject(Object object, Field field, Object value) {
 		Unsafer.setObject(field, object, value);
 	}
 
 	@Override
-	public void setObjectStatic(Field field, Object value, boolean access) {
+	public void setObjectStatic(Field field, Object value) {
 		Unsafer.setObjectStatic(field, value);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T getObject(Object object, Field field, boolean access) {
+	public <T> T getObject(Object object, Field field) {
 		return (T) Unsafer.getObject(field, object);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T getObjectStatic(Field field, boolean access) {
+	public <T> T getObjectStatic(Field field) {
 		return (T) Unsafer.getObjectStatic(field);
 	}
 
 	@Override
-	public void set(Object object, Field field, Object value, boolean access) {
+	public void set(Object object, Field field, Object value) {
 		Unsafer.set(field, object, value);
 	}
 
 	@Override
-	public void setStatic(Field field, Object value, boolean access) {
+	public void setStatic(Field field, Object value) {
 		Unsafer.setStatic(field, value);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T get(Object object, Field field, boolean access) {
+	public <T> T get(Object object, Field field) {
 		return (T) Unsafer.get(field, object);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T getStatic(Field field, boolean access) {
+	public <T> T getStatic(Field field) {
 		return (T) Unsafer.getStatic(field);
 	}
 }

@@ -5,7 +5,7 @@ import jdk.internal.module.Modules;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodType;
 
-import static template.Handles.lookup;
+import static template.Reflect.lookup;
 
 public class Demodulator {
 	static MethodHandle implAddOpens;

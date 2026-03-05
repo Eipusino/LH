@@ -1,7 +1,9 @@
 package endfield.android;
 
+import arc.util.Log;
 import arc.util.OS;
 import dalvik.system.VMRuntime;
+import org.lsposed.hiddenapibypass.HiddenApiBypass;
 
 import java.lang.reflect.Method;
 
@@ -10,7 +12,6 @@ import static endfield.android.Unsafer.unsafe;
 /** Only For Android */
 @SuppressWarnings("removal")
 public class HiddenApi {
-	public static final VMRuntime runtime = VMRuntime.getRuntime();
 
 	public static final long intBytes = Integer.BYTES;
 	/**
@@ -24,6 +25,7 @@ public class HiddenApi {
 			"Ldalvik/system/VMRuntime;",
 			"Ldalvik/system/VMStack;",
 			"Ljava/lang/Class;->accessFlags:I",
+			"Ljava/lang/Enum;",
 			"Ljava/lang/Object;->internalClone()Ljava/lang/Object;",
 			"Ljava/lang/invoke/MethodHandles$Lookup;-><init>(Ljava/lang/Class;I)V",
 			"Ljava/lang/reflect/AccessibleObject;->override:Z",
@@ -40,6 +42,7 @@ public class HiddenApi {
 			"Lsun/misc/Unsafe;",
 			"Lsun/nio/ch/DirectBuffer;"
 	};
+	static VMRuntime runtime;
 	// Not using the 'L' wildcard is to ensure basic security and prevent strange issues caused by things we don't want to call in certain parts of the program.
 	//static final String[] values = {"L"};
 
@@ -50,13 +53,19 @@ public class HiddenApi {
 
 	static long offset;
 
-	static {
+	static void load() throws Throwable {
+		try {
+			if (HiddenApiBypass.setHiddenApiExemptions(values)) return;
+		} catch (Throwable e) {
+			Log.err(e);
+		}
+
+		runtime = VMRuntime.getRuntime();
+
 		oneArray = (Object[]) runtime.newNonMovableArray(Object.class, 1);
 		intArray = (int[]) runtime.newNonMovableArray(int.class, 0);
 		offset = runtime.addressOf(intArray) - vaddressOf(intArray);
-	}
 
-	static void load() throws Throwable {
 		// In higher versions, the setHiddenApiExertions method cannot be directly reflected to obtain it, so the artMethod needs to be modified
 		// Sdk_version>28 (exact number unknown)
 		setHiddenApiExemptionsMethod = findMethod();
