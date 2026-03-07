@@ -22,13 +22,17 @@ import static endfield.desktop.DesktopImpl.lookup;
 public final class Demodulator {
 	//public static Map<Class<?>, Set<String>> fieldFilterMap;
 
-	static MethodHandle implAddOpens;
+	static final MethodHandle implAddOpens;
 
 	private Demodulator() {}
 
 	// The exceptions thrown during initialization are collectively handled in a try-catch block.
-	static void init() throws NoSuchMethodException, IllegalAccessException {
-		implAddOpens = lookup.findVirtual(Module.class, "implAddOpens", MethodType.methodType(void.class, String.class, Module.class));
+	static {
+		try {
+			implAddOpens = lookup.findVirtual(Module.class, "implAddOpens", MethodType.methodType(void.class, String.class, Module.class));
+		} catch (NoSuchMethodException | IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	public static void makeOpenModule(Module from, Class<?> clazz, Module to) {

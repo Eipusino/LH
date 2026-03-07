@@ -19,9 +19,7 @@ import static endfield.Vars2.accessibleHelper;
 import static endfield.Vars2.classHelper;
 import static endfield.Vars2.fieldAccessHelper;
 import static endfield.Vars2.methodInvokeHelper;
-import static endfield.android.Unsafer.unsafe;
 
-@SuppressWarnings("removal")
 public class AndroidImpl implements PlatformImpl {
 	static final Cons<Throwable> exceptionHandler = e -> {};
 
@@ -38,8 +36,6 @@ public class AndroidImpl implements PlatformImpl {
 	static Method clone;
 
 	static {
-		Log.infoTag("Unsafe", "getUnsafe: " + unsafe);
-
 		try {
 			HiddenApi.load();
 		} catch (Throwable e) {

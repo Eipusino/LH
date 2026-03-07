@@ -42,7 +42,6 @@ public class DesktopMethodInvokeHelper implements MethodInvokeHelper {
 			Method method = classHelper.getMethod(curr, name, argTypes.getTypes());
 
 			if (method != null) {
-				method.setAccessible(true);
 				res = lookup.unreflect(method);
 			}
 
@@ -65,8 +64,6 @@ public class DesktopMethodInvokeHelper implements MethodInvokeHelper {
 
 				FunctionType t;
 				if ((t = from(method)).match(methodArgs)) {
-					method.setAccessible(true);
-
 					res = lookup.unreflect(method);
 					map.put(t, res);
 					break a;
@@ -197,33 +194,78 @@ public class DesktopMethodInvokeHelper implements MethodInvokeHelper {
 		}
 	}
 
+	protected MethodHandle getMethod(Method method, FunctionType argTypes) throws IllegalAccessException {
+		CollectionObjectMap<FunctionType, MethodHandle> map = methodPool.get(method.getDeclaringClass(), prov1).get(method.getName(), prov2);
+
+		FunctionType type = FunctionType.inst(argTypes);
+		MethodHandle res = map.get(type);
+
+		if (res != null) return res;
+
+		for (ObjectHolder<FunctionType, MethodHandle> entry : map) {
+			if (entry.key.match(argTypes.getTypes())) return entry.value;
+		}
+
+		res = lookup.unreflect(method);
+
+		map.put(inst(res.type()), res);
+
+		return res;
+	}
+
+	protected MethodHandle getConstructor(Constructor<?> constructor, FunctionType argsType) throws IllegalAccessException {
+		CollectionObjectMap<FunctionType, MethodHandle> map = methodPool.get(constructor.getDeclaringClass(), prov1).get("<init>", prov2);
+
+		MethodHandle res = map.get(argsType);
+		if (res != null) return res;
+
+		for (ObjectHolder<FunctionType, MethodHandle> entry : map) {
+			if (entry.key.match(argsType.getTypes())) return entry.value;
+		}
+
+		res = lookup.unreflectConstructor(constructor);
+
+		map.put(argsType, res);
+
+		return res;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T invoke(Method method, Object object, Object... args) {
+	public <T> T invoke(Method method, Object object, boolean access, Object... args) {
+		FunctionType type = from(method);
 		try {
-			return (T) Reflects.invokeVirtual(object, lookup.unreflect(method), args);
+			return (T) Reflects.invokeVirtual(object, getMethod(method, type), args);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
+		} finally {
+			type.recycle();
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T invokeStatic(Method method, Object... args) {
+	public <T> T invokeStatic(Method method, boolean access, Object... args) {
+		FunctionType type = from(method);
 		try {
-			return (T) Reflects.invokeStatic(lookup.unreflect(method), args);
+			return (T) Reflects.invokeStatic(getMethod(method, type), args);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
+		} finally {
+			type.recycle();
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T newInstance(Constructor<T> constructor, Object... args) {
+	public <T> T newInstance(Constructor<T> constructor, boolean access, Object... args) {
+		FunctionType type = from(constructor);
 		try {
-			return (T) Reflects.invokeStatic(lookup.unreflectConstructor(constructor), args);
+			return (T) Reflects.invokeStatic(getConstructor(constructor, type), args);
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
+		} finally {
+			type.recycle();
 		}
 	}
 

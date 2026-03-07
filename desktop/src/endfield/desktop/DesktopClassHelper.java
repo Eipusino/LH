@@ -15,17 +15,21 @@ import static endfield.desktop.DesktopImpl.lookup;
 import static endfield.desktop.Unsafer.unsafe;
 
 public class DesktopClassHelper implements ClassHelper {
-	static MethodHandle getFields, getMethods, getConstructors;
-	static VarHandle mtypes, ctypes, ptypes;
+	static final MethodHandle getFields, getMethods, getConstructors;
+	static final VarHandle mtypes, ctypes, ptypes;
 
-	static void init() throws NoSuchFieldException, NoSuchMethodException, IllegalAccessException {
-		getFields = lookup.findVirtual(Class.class, "getDeclaredFields0", MethodType.methodType(Field[].class, boolean.class));
-		getMethods = lookup.findVirtual(Class.class, "getDeclaredMethods0", MethodType.methodType(Method[].class, boolean.class));
-		getConstructors = lookup.findVirtual(Class.class, "getDeclaredConstructors0", MethodType.methodType(Constructor[].class, boolean.class));
+	static {
+		try {
+			getFields = lookup.findVirtual(Class.class, "getDeclaredFields0", MethodType.methodType(Field[].class, boolean.class));
+			getMethods = lookup.findVirtual(Class.class, "getDeclaredMethods0", MethodType.methodType(Method[].class, boolean.class));
+			getConstructors = lookup.findVirtual(Class.class, "getDeclaredConstructors0", MethodType.methodType(Constructor[].class, boolean.class));
 
-		mtypes = lookup.findVarHandle(Method.class, "parameterTypes", Class[].class);
-		ctypes = lookup.findVarHandle(Constructor.class, "parameterTypes", Class[].class);
-		ptypes = lookup.findVarHandle(MethodType.class, "ptypes", Class[].class);
+			mtypes = lookup.findVarHandle(Method.class, "parameterTypes", Class[].class);
+			ctypes = lookup.findVarHandle(Constructor.class, "parameterTypes", Class[].class);
+			ptypes = lookup.findVarHandle(MethodType.class, "ptypes", Class[].class);
+		} catch (NoSuchMethodException | IllegalAccessException | NoSuchFieldException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override

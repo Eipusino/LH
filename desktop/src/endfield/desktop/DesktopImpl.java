@@ -36,19 +36,10 @@ public class DesktopImpl implements PlatformImpl {
 					.newConstructorForSerialization(Lookup.class, Lookup.class.getDeclaredConstructor(Class.class, Class.class, int.class))
 					.newInstance(EndFieldMod.class, null, -1);
 
-			Demodulator.init();
 			Demodulator.openModules();
 
-			DesktopClassHelper.init();
-
 			classHelper = new DesktopClassHelper();
-			try {
-				Log.infoTag("Unsafe", "getUnsafe: " + Unsafer.unsafe);
-
-				fieldAccessHelper = new UnsafeFieldAccessHelper();
-			} catch (Throwable e) {
-				fieldAccessHelper = new MethodHandleFieldAccessHelper();
-			}
+			fieldAccessHelper = new UnsafeFieldAccessHelper();
 			methodInvokeHelper = new DesktopMethodInvokeHelper();
 			accessibleHelper = new DesktopAccessibleHelper();
 		} catch (Throwable e) {
