@@ -1,6 +1,7 @@
 package endfield.android;
 
 import arc.func.Prov;
+import arc.util.Structs;
 import dynamilize.FunctionType;
 import endfield.util.CollectionObjectMap;
 import endfield.util.MethodInvokeHelper;
@@ -32,21 +33,23 @@ public class AndroidMethodInvokeHelper implements MethodInvokeHelper {
 
 		Class<?> curr = clazz;
 
-		while (curr != null) {
-			try {
-				res = curr.getDeclaredMethod(name, argTypes.getTypes());
-			} catch (Throwable ignored) {}
+		if (!Structs.contains(argTypes.getTypes(), void.class)) {
+			while (curr != null) {
+				try {
+					res = curr.getDeclaredMethod(name, argTypes.getTypes());
+				} catch (Throwable ignored) {}
 
-			if (res != null) {
-				res.setAccessible(true);
-				map.put(FunctionType.from(res), res);
-				break;
+				if (res != null) {
+					res.setAccessible(true);
+					map.put(FunctionType.from(res), res);
+					break;
+				}
+
+				curr = curr.getSuperclass();
 			}
 
-			curr = curr.getSuperclass();
+			if (res != null) return res;
 		}
-
-		if (res != null) return res;
 
 		curr = clazz;
 		a:

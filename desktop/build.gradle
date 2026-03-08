@@ -32,7 +32,7 @@ dependencies {
 	def libsDir = project(":").projectDir
 
 	compileOnly files(
-			"$libsDir/libs/EndfieldMod-260307a.jar"
+			"$libsDir/libs/EndfieldMod-260308a.jar"
 	)
 }
 

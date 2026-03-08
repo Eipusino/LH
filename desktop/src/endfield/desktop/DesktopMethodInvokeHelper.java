@@ -1,11 +1,11 @@
 package endfield.desktop;
 
 import arc.func.Prov;
+import arc.util.Structs;
 import dynamilize.FunctionType;
 import endfield.util.CollectionObjectMap;
 import endfield.util.MethodInvokeHelper;
 import endfield.util.Reflects;
-import endfield.util.holder.ObjectHolder;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodType;
@@ -32,28 +32,30 @@ public class DesktopMethodInvokeHelper implements MethodInvokeHelper {
 
 		if (res != null) return res;
 
-		for (ObjectHolder<FunctionType, MethodHandle> entry : map) {
+		for (var entry : map) {
 			if (entry.key.match(argTypes.getTypes())) return entry.value;
 		}
 
 		Class<?> curr = clazz;
 
-		while (curr != null) {
-			Method method = classHelper.getMethod(curr, name, argTypes.getTypes());
+		if (!Structs.contains(argTypes.getTypes(), void.class)) {
+			while (curr != null) {
+				Method method = classHelper.getMethod(curr, name, argTypes.getTypes());
 
-			if (method != null) {
-				res = lookup.unreflect(method);
+				if (method != null) {
+					res = lookup.unreflect(method);
+				}
+
+				if (res != null) {
+					map.put(inst(res.type()), res);
+					break;
+				}
+
+				curr = curr.getSuperclass();
 			}
 
-			if (res != null) {
-				map.put(inst(res.type()), res);
-				break;
-			}
-
-			curr = curr.getSuperclass();
+			if (res != null) return res;
 		}
-
-		if (res != null) return res;
 
 		curr = clazz;
 		a:
@@ -86,7 +88,7 @@ public class DesktopMethodInvokeHelper implements MethodInvokeHelper {
 		MethodHandle res = map.get(argsType);
 		if (res != null) return res;
 
-		for (ObjectHolder<FunctionType, MethodHandle> entry : map) {
+		for (var entry : map) {
 			if (entry.key.match(argsType.getTypes())) return entry.value;
 		}
 
@@ -202,7 +204,7 @@ public class DesktopMethodInvokeHelper implements MethodInvokeHelper {
 
 		if (res != null) return res;
 
-		for (ObjectHolder<FunctionType, MethodHandle> entry : map) {
+		for (var entry : map) {
 			if (entry.key.match(argTypes.getTypes())) return entry.value;
 		}
 
@@ -219,7 +221,7 @@ public class DesktopMethodInvokeHelper implements MethodInvokeHelper {
 		MethodHandle res = map.get(argsType);
 		if (res != null) return res;
 
-		for (ObjectHolder<FunctionType, MethodHandle> entry : map) {
+		for (var entry : map) {
 			if (entry.key.match(argsType.getTypes())) return entry.value;
 		}
 

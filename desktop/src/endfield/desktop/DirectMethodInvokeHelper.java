@@ -1,10 +1,10 @@
 package endfield.desktop;
 
+import arc.util.Structs;
 import dynamilize.FunctionType;
 import endfield.util.CollectionObjectMap;
 import endfield.util.DefaultMethodInvokeHelper;
 import endfield.util.Reflects;
-import endfield.util.holder.ObjectHolder;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodType;
@@ -13,10 +13,11 @@ import java.lang.reflect.Method;
 import java.util.Objects;
 
 import static endfield.Vars2.classHelper;
-import static endfield.desktop.DesktopClassHelper.mtypes;
 import static endfield.desktop.DesktopImpl.lookup;
 import static endfield.desktop.DesktopMethodInvokeHelper.from;
 
+/** @deprecated High performance overhead. Experimental API. */
+@Deprecated
 public class DirectMethodInvokeHelper extends DefaultMethodInvokeHelper {
 	static final MethodHandle invoke, newInstance;
 
@@ -152,30 +153,28 @@ public class DirectMethodInvokeHelper extends DefaultMethodInvokeHelper {
 
 		if (res != null) return res;
 
-		for (ObjectHolder<FunctionType, Method> entry : map) {
+		for (var entry : map) {
 			if (entry.key.match(argTypes.getTypes())) return entry.value;
 		}
 
 		Class<?> curr = clazz;
 
-		while (curr != null) {
-			for (Method method : classHelper.getMethods(curr)) {
-				if (!method.getName().equals(name)) continue;
-				Class<?>[] methodArgs = (Class<?>[]) mtypes.get(method);
+		if (!Structs.contains(argTypes.getTypes(), void.class)) {
+			while (curr != null) {
+				Method method = classHelper.getMethod(curr, name, argTypes.getTypes());
 
-				FunctionType t;
-				if ((t = from(method)).match(methodArgs)) {
+				if (method != null) {
+					map.put(from(method), method);
 					res = method;
-					map.put(t, res);
+
 					break;
 				}
-				t.recycle();
+
+				curr = curr.getSuperclass();
 			}
 
-			curr = curr.getSuperclass();
+			if (res != null) return res;
 		}
-
-		if (res != null) return res;
 
 		curr = clazz;
 		a:
@@ -209,7 +208,7 @@ public class DirectMethodInvokeHelper extends DefaultMethodInvokeHelper {
 		Constructor<T> res = (Constructor<T>) map.get(argsType);
 		if (res != null) return res;
 
-		for (ObjectHolder<FunctionType, Constructor<?>> entry : map) {
+		for (var entry : map) {
 			if (entry.key.match(argsType.getTypes())) return (Constructor<T>) entry.value;
 		}
 
@@ -222,7 +221,7 @@ public class DirectMethodInvokeHelper extends DefaultMethodInvokeHelper {
 
 		for (Constructor<?> constructor : clazz.getDeclaredConstructors()) {
 			FunctionType t;
-			if ((t = FunctionType.from(constructor)).match(argsType.getTypes())) {
+			if ((t = from(constructor)).match(argsType.getTypes())) {
 				map.put(t, constructor);
 				res = (Constructor<T>) constructor;
 

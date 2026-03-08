@@ -29,10 +29,10 @@ tasks.withType(JavaCompile).configureEach {
 	options.encoding = "UTF-8"
 
 	options.compilerArgs.addAll([
-			"--add-exports", "java.base/jdk.internal.misc=template",
-			"--add-exports", "java.base/jdk.internal.module=template",
-			"--add-exports", "java.base/jdk.internal.reflect=template",
-			"--add-exports", "java.base/sun.nio.ch=template"
+			"--add-exports", "java.base/jdk.internal.misc=ALL-UNNAMED",
+			"--add-exports", "java.base/jdk.internal.module=ALL-UNNAMED",
+			"--add-exports", "java.base/jdk.internal.reflect=ALL-UNNAMED",
+			"--add-exports", "java.base/sun.nio.ch=ALL-UNNAMED"
 	])
 }
 
