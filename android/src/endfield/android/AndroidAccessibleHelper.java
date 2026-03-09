@@ -2,12 +2,26 @@ package endfield.android;
 
 import endfield.util.AccessibleHelper;
 
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 
 import static endfield.android.AndroidImpl.exceptionHandler;
 
 public class AndroidAccessibleHelper implements AccessibleHelper {
-	static Field accessFlags;
+	static Field override, accessFlags;
+
+	@Override
+	public void makeAccessible(AccessibleObject object) {
+		try {
+			if (override == null) {
+				override = AccessibleObject.class.getDeclaredField("override");
+				override.setAccessible(true);
+			}
+			override.setBoolean(object, true);
+		} catch (NoSuchFieldException | IllegalAccessException e) {
+			object.setAccessible(true);
+		}
+	}
 
 	@Override
 	public void makeClassAccessible(Class<?> clazz) {

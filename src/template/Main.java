@@ -15,6 +15,7 @@ import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Random;
 
 import static template.Reflect.lookup;
 
@@ -36,6 +37,11 @@ public class Main {
 	static void main(String... arg) {
 		try {
 
+
+			long start = System.currentTimeMillis();
+
+			long end = System.currentTimeMillis();
+			System.out.println(end - start);
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
