@@ -1,6 +1,5 @@
 package endfield.android;
 
-import arc.func.Cons;
 import arc.util.Log;
 import dalvik.system.VMStack;
 import endfield.util.CollectionObjectMap;
@@ -11,7 +10,6 @@ import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.nio.Buffer;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -21,8 +19,6 @@ import static endfield.Vars2.fieldAccessHelper;
 import static endfield.Vars2.methodInvokeHelper;
 
 public class AndroidImpl implements PlatformImpl {
-	static final Cons<Throwable> exceptionHandler = e -> {};
-
 	static Constructor<Lookup> constructor;
 
 	static final CollectionObjectMap<Class<?>, Lookup> lookupMap = new CollectionObjectMap<>(Class.class, Lookup.class);
@@ -53,17 +49,19 @@ public class AndroidImpl implements PlatformImpl {
 		} catch (Throwable e) {
 			Log.err(e);
 		}
+
+		try {
+			clone = Object.class.getDeclaredMethod("internalClone");
+			clone.setAccessible(true);
+		} catch (Throwable e) {
+			Log.err(e);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T clone(T object) {
 		try {
-			if (clone == null) {
-				clone = Object.class.getDeclaredMethod("internalClone");
-				clone.setAccessible(true);
-			}
-
 			return (T) clone.invoke(object);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -82,7 +80,7 @@ public class AndroidImpl implements PlatformImpl {
 	}
 
 	@Override
-	public void putBuffer(Buffer src, int srcOffset, Buffer dst, int dstOffset, int numBytes) {
+	public void put(Object src, int srcOffset, Object dst, int dstOffset, int numBytes) {
 		Objects.requireNonNull(src);
 		Objects.requireNonNull(dst);
 

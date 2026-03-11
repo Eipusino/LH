@@ -22,14 +22,14 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 		if (field != null) return field;
 
 		if (isStatic) {
-			Field f = classHelper.getField(clazz, name);
+			Field f = classHelper.findField(clazz, name);
 			if (f != null && (f.getModifiers() & Modifier.STATIC) != 0) {
 				return f;
 			}
 		} else {
 			Class<?> curr = clazz;
 			while (curr != Object.class) {
-				Field f = classHelper.getField(curr, name);
+				Field f = classHelper.findField(curr, name);
 				if (f != null && (f.getModifiers() & Modifier.STATIC) == 0) {
 					return f;
 				}
@@ -42,12 +42,12 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	}
 
 	protected MethodHandle getter(Field field) {
-		return getters.get(field, () -> {
+		return getters.computeIfAbsent(field, f -> {
 			try {
-				return (field.getModifiers() & Modifier.STATIC) == 0 ?
-						lookup.findGetter(field.getDeclaringClass(), field.getName(), field.getType()) :
-						lookup.findStaticGetter(field.getDeclaringClass(), field.getName(), field.getType());
-				//return lookup.unreflectGetter(field);
+				return (f.getModifiers() & Modifier.STATIC) == 0 ?
+						lookup.findGetter(f.getDeclaringClass(), f.getName(), f.getType()) :
+						lookup.findStaticGetter(f.getDeclaringClass(), f.getName(), f.getType());
+				//return lookup.unreflectGetter(f);
 			} catch (IllegalAccessException | NoSuchFieldException e) {
 				throw new RuntimeException(e);
 			}
@@ -55,12 +55,12 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	}
 
 	protected MethodHandle setter(Field field) {
-		return setters.get(field, () -> {
+		return setters.computeIfAbsent(field, f -> {
 			try {
-				return (field.getModifiers() & Modifier.STATIC) == 0 ?
-						lookup.findSetter(field.getDeclaringClass(), field.getName(), field.getType()) :
-						lookup.findStaticSetter(field.getDeclaringClass(), field.getName(), field.getType());
-				//return lookup.unreflectSetter(field);
+				return (f.getModifiers() & Modifier.STATIC) == 0 ?
+						lookup.findSetter(f.getDeclaringClass(), f.getName(), f.getType()) :
+						lookup.findStaticSetter(f.getDeclaringClass(), f.getName(), f.getType());
+				//return lookup.unreflectSetter(f);
 			} catch (IllegalAccessException | NoSuchFieldException e) {
 				throw new RuntimeException(e);
 			}

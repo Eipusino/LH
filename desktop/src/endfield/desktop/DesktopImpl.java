@@ -7,6 +7,7 @@ import endfield.util.ClassHelper;
 import endfield.util.DefaultFieldAccessHelper;
 import endfield.util.DefaultMethodInvokeHelper;
 import endfield.util.PlatformImpl;
+import endfield.util.handler.ObjectHandler;
 import sun.reflect.ReflectionFactory;
 
 import java.lang.StackWalker.Option;
@@ -16,7 +17,7 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.AccessibleObject;
-import java.nio.Buffer;
+import java.util.Objects;
 
 import static endfield.Vars2.accessibleHelper;
 import static endfield.Vars2.classHelper;
@@ -35,6 +36,8 @@ public class DesktopImpl implements PlatformImpl {
 			lookup = (Lookup) ReflectionFactory.getReflectionFactory()
 					.newConstructorForSerialization(Lookup.class, Lookup.class.getDeclaredConstructor(Class.class, Class.class, int.class))
 					.newInstance(EndFieldMod.class, null, -1);
+
+			clone = lookup.findVirtual(Object.class, "clone", MethodType.methodType(Object.class));
 
 			Demodulator.openModules();
 
@@ -84,11 +87,15 @@ public class DesktopImpl implements PlatformImpl {
 	@Override
 	public <T> T clone(T object) {
 		try {
-			if (clone == null) {
-				clone = lookup.findVirtual(Object.class, "clone", MethodType.methodType(Object.class));
+			// If the object implements the Cloneable interface, call Object.clone() directly, which is faster than copyField().
+			if (object instanceof Cloneable) {
+				return (T) clone.invokeExact(object);
 			}
 
-			return (T) clone.invokeExact(object);
+			T t = (T) unsafe.allocateInstance(object.getClass());
+			// The performance overhead may be high, but there is currently no other way.
+			ObjectHandler.copyField(object, t);
+			return t;
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -100,9 +107,10 @@ public class DesktopImpl implements PlatformImpl {
 	}
 
 	@Override
-	public void putBuffer(Buffer src, int srcOffset, Buffer dst, int dstOffset, int numBytes) {
-		long srcAddress = addressOf(src);
-		long dstAddress = addressOf(dst);
-		unsafe.copyMemory(srcAddress + srcOffset, dstAddress + dstOffset, numBytes);
+	public void put(Object src, int srcOffset, Object dst, int dstOffset, int numBytes) {
+		Objects.requireNonNull(src);
+		Objects.requireNonNull(dst);
+
+		unsafe.copyMemory(src, srcOffset, dst, dstOffset, numBytes);
 	}
 }

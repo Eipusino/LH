@@ -17,14 +17,14 @@ public class UnsafeFieldAccessHelper implements FieldAccessHelper {
 		if (field != null) return field;
 
 		if (isStatic) {
-			Field f = classHelper.getField(clazz, name);
+			Field f = classHelper.findField(clazz, name);
 			if (f != null && (f.getModifiers() & Modifier.STATIC) != 0) {
 				return f;
 			}
 		} else {
 			Class<?> curr = clazz;
 			while (curr != Object.class) {
-				Field f = classHelper.getField(curr, name);
+				Field f = classHelper.findField(curr, name);
 				if (f != null && (f.getModifiers() & Modifier.STATIC) == 0) {
 					return f;
 				}

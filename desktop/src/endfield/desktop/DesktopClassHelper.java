@@ -1,6 +1,7 @@
 package endfield.desktop;
 
 import endfield.util.ClassHelper;
+import endfield.util.Reflects;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodType;
@@ -33,7 +34,7 @@ public class DesktopClassHelper implements ClassHelper {
 	}
 
 	@Override
-	public Field getField(Class<?> type, String name) {
+	public Field findField(Class<?> type, String name) {
 		try {
 			Field[] fields = (Field[]) getFields.invokeExact(type, false);
 			for (Field field : fields) {
@@ -41,8 +42,49 @@ public class DesktopClassHelper implements ClassHelper {
 			}
 			return null;
 		} catch (Throwable e) {
-			return ClassHelper.super.getField(type, name);
+			return null;
 		}
+	}
+
+	@Override
+	public Method findMethod(Class<?> type, String name, Class<?>... parameterTypes) {
+		try {
+			Method[] methods = (Method[]) getMethods.invokeExact(type, false);
+			for (Method method : methods) {
+				if (method.getName().equals(name) && Arrays.equals((Class<?>[]) DesktopClassHelper.mtypes.get(method), parameterTypes)) return method;
+			}
+			return null;
+		} catch (Throwable e) {
+			return null;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> Constructor<T> findConstructor(Class<T> type, Class<?>... parameterTypes) {
+		try {
+			Constructor<T>[] constructors = (Constructor<T>[]) getConstructors.invokeExact(type, false);
+			for (Constructor<T> constructor : constructors) {
+				if (Arrays.equals((Class<?>[]) ctypes.get(constructor), parameterTypes)) return constructor;
+			}
+			return null;
+		} catch (Throwable e) {
+			return null;
+		}
+	}
+
+	@Override
+	public Field getField(Class<?> type, String name) {
+		try {
+			Field[] fields = (Field[]) getFields.invokeExact(type, false);
+			for (Field field : fields) {
+				if (field.getName().equals(name)) return field;
+			}
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+
+		throw new RuntimeException(name);
 	}
 
 	@Override
@@ -52,10 +94,11 @@ public class DesktopClassHelper implements ClassHelper {
 			for (Method method : methods) {
 				if (method.getName().equals(name) && Arrays.equals((Class<?>[]) DesktopClassHelper.mtypes.get(method), parameterTypes)) return method;
 			}
-			return null;
 		} catch (Throwable e) {
-			return ClassHelper.super.getMethod(type, name, parameterTypes);
+			throw new RuntimeException(e);
 		}
+
+		throw new RuntimeException(Reflects.methodToString(type, name, parameterTypes));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -66,10 +109,11 @@ public class DesktopClassHelper implements ClassHelper {
 			for (Constructor<T> constructor : constructors) {
 				if (Arrays.equals((Class<?>[]) ctypes.get(constructor), parameterTypes)) return constructor;
 			}
-			return null;
 		} catch (Throwable e) {
-			return ClassHelper.super.getConstructor(type, parameterTypes);
+			throw new RuntimeException(e);
 		}
+
+		throw new RuntimeException(Reflects.methodToString(type, "<init>", parameterTypes));
 	}
 
 	@Override
@@ -96,7 +140,7 @@ public class DesktopClassHelper implements ClassHelper {
 		try {
 			return (Constructor<T>[]) getConstructors.invokeExact(type, false);
 		} catch (Throwable e) {
-			return ClassHelper.super.getConstructors(type);
+			return (Constructor<T>[]) type.getDeclaredConstructors();
 		}
 	}
 

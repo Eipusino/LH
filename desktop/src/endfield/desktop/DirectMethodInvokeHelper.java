@@ -161,7 +161,7 @@ public class DirectMethodInvokeHelper extends DefaultMethodInvokeHelper {
 
 		if (!Structs.contains(argTypes.getTypes(), void.class)) {
 			while (curr != null) {
-				Method method = classHelper.getMethod(curr, name, argTypes.getTypes());
+				Method method = classHelper.findMethod(curr, name, argTypes.getTypes());
 
 				if (method != null) {
 					map.put(from(method), method);
@@ -212,7 +212,7 @@ public class DirectMethodInvokeHelper extends DefaultMethodInvokeHelper {
 			if (entry.key.match(argsType.getTypes())) return (Constructor<T>) entry.value;
 		}
 
-		Constructor<T> cstr = classHelper.getConstructor(clazz, argsType.getTypes());
+		Constructor<T> cstr = classHelper.findConstructor(clazz, argsType.getTypes());
 		if (cstr != null) {
 			res = cstr;
 		}

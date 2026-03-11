@@ -40,7 +40,7 @@ public class DesktopMethodInvokeHelper implements MethodInvokeHelper {
 
 		if (!Structs.contains(argTypes.getTypes(), void.class)) {
 			while (curr != null) {
-				Method method = classHelper.getMethod(curr, name, argTypes.getTypes());
+				Method method = classHelper.findMethod(curr, name, argTypes.getTypes());
 
 				if (method != null) {
 					res = lookup.unreflect(method);
@@ -92,7 +92,7 @@ public class DesktopMethodInvokeHelper implements MethodInvokeHelper {
 			if (entry.key.match(argsType.getTypes())) return entry.value;
 		}
 
-		Constructor<?> cstr = classHelper.getConstructor(clazz, argsType.getTypes());
+		Constructor<?> cstr = classHelper.findConstructor(clazz, argsType.getTypes());
 		if (cstr != null) {
 			cstr.setAccessible(true);
 			res = lookup.unreflectConstructor(cstr);

@@ -3,34 +3,39 @@ package endfield.desktop;
 import arc.util.Log;
 import endfield.util.AccessibleHelper;
 
+import java.lang.invoke.VarHandle;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.Objects;
 
 import static endfield.Vars2.classHelper;
+import static endfield.desktop.DesktopImpl.lookup;
 
 public class DesktopAccessibleHelper implements AccessibleHelper {
-	static Field override, modifiers;
+	static VarHandle override;
+	static Field modifiers;
 
 	@Override
 	public void makeAccessible(AccessibleObject object) {
-		try {
-			if (override == null) {
-				override = AccessibleObject.class.getDeclaredField("override");
-				override.setAccessible(true);
+		if (override == null) {
+			try {
+				override = lookup.findVarHandle(AccessibleObject.class, "override", boolean.class);
+			} catch (NoSuchFieldException | IllegalAccessException e) {
+				object.setAccessible(true);
+
+				Log.err(e);
+				return;
 			}
-			override.setBoolean(object, true);
-		} catch (NoSuchFieldException | IllegalAccessException e) {
-			throw new RuntimeException(e);
 		}
+
+		override.set(object, true);
 	}
 
 	@Override
 	public void makeClassAccessible(Class<?> clazz) {
 		try {
 			if (modifiers == null) {
-				modifiers = Objects.requireNonNull(classHelper.getField(Class.class, "modifiers"));
+				modifiers = classHelper.getField(Class.class, "modifiers");
 				modifiers.setAccessible(true);
 			}
 

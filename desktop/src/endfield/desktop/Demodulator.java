@@ -26,7 +26,6 @@ public final class Demodulator {
 
 	private Demodulator() {}
 
-	// The exceptions thrown during initialization are collectively handled in a try-catch block.
 	static {
 		try {
 			implAddOpens = lookup.findVirtual(Module.class, "implAddOpens", MethodType.methodType(void.class, String.class, Module.class));

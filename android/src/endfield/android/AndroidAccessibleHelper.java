@@ -1,11 +1,10 @@
 package endfield.android;
 
+import arc.util.Log;
 import endfield.util.AccessibleHelper;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
-
-import static endfield.android.AndroidImpl.exceptionHandler;
 
 public class AndroidAccessibleHelper implements AccessibleHelper {
 	static Field override, accessFlags;
@@ -17,9 +16,12 @@ public class AndroidAccessibleHelper implements AccessibleHelper {
 				override = AccessibleObject.class.getDeclaredField("override");
 				override.setAccessible(true);
 			}
+
 			override.setBoolean(object, true);
 		} catch (NoSuchFieldException | IllegalAccessException e) {
 			object.setAccessible(true);
+
+			Log.err(e);
 		}
 	}
 
@@ -34,7 +36,7 @@ public class AndroidAccessibleHelper implements AccessibleHelper {
 			int flags = accessFlags.getInt(clazz);
 			accessFlags.setInt(clazz, 65535 & ((flags & 65535 & (-17) & (-3)) | 1));
 		} catch (IllegalAccessException | NoSuchFieldException e) {
-			exceptionHandler.get(e);
+			Log.err(e);
 		}
 	}
 }

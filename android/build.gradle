@@ -29,7 +29,7 @@ tasks.withType(JavaCompile).configureEach {
 
 dependencies {
 	compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
-	compileOnly "com.github.Anuken.Arc:backend-android:$mindustryVersion"
+	//compileOnly "com.github.Anuken.Arc:backend-android:$mindustryVersion"
 	compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
 
 	compileOnly "com.jakewharton.android.repackaged:dalvik-dx:9.0.0_r3"
@@ -37,7 +37,7 @@ dependencies {
 	def libsDir = project(":").projectDir
 
 	compileOnly files(
-			"$libsDir/libs/EndfieldMod-260308a.jar",
+			"$libsDir/libs/EndfieldMod-260311a.jar",
 			"$libsDir/libs/android.jar",
 			"$libsDir/libs/android-dalvik.jar",
 			"$libsDir/libs/mindustry-android.jar"
