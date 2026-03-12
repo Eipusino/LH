@@ -1,5 +1,6 @@
 package endfield.desktop;
 
+import arc.func.Prov;
 import endfield.util.CollectionObjectMap;
 import endfield.util.FieldAccessHelper;
 
@@ -9,16 +10,19 @@ import java.lang.reflect.Modifier;
 import static endfield.Vars2.classHelper;
 
 public class UnsafeFieldAccessHelper implements FieldAccessHelper {
-	protected static final CollectionObjectMap<String, Field> empty = new CollectionObjectMap<>(String.class, Field.class);
 	protected static final CollectionObjectMap<Class<?>, CollectionObjectMap<String, Field>> fieldMap = new CollectionObjectMap<>(Class.class, CollectionObjectMap.class);
 
+	protected static final Prov<CollectionObjectMap<String, Field>> prov = () -> new CollectionObjectMap<>(String.class, Field.class);
+
 	public Field getField(Class<?> clazz, String name, boolean isStatic) throws NoSuchFieldException {
-		Field field = fieldMap.get(clazz, empty).get(name);
+		CollectionObjectMap<String, Field> map = fieldMap.get(clazz, prov);
+		Field field = map.get(name);
 		if (field != null) return field;
 
 		if (isStatic) {
 			Field f = classHelper.findField(clazz, name);
 			if (f != null && (f.getModifiers() & Modifier.STATIC) != 0) {
+				map.put(name, f);
 				return f;
 			}
 		} else {
@@ -26,6 +30,7 @@ public class UnsafeFieldAccessHelper implements FieldAccessHelper {
 			while (curr != Object.class) {
 				Field f = classHelper.findField(curr, name);
 				if (f != null && (f.getModifiers() & Modifier.STATIC) == 0) {
+					map.put(name, f);
 					return f;
 				}
 

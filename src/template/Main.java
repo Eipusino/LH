@@ -37,11 +37,6 @@ public class Main {
 	static void main(String... arg) {
 		try {
 
-
-			long start = System.currentTimeMillis();
-
-			long end = System.currentTimeMillis();
-			System.out.println(end - start);
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}

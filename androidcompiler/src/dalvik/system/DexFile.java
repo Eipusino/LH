@@ -49,11 +49,6 @@ public class DexFile {
 		throw new RuntimeException("Stub!");
 	}
 
-	@Override
-	protected void finalize() throws Throwable {
-		throw new RuntimeException("Stub!");
-	}
-
 	@Deprecated
 	public static boolean isDexOptNeeded(String fileName) throws FileNotFoundException, IOException {
 		throw new RuntimeException("Stub!");

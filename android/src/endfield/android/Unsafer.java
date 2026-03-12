@@ -1,5 +1,6 @@
 package endfield.android;
 
+import arc.util.Log;
 import endfield.android.util.field.AndroidField;
 import sun.misc.Unsafe;
 
@@ -10,6 +11,8 @@ import java.lang.reflect.Modifier;
 public final class Unsafer {
 	static final Unsafe unsafe;
 
+	static Object internalUnsafe;
+
 	static {
 		try {
 			Field field = Unsafe.class.getDeclaredField("theUnsafe");
@@ -17,6 +20,14 @@ public final class Unsafer {
 			unsafe = (Unsafe) field.get(null);
 		} catch (NoSuchFieldException | IllegalAccessException e) {
 			throw new RuntimeException(e);
+		}
+
+		try {
+			Field field = Unsafe.class.getDeclaredField("theInternalUnsafe");
+			field.setAccessible(true);
+			internalUnsafe = field.get(null);
+		} catch (NoSuchFieldException | IllegalAccessException e) {
+			Log.err(e);
 		}
 	}
 

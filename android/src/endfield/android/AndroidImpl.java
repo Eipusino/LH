@@ -40,7 +40,7 @@ public class AndroidImpl implements PlatformImpl {
 
 		accessibleHelper = new AndroidAccessibleHelper();
 		classHelper = new AndroidClassHelper();
-		fieldAccessHelper = new GeneralFieldAccessHelper();
+		fieldAccessHelper = new BasicFieldAccessHelper();
 		methodInvokeHelper = new AndroidMethodInvokeHelper();
 
 		try {

@@ -1,5 +1,6 @@
 package endfield.desktop;
 
+import arc.func.Boolf;
 import endfield.util.ClassHelper;
 import endfield.util.Reflects;
 
@@ -34,9 +35,9 @@ public class DesktopClassHelper implements ClassHelper {
 	}
 
 	@Override
-	public Field findField(Class<?> type, String name) {
+	public Field findField(Class<?> clazz, String name) {
 		try {
-			Field[] fields = (Field[]) getFields.invokeExact(type, false);
+			Field[] fields = (Field[]) getFields.invokeExact(clazz, false);
 			for (Field field : fields) {
 				if (field.getName().equals(name)) return field;
 			}
@@ -47,11 +48,11 @@ public class DesktopClassHelper implements ClassHelper {
 	}
 
 	@Override
-	public Method findMethod(Class<?> type, String name, Class<?>... parameterTypes) {
+	public Method findMethod(Class<?> clazz, String name, Class<?>... parameterTypes) {
 		try {
-			Method[] methods = (Method[]) getMethods.invokeExact(type, false);
+			Method[] methods = (Method[]) getMethods.invokeExact(clazz, false);
 			for (Method method : methods) {
-				if (method.getName().equals(name) && Arrays.equals((Class<?>[]) DesktopClassHelper.mtypes.get(method), parameterTypes)) return method;
+				if (method.getName().equals(name) && Arrays.equals((Class<?>[]) mtypes.get(method), parameterTypes)) return method;
 			}
 			return null;
 		} catch (Throwable e) {
@@ -61,9 +62,9 @@ public class DesktopClassHelper implements ClassHelper {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> Constructor<T> findConstructor(Class<T> type, Class<?>... parameterTypes) {
+	public <T> Constructor<T> findConstructor(Class<T> clazz, Class<?>... parameterTypes) {
 		try {
-			Constructor<T>[] constructors = (Constructor<T>[]) getConstructors.invokeExact(type, false);
+			Constructor<T>[] constructors = (Constructor<T>[]) getConstructors.invokeExact(clazz, false);
 			for (Constructor<T> constructor : constructors) {
 				if (Arrays.equals((Class<?>[]) ctypes.get(constructor), parameterTypes)) return constructor;
 			}
@@ -74,9 +75,9 @@ public class DesktopClassHelper implements ClassHelper {
 	}
 
 	@Override
-	public Field getField(Class<?> type, String name) {
+	public Field getField(Class<?> clazz, String name) {
 		try {
-			Field[] fields = (Field[]) getFields.invokeExact(type, false);
+			Field[] fields = (Field[]) getFields.invokeExact(clazz, false);
 			for (Field field : fields) {
 				if (field.getName().equals(name)) return field;
 			}
@@ -88,24 +89,24 @@ public class DesktopClassHelper implements ClassHelper {
 	}
 
 	@Override
-	public Method getMethod(Class<?> type, String name, Class<?>... parameterTypes) {
+	public Method getMethod(Class<?> clazz, String name, Class<?>... parameterTypes) {
 		try {
-			Method[] methods = (Method[]) getMethods.invokeExact(type, false);
+			Method[] methods = (Method[]) getMethods.invokeExact(clazz, false);
 			for (Method method : methods) {
-				if (method.getName().equals(name) && Arrays.equals((Class<?>[]) DesktopClassHelper.mtypes.get(method), parameterTypes)) return method;
+				if (method.getName().equals(name) && Arrays.equals((Class<?>[]) mtypes.get(method), parameterTypes)) return method;
 			}
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
 
-		throw new RuntimeException(Reflects.methodToString(type, name, parameterTypes));
+		throw new RuntimeException(Reflects.methodToString(clazz, name, parameterTypes));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> Constructor<T> getConstructor(Class<T> type, Class<?>... parameterTypes) {
+	public <T> Constructor<T> getConstructor(Class<T> clazz, Class<?>... parameterTypes) {
 		try {
-			Constructor<T>[] constructors = (Constructor<T>[]) getConstructors.invokeExact(type, false);
+			Constructor<T>[] constructors = (Constructor<T>[]) getConstructors.invokeExact(clazz, false);
 			for (Constructor<T> constructor : constructors) {
 				if (Arrays.equals((Class<?>[]) ctypes.get(constructor), parameterTypes)) return constructor;
 			}
@@ -113,35 +114,122 @@ public class DesktopClassHelper implements ClassHelper {
 			throw new RuntimeException(e);
 		}
 
-		throw new RuntimeException(Reflects.methodToString(type, "<init>", parameterTypes));
+		throw new RuntimeException(Reflects.methodToString(clazz, "<init>", parameterTypes));
 	}
 
 	@Override
-	public Field[] getFields(Class<?> type) {
+	public Field[] getFields(Class<?> clazz) {
 		try {
-			return (Field[]) getFields.invokeExact(type, false);
+			return (Field[]) getFields.invokeExact(clazz, false);
 		} catch (Throwable e) {
-			return type.getDeclaredFields();
+			return clazz.getDeclaredFields();
 		}
 	}
 
 	@Override
-	public Method[] getMethods(Class<?> type) {
+	public Method[] getMethods(Class<?> clazz) {
 		try {
-			return (Method[]) getMethods.invokeExact(type, false);
+			return (Method[]) getMethods.invokeExact(clazz, false);
 		} catch (Throwable e) {
-			return type.getDeclaredMethods();
+			return clazz.getDeclaredMethods();
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> Constructor<T>[] getConstructors(Class<T> type) {
+	public <T> Constructor<T>[] getConstructors(Class<T> clazz) {
 		try {
-			return (Constructor<T>[]) getConstructors.invokeExact(type, false);
+			return (Constructor<T>[]) getConstructors.invokeExact(clazz, false);
 		} catch (Throwable e) {
-			return (Constructor<T>[]) type.getDeclaredConstructors();
+			return (Constructor<T>[]) clazz.getDeclaredConstructors();
 		}
+	}
+
+	@Override
+	public Field findField(Class<?> clazz, Boolf<Field> filler) {
+		try {
+			Field[] fields = (Field[]) getFields.invokeExact(clazz, false);
+			for (Field field : fields) {
+				if (filler.get(field)) {
+					return field;
+				}
+			}
+			return null;
+		} catch (Throwable e) {
+			return null;
+		}
+	}
+
+	@Override
+	public Method findMethod(Class<?> clazz, Boolf<Method> filler) {
+		try {
+			Method[] methods = (Method[]) getMethods.invokeExact(clazz, false);
+			for (Method method : methods) {
+				if (filler.get(method)) return method;
+			}
+			return null;
+		} catch (Throwable e) {
+			return null;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> Constructor<T> findConstructor(Class<T> clazz, Boolf<Constructor<T>> filler) {
+		try {
+			Constructor<T>[] constructors = (Constructor<T>[]) getConstructors.invokeExact(clazz, false);
+			for (Constructor<T> constructor : constructors) {
+				if (filler.get(constructor)) return constructor;
+			}
+			return null;
+		} catch (Throwable e) {
+			return null;
+		}
+	}
+
+	@Override
+	public Field getField(Class<?> clazz, Boolf<Field> filler) {
+		try {
+			Field[] fields = (Field[]) getFields.invokeExact(clazz, false);
+			for (Field field : fields) {
+				if (filler.get(field)) {
+					return field;
+				}
+			}
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+
+		throw new RuntimeException("Field not found");
+	}
+
+	@Override
+	public Method getMethod(Class<?> clazz, Boolf<Method> filler) {
+		try {
+			Method[] methods = (Method[]) getMethods.invokeExact(clazz, false);
+			for (Method method : methods) {
+				if (filler.get(method)) return method;
+			}
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+
+		throw new RuntimeException("Method not found");
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> Constructor<T> getConstructor(Class<T> clazz, Boolf<Constructor<T>> filler) {
+		try {
+			Constructor<T>[] constructors = (Constructor<T>[]) getConstructors.invokeExact(clazz, false);
+			for (Constructor<T> constructor : constructors) {
+				if (filler.get(constructor)) return constructor;
+			}
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+
+		throw new RuntimeException("Constructor not found");
 	}
 
 	@SuppressWarnings("unchecked")
