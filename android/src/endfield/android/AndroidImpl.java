@@ -29,7 +29,7 @@ public class AndroidImpl implements PlatformImpl {
 			throw new RuntimeException(e);
 		}
 	};
-	static Method clone;
+	static Method clone, getPrimitiveClass;
 
 	static {
 		try {
@@ -53,6 +53,13 @@ public class AndroidImpl implements PlatformImpl {
 		try {
 			clone = Object.class.getDeclaredMethod("internalClone");
 			clone.setAccessible(true);
+		} catch (Throwable e) {
+			Log.err(e);
+		}
+
+		try {
+			getPrimitiveClass = Class.class.getDeclaredMethod("getPrimitiveClass", String.class);
+			getPrimitiveClass.setAccessible(true);
 		} catch (Throwable e) {
 			Log.err(e);
 		}

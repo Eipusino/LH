@@ -12,10 +12,8 @@ import sun.reflect.ReflectionFactory;
 
 import java.lang.StackWalker.Option;
 import java.lang.StackWalker.StackFrame;
-import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodHandles.Lookup;
-import java.lang.invoke.MethodType;
 import java.lang.reflect.AccessibleObject;
 import java.util.Objects;
 
@@ -23,11 +21,11 @@ import static endfield.Vars2.accessibleHelper;
 import static endfield.Vars2.classHelper;
 import static endfield.Vars2.fieldAccessHelper;
 import static endfield.Vars2.methodInvokeHelper;
+import static endfield.desktop.DesktopConstant.clone;
 import static endfield.desktop.Unsafer.unsafe;
 
 public class DesktopImpl implements PlatformImpl {
 	static Lookup lookup;
-	static MethodHandle clone;
 
 	static StackWalker walker;
 
@@ -36,8 +34,6 @@ public class DesktopImpl implements PlatformImpl {
 			lookup = (Lookup) ReflectionFactory.getReflectionFactory()
 					.newConstructorForSerialization(Lookup.class, Lookup.class.getDeclaredConstructor(Class.class, Class.class, int.class))
 					.newInstance(EndFieldMod.class, null, -1);
-
-			clone = lookup.findVirtual(Object.class, "clone", MethodType.methodType(Object.class));
 
 			Demodulator.openModules();
 
