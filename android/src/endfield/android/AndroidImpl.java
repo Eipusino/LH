@@ -3,11 +3,13 @@ package endfield.android;
 import arc.util.Log;
 import dalvik.system.VMStack;
 import endfield.util.CollectionObjectMap;
+import endfield.util.FieldAccessor;
 import endfield.util.PlatformImpl;
 import libcore.io.Memory;
 
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Objects;
@@ -40,7 +42,7 @@ public class AndroidImpl implements PlatformImpl {
 
 		accessibleHelper = new AndroidAccessibleHelper();
 		classHelper = new AndroidClassHelper();
-		fieldAccessHelper = new BasicFieldAccessHelper();
+		fieldAccessHelper = new AndroidFieldAccessHelper();
 		methodInvokeHelper = new AndroidMethodInvokeHelper();
 
 		try {
@@ -79,6 +81,13 @@ public class AndroidImpl implements PlatformImpl {
 	@Override
 	public Lookup lookup(Class<?> clazz) {
 		return lookupMap.computeIfAbsent(clazz, lookupBuilder);
+	}
+
+	@Override
+	public FieldAccessor fieldAccessor(Field field) {
+		AndroidFieldAccessHelper.setAccessFlags(field);
+
+		return PlatformImpl.super.fieldAccessor(field);
 	}
 
 	@Override

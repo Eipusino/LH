@@ -4,8 +4,11 @@ import arc.util.Log;
 import endfield.core.EndFieldMod;
 import endfield.util.AccessibleHelper;
 import endfield.util.ClassHelper;
+import endfield.util.ConstructorAccessor;
 import endfield.util.DefaultFieldAccessHelper;
 import endfield.util.DefaultMethodInvokeHelper;
+import endfield.util.FieldAccessor;
+import endfield.util.MethodAccessor;
 import endfield.util.PlatformImpl;
 import endfield.util.handler.ObjectHandler;
 import sun.reflect.ReflectionFactory;
@@ -15,6 +18,9 @@ import java.lang.StackWalker.StackFrame;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Objects;
 
 import static endfield.Vars2.accessibleHelper;
@@ -38,7 +44,7 @@ public class DesktopImpl implements PlatformImpl {
 			Demodulator.openModules();
 
 			classHelper = new DesktopClassHelper();
-			fieldAccessHelper = new UnsafeFieldAccessHelper();
+			fieldAccessHelper = new DesktopUnsafeFieldAccessHelper();
 			methodInvokeHelper = new DesktopMethodInvokeHelper();
 			accessibleHelper = new DesktopAccessibleHelper();
 		} catch (Throwable e) {
@@ -95,6 +101,21 @@ public class DesktopImpl implements PlatformImpl {
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	@Override
+	public FieldAccessor fieldAccessor(Field field) {
+		return MethodHandleFieldAccessor.obtainFieldAccessor(field);
+	}
+
+	@Override
+	public MethodAccessor methodAccessor(Method method) {
+		return new DesktopMethodAccessor(method);
+	}
+
+	@Override
+	public ConstructorAccessor constructorAccessor(Constructor<?> constructor) {
+		return new DesktopConstructorAccessor(constructor);
 	}
 
 	@Override

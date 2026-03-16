@@ -11,7 +11,7 @@ import java.lang.reflect.Modifier;
 import static endfield.Vars2.classHelper;
 import static endfield.desktop.DesktopImpl.lookup;
 
-public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
+public class DesktopMethodHandleFieldAccessHelper implements FieldAccessHelper {
 	protected static final CollectionObjectMap<Class<?>, CollectionObjectMap<String, Field>> fieldMap = new CollectionObjectMap<>(Class.class, CollectionObjectMap.class);
 
 	protected static final Prov<CollectionObjectMap<String, Field>> prov = () -> new CollectionObjectMap<>(String.class, Field.class);
@@ -516,7 +516,7 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	}
 
 	@Override
-	public void setByte(Object object, Field field, byte value, boolean access) {
+	public void setByte(Object object, Field field, byte value) {
 		try {
 			setter(field).invoke(object, value);
 		} catch (Throwable e) {
@@ -525,7 +525,7 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	}
 
 	@Override
-	public void setByteStatic(Field field, byte value, boolean access) {
+	public void setByteStatic(Field field, byte value) {
 		try {
 			setter(field).invoke(value);
 		} catch (Throwable e) {
@@ -534,7 +534,7 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	}
 
 	@Override
-	public byte getByte(Object object, Field field, boolean access) {
+	public byte getByte(Object object, Field field) {
 		try {
 			return (byte) getter(field).invoke(object);
 		} catch (Throwable e) {
@@ -543,7 +543,7 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	}
 
 	@Override
-	public byte getByteStatic(Field field, boolean access) {
+	public byte getByteStatic(Field field) {
 		try {
 			return (byte) getter(field).invoke();
 		} catch (Throwable e) {
@@ -552,7 +552,7 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	}
 
 	@Override
-	public void setShort(Object object, Field field, short value, boolean access) {
+	public void setShort(Object object, Field field, short value) {
 		try {
 			setter(field).invoke(object, value);
 		} catch (Throwable e) {
@@ -561,7 +561,7 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	}
 
 	@Override
-	public void setShortStatic(Field field, short value, boolean access) {
+	public void setShortStatic(Field field, short value) {
 		try {
 			setter(field).invoke(value);
 		} catch (Throwable e) {
@@ -570,7 +570,7 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	}
 
 	@Override
-	public short getShort(Object object, Field field, boolean access) {
+	public short getShort(Object object, Field field) {
 		try {
 			return (short) getter(field).invoke(object);
 		} catch (Throwable e) {
@@ -579,7 +579,7 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	}
 
 	@Override
-	public short getShortStatic(Field field, boolean access) {
+	public short getShortStatic(Field field) {
 		try {
 			return (short) getter(field).invoke();
 		} catch (Throwable e) {
@@ -588,7 +588,7 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	}
 
 	@Override
-	public void setInt(Object object, Field field, int value, boolean access) {
+	public void setInt(Object object, Field field, int value) {
 		try {
 			setter(field).invoke(object, value);
 		} catch (Throwable e) {
@@ -597,7 +597,7 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	}
 
 	@Override
-	public void setIntStatic(Field field, int value, boolean access) {
+	public void setIntStatic(Field field, int value) {
 		try {
 			setter(field).invoke(value);
 		} catch (Throwable e) {
@@ -606,7 +606,7 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	}
 
 	@Override
-	public int getInt(Object object, Field field, boolean access) {
+	public int getInt(Object object, Field field) {
 		try {
 			return (int) getter(field).invoke(object);
 		} catch (Throwable e) {
@@ -615,7 +615,7 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	}
 
 	@Override
-	public int getIntStatic(Field field, boolean access) {
+	public int getIntStatic(Field field) {
 		try {
 			return (int) getter(field).invoke();
 		} catch (Throwable e) {
@@ -624,7 +624,7 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	}
 
 	@Override
-	public void setLong(Object object, Field field, long value, boolean access) {
+	public void setLong(Object object, Field field, long value) {
 		try {
 			setter(field).invoke(object, value);
 		} catch (Throwable e) {
@@ -633,7 +633,7 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	}
 
 	@Override
-	public void setLongStatic(Field field, long value, boolean access) {
+	public void setLongStatic(Field field, long value) {
 		try {
 			setter(field).invoke(value);
 		} catch (Throwable e) {
@@ -642,7 +642,7 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	}
 
 	@Override
-	public long getLong(Object object, Field field, boolean access) {
+	public long getLong(Object object, Field field) {
 		try {
 			return (long) getter(field).invoke(object);
 		} catch (Throwable e) {
@@ -651,7 +651,7 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	}
 
 	@Override
-	public long getLongStatic(Field field, boolean access) {
+	public long getLongStatic(Field field) {
 		try {
 			return (long) getter(field).invoke();
 		} catch (Throwable e) {
@@ -660,7 +660,7 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	}
 
 	@Override
-	public void setFloat(Object object, Field field, float value, boolean access) {
+	public void setFloat(Object object, Field field, float value) {
 		try {
 			setter(field).invoke(object, value);
 		} catch (Throwable e) {
@@ -669,7 +669,7 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	}
 
 	@Override
-	public void setFloatStatic(Field field, float value, boolean access) {
+	public void setFloatStatic(Field field, float value) {
 		try {
 			setter(field).invoke(value);
 		} catch (Throwable e) {
@@ -678,7 +678,7 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	}
 
 	@Override
-	public float getFloat(Object object, Field field, boolean access) {
+	public float getFloat(Object object, Field field) {
 		try {
 			return (float) getter(field).invoke(object);
 		} catch (Throwable e) {
@@ -687,7 +687,7 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	}
 
 	@Override
-	public float getFloatStatic(Field field, boolean access) {
+	public float getFloatStatic(Field field) {
 		try {
 			return (float) getter(field).invoke();
 		} catch (Throwable e) {
@@ -696,7 +696,7 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	}
 
 	@Override
-	public void setDouble(Object object, Field field, double value, boolean access) {
+	public void setDouble(Object object, Field field, double value) {
 		try {
 			setter(field).invoke(object, value);
 		} catch (Throwable e) {
@@ -705,7 +705,7 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	}
 
 	@Override
-	public void setDoubleStatic(Field field, double value, boolean access) {
+	public void setDoubleStatic(Field field, double value) {
 		try {
 			setter(field).invoke(value);
 		} catch (Throwable e) {
@@ -714,7 +714,7 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	}
 
 	@Override
-	public double getDouble(Object object, Field field, boolean access) {
+	public double getDouble(Object object, Field field) {
 		try {
 			return (double) getter(field).invoke(object);
 		} catch (Throwable e) {
@@ -723,7 +723,7 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	}
 
 	@Override
-	public double getDoubleStatic(Field field, boolean access) {
+	public double getDoubleStatic(Field field) {
 		try {
 			return (double) getter(field).invoke();
 		} catch (Throwable e) {
@@ -732,7 +732,7 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	}
 
 	@Override
-	public void setChar(Object object, Field field, char value, boolean access) {
+	public void setChar(Object object, Field field, char value) {
 		try {
 			setter(field).invoke(object, value);
 		} catch (Throwable e) {
@@ -741,7 +741,7 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	}
 
 	@Override
-	public void setCharStatic(Field field, char value, boolean access) {
+	public void setCharStatic(Field field, char value) {
 		try {
 			setter(field).invoke(value);
 		} catch (Throwable e) {
@@ -750,7 +750,7 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	}
 
 	@Override
-	public char getChar(Object object, Field field, boolean access) {
+	public char getChar(Object object, Field field) {
 		try {
 			return (char) getter(field).invoke(object);
 		} catch (Throwable e) {
@@ -759,7 +759,7 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	}
 
 	@Override
-	public char getCharStatic(Field field, boolean access) {
+	public char getCharStatic(Field field) {
 		try {
 			return (char) getter(field).invoke();
 		} catch (Throwable e) {
@@ -768,7 +768,7 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	}
 
 	@Override
-	public void setBoolean(Object object, Field field, boolean value, boolean access) {
+	public void setBoolean(Object object, Field field, boolean value) {
 		try {
 			setter(field).invoke(object, value);
 		} catch (Throwable e) {
@@ -777,7 +777,7 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	}
 
 	@Override
-	public void setBooleanStatic(Field field, boolean value, boolean access) {
+	public void setBooleanStatic(Field field, boolean value) {
 		try {
 			setter(field).invoke(value);
 		} catch (Throwable e) {
@@ -786,7 +786,7 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	}
 
 	@Override
-	public boolean getBoolean(Object object, Field field, boolean access) {
+	public boolean getBoolean(Object object, Field field) {
 		try {
 			return (boolean) getter(field).invoke(object);
 		} catch (Throwable e) {
@@ -795,7 +795,7 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	}
 
 	@Override
-	public boolean getBooleanStatic(Field field, boolean access) {
+	public boolean getBooleanStatic(Field field) {
 		try {
 			return (boolean) getter(field).invoke();
 		} catch (Throwable e) {
@@ -804,7 +804,7 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	}
 
 	@Override
-	public void set(Object object, Field field, Object value, boolean access) {
+	public void set(Object object, Field field, Object value) {
 		try {
 			setter(field).invoke(object, value);
 		} catch (Throwable e) {
@@ -813,7 +813,7 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 	}
 
 	@Override
-	public void setStatic(Field field, Object value, boolean access) {
+	public void setStatic(Field field, Object value) {
 		try {
 			setter(field).invoke(value);
 		} catch (Throwable e) {
@@ -823,7 +823,7 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T get(Object object, Field field, boolean access) {
+	public <T> T get(Object object, Field field) {
 		try {
 			return (T) getter(field).invoke(object);
 		} catch (Throwable e) {
@@ -833,7 +833,7 @@ public class MethodHandleFieldAccessHelper implements FieldAccessHelper {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T getStatic(Field field, boolean access) {
+	public <T> T getStatic(Field field) {
 		try {
 			return (T) getter(field).invoke();
 		} catch (Throwable e) {

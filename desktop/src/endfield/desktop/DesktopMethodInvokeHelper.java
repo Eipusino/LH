@@ -234,7 +234,7 @@ public class DesktopMethodInvokeHelper implements MethodInvokeHelper {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T invoke(Method method, Object object, boolean access, Object... args) {
+	public <T> T invoke(Method method, Object object, Object... args) {
 		FunctionType type = from(method);
 		try {
 			return (T) Reflects.invokeVirtual(object, getMethod(method, type), args);
@@ -247,7 +247,7 @@ public class DesktopMethodInvokeHelper implements MethodInvokeHelper {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T invokeStatic(Method method, boolean access, Object... args) {
+	public <T> T invokeStatic(Method method, Object... args) {
 		FunctionType type = from(method);
 		try {
 			return (T) Reflects.invokeStatic(getMethod(method, type), args);
@@ -260,7 +260,7 @@ public class DesktopMethodInvokeHelper implements MethodInvokeHelper {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T newInstance(Constructor<T> constructor, boolean access, Object... args) {
+	public <T> T newInstance(Constructor<T> constructor, Object... args) {
 		FunctionType type = from(constructor);
 		try {
 			return (T) Reflects.invokeStatic(getConstructor(constructor, type), args);

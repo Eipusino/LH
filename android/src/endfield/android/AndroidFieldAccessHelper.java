@@ -8,7 +8,7 @@ import endfield.util.FieldAccessHelper;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-public class BasicFieldAccessHelper implements FieldAccessHelper {
+public class AndroidFieldAccessHelper implements FieldAccessHelper {
 	protected static final CollectionObjectMap<Class<?>, CollectionObjectMap<String, Field>> fieldMap = new CollectionObjectMap<>(Class.class, CollectionObjectMap.class);
 
 	protected static final Prov<CollectionObjectMap<String, Field>> prov = () -> new CollectionObjectMap<>(String.class, Field.class);
@@ -21,6 +21,17 @@ public class BasicFieldAccessHelper implements FieldAccessHelper {
 			accessFlags.setAccessible(true);
 		} catch (Throwable e) {
 			Log.err(e);
+		}
+	}
+
+	static void setAccessFlags(Field field) {
+		if (accessFlags != null && (field.getModifiers() & Modifier.FINAL) != 0) {
+			try {
+				int flags = accessFlags.getInt(field);
+				accessFlags.setInt(field, flags & ~Modifier.FINAL);
+			} catch (IllegalAccessException e) {
+				Log.err(e);
+			}
 		}
 	}
 
@@ -56,17 +67,6 @@ public class BasicFieldAccessHelper implements FieldAccessHelper {
 		setAccessFlags(field);
 
 		return field;
-	}
-
-	protected void setAccessFlags(Field field) {
-		if (accessFlags != null && (field.getModifiers() & Modifier.FINAL) != 0) {
-			try {
-				int flags = accessFlags.getInt(field);
-				accessFlags.setInt(field, flags & ~Modifier.FINAL);
-			} catch (IllegalAccessException e) {
-				Log.err(e);
-			}
-		}
 	}
 
 	@Override
