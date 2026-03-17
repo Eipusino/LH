@@ -1,25 +1,23 @@
-package endfield.desktop;
+package endfield.android;
 
+import endfield.android.util.field.AndroidField;
 import endfield.util.FieldAccessor;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import static endfield.desktop.Unsafer.getGetMessage;
-import static endfield.desktop.Unsafer.getSetMessage;
-import static endfield.desktop.Unsafer.unsafe;
+import static endfield.android.Unsafer.getGetMessage;
+import static endfield.android.Unsafer.getSetMessage;
+import static endfield.android.Unsafer.unsafe;
 
+@SuppressWarnings("removal")
 public abstract class UnsafeFieldAccessor implements FieldAccessor {
 	protected final Field field;
 	protected final long offset;
 
 	protected UnsafeFieldAccessor(Field f) {
 		field = f;
-		if (Modifier.isStatic(f.getModifiers())) {
-			offset = unsafe.staticFieldOffset(f);
-		} else {
-			offset = unsafe.objectFieldOffset(f);
-		}
+		offset = AndroidField.fieldOffset(f);
 	}
 
 	public static FieldAccessor obtainFieldAccessor(Field f) {
@@ -293,6 +291,7 @@ public abstract class UnsafeFieldAccessor implements FieldAccessor {
 	}
 }
 
+@SuppressWarnings("removal")
 class UnsafeObjectFieldAccessor extends UnsafeFieldAccessor {
 	public UnsafeObjectFieldAccessor(Field f) {
 		super(f);
@@ -312,17 +311,18 @@ class UnsafeObjectFieldAccessor extends UnsafeFieldAccessor {
 	@Override
 	public <T> T getObject(Object object) {
 		ensureObject(object);
-		return (T) unsafe.getReference(object, offset);
+		return (T) unsafe.getObject(object, offset);
 	}
 
 	@Override
 	public void setObject(Object object, Object value) {
 		ensureObject(object);
 		ensureValue(value);
-		unsafe.putReference(object, offset, value);
+		unsafe.putObject(object, offset, value);
 	}
 }
 
+@SuppressWarnings("removal")
 class UnsafeBooleanFieldAccessor extends UnsafeFieldAccessor {
 	public UnsafeBooleanFieldAccessor(Field f) {
 		super(f);
@@ -352,6 +352,7 @@ class UnsafeBooleanFieldAccessor extends UnsafeFieldAccessor {
 	}
 }
 
+@SuppressWarnings("removal")
 class UnsafeByteFieldAccessor extends UnsafeFieldAccessor {
 	public UnsafeByteFieldAccessor(Field f) {
 		super(f);
@@ -406,6 +407,7 @@ class UnsafeByteFieldAccessor extends UnsafeFieldAccessor {
 	}
 }
 
+@SuppressWarnings("removal")
 class UnsafeCharFieldAccessor extends UnsafeFieldAccessor {
 	public UnsafeCharFieldAccessor(Field f) {
 		super(f);
@@ -455,6 +457,7 @@ class UnsafeCharFieldAccessor extends UnsafeFieldAccessor {
 	}
 }
 
+@SuppressWarnings("removal")
 class UnsafeShortFieldAccessor extends UnsafeFieldAccessor {
 	public UnsafeShortFieldAccessor(Field f) {
 		super(f);
@@ -509,6 +512,7 @@ class UnsafeShortFieldAccessor extends UnsafeFieldAccessor {
 	}
 }
 
+@SuppressWarnings("removal")
 class UnsafeIntFieldAccessor extends UnsafeFieldAccessor {
 	public UnsafeIntFieldAccessor(Field f) {
 		super(f);
@@ -568,6 +572,7 @@ class UnsafeIntFieldAccessor extends UnsafeFieldAccessor {
 	}
 }
 
+@SuppressWarnings("removal")
 class UnsafeLongFieldAccessor extends UnsafeFieldAccessor {
 	public UnsafeLongFieldAccessor(Field f) {
 		super(f);
@@ -627,6 +632,7 @@ class UnsafeLongFieldAccessor extends UnsafeFieldAccessor {
 	}
 }
 
+@SuppressWarnings("removal")
 class UnsafeFloatFieldAccessor extends UnsafeFieldAccessor {
 	public UnsafeFloatFieldAccessor(Field f) {
 		super(f);
@@ -686,6 +692,7 @@ class UnsafeFloatFieldAccessor extends UnsafeFieldAccessor {
 	}
 }
 
+@SuppressWarnings("removal")
 class UnsafeDoubleFieldAccessor extends UnsafeFieldAccessor {
 	public UnsafeDoubleFieldAccessor(Field f) {
 		super(f);
@@ -745,6 +752,7 @@ class UnsafeDoubleFieldAccessor extends UnsafeFieldAccessor {
 	}
 }
 
+@SuppressWarnings("removal")
 class UnsafeQualifiedObjectFieldAccessor extends UnsafeObjectFieldAccessor {
 	public UnsafeQualifiedObjectFieldAccessor(Field f) {
 		super(f);
@@ -764,17 +772,18 @@ class UnsafeQualifiedObjectFieldAccessor extends UnsafeObjectFieldAccessor {
 	@Override
 	public <T> T getObject(Object object) {
 		ensureObject(object);
-		return (T) unsafe.getReferenceVolatile(object, offset);
+		return (T) unsafe.getObjectVolatile(object, offset);
 	}
 
 	@Override
 	public void setObject(Object object, Object value) {
 		ensureObject(object);
 		ensureValue(value);
-		unsafe.putReferenceVolatile(object, offset, value);
+		unsafe.putObjectVolatile(object, offset, value);
 	}
 }
 
+@SuppressWarnings("removal")
 class UnsafeQualifiedBooleanFieldAccessor extends UnsafeBooleanFieldAccessor {
 	public UnsafeQualifiedBooleanFieldAccessor(Field f) {
 		super(f);
@@ -793,6 +802,7 @@ class UnsafeQualifiedBooleanFieldAccessor extends UnsafeBooleanFieldAccessor {
 	}
 }
 
+@SuppressWarnings("removal")
 class UnsafeQualifiedByteFieldAccessor extends UnsafeByteFieldAccessor {
 	public UnsafeQualifiedByteFieldAccessor(Field f) {
 		super(f);
@@ -811,6 +821,7 @@ class UnsafeQualifiedByteFieldAccessor extends UnsafeByteFieldAccessor {
 	}
 }
 
+@SuppressWarnings("removal")
 class UnsafeQualifiedCharFieldAccessor extends UnsafeCharFieldAccessor {
 	public UnsafeQualifiedCharFieldAccessor(Field f) {
 		super(f);
@@ -829,6 +840,7 @@ class UnsafeQualifiedCharFieldAccessor extends UnsafeCharFieldAccessor {
 	}
 }
 
+@SuppressWarnings("removal")
 class UnsafeQualifiedShortFieldAccessor extends UnsafeShortFieldAccessor {
 	public UnsafeQualifiedShortFieldAccessor(Field f) {
 		super(f);
@@ -847,6 +859,7 @@ class UnsafeQualifiedShortFieldAccessor extends UnsafeShortFieldAccessor {
 	}
 }
 
+@SuppressWarnings("removal")
 class UnsafeQualifiedIntFieldAccessor extends UnsafeIntFieldAccessor {
 	public UnsafeQualifiedIntFieldAccessor(Field f) {
 		super(f);
@@ -865,6 +878,7 @@ class UnsafeQualifiedIntFieldAccessor extends UnsafeIntFieldAccessor {
 	}
 }
 
+@SuppressWarnings("removal")
 class UnsafeQualifiedLongFieldAccessor extends UnsafeLongFieldAccessor {
 	public UnsafeQualifiedLongFieldAccessor(Field f) {
 		super(f);
@@ -883,6 +897,7 @@ class UnsafeQualifiedLongFieldAccessor extends UnsafeLongFieldAccessor {
 	}
 }
 
+@SuppressWarnings("removal")
 class UnsafeQualifiedFloatFieldAccessor extends UnsafeFloatFieldAccessor {
 	public UnsafeQualifiedFloatFieldAccessor(Field f) {
 		super(f);
@@ -901,6 +916,7 @@ class UnsafeQualifiedFloatFieldAccessor extends UnsafeFloatFieldAccessor {
 	}
 }
 
+@SuppressWarnings("removal")
 class UnsafeQualifiedDoubleFieldAccessor extends UnsafeDoubleFieldAccessor {
 	public UnsafeQualifiedDoubleFieldAccessor(Field f) {
 		super(f);
@@ -919,17 +935,19 @@ class UnsafeQualifiedDoubleFieldAccessor extends UnsafeDoubleFieldAccessor {
 	}
 }
 
+@SuppressWarnings("removal")
 abstract class UnsafeStaticFieldAccessor extends UnsafeFieldAccessor {
 	protected final Object base;
 
 	protected UnsafeStaticFieldAccessor(Field f) {
 		super(f);
 
-		if (Modifier.isStatic(f.getModifiers())) base = unsafe.staticFieldBase(f);
+		if (Modifier.isStatic(f.getModifiers())) base = f.getDeclaringClass();
 		else throw new IllegalArgumentException(f.toString());
 	}
 }
 
+@SuppressWarnings("removal")
 class UnsafeStaticObjectFieldAccessor extends UnsafeStaticFieldAccessor {
 	public UnsafeStaticObjectFieldAccessor(Field f) {
 		super(f);
@@ -948,16 +966,17 @@ class UnsafeStaticObjectFieldAccessor extends UnsafeStaticFieldAccessor {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getObjectStatic() {
-		return (T) unsafe.getReference(base, offset);
+		return (T) unsafe.getObject(base, offset);
 	}
 
 	@Override
 	public void setObjectStatic(Object value) {
 		ensureValue(value);
-		unsafe.putReference(base, offset, value);
+		unsafe.putObject(base, offset, value);
 	}
 }
 
+@SuppressWarnings("removal")
 class UnsafeStaticBooleanFieldAccessor extends UnsafeStaticFieldAccessor {
 	public UnsafeStaticBooleanFieldAccessor(Field f) {
 		super(f);
@@ -985,6 +1004,7 @@ class UnsafeStaticBooleanFieldAccessor extends UnsafeStaticFieldAccessor {
 	}
 }
 
+@SuppressWarnings("removal")
 class UnsafeStaticByteFieldAccessor extends UnsafeStaticFieldAccessor {
 	public UnsafeStaticByteFieldAccessor(Field f) {
 		super(f);
@@ -1037,6 +1057,7 @@ class UnsafeStaticByteFieldAccessor extends UnsafeStaticFieldAccessor {
 	}
 }
 
+@SuppressWarnings("removal")
 class UnsafeStaticCharFieldAccessor extends UnsafeStaticFieldAccessor {
 	public UnsafeStaticCharFieldAccessor(Field f) {
 		super(f);
@@ -1084,6 +1105,7 @@ class UnsafeStaticCharFieldAccessor extends UnsafeStaticFieldAccessor {
 	}
 }
 
+@SuppressWarnings("removal")
 class UnsafeStaticShortFieldAccessor extends UnsafeStaticFieldAccessor {
 	public UnsafeStaticShortFieldAccessor(Field f) {
 		super(f);
@@ -1136,6 +1158,7 @@ class UnsafeStaticShortFieldAccessor extends UnsafeStaticFieldAccessor {
 	}
 }
 
+@SuppressWarnings("removal")
 class UnsafeStaticIntFieldAccessor extends UnsafeStaticFieldAccessor {
 	public UnsafeStaticIntFieldAccessor(Field f) {
 		super(f);
@@ -1193,6 +1216,7 @@ class UnsafeStaticIntFieldAccessor extends UnsafeStaticFieldAccessor {
 	}
 }
 
+@SuppressWarnings("removal")
 class UnsafeStaticLongFieldAccessor extends UnsafeStaticFieldAccessor {
 	public UnsafeStaticLongFieldAccessor(Field f) {
 		super(f);
@@ -1250,6 +1274,7 @@ class UnsafeStaticLongFieldAccessor extends UnsafeStaticFieldAccessor {
 	}
 }
 
+@SuppressWarnings("removal")
 class UnsafeStaticFloatFieldAccessor extends UnsafeStaticFieldAccessor {
 	public UnsafeStaticFloatFieldAccessor(Field f) {
 		super(f);
@@ -1307,6 +1332,7 @@ class UnsafeStaticFloatFieldAccessor extends UnsafeStaticFieldAccessor {
 	}
 }
 
+@SuppressWarnings("removal")
 class UnsafeStaticDoubleFieldAccessor extends UnsafeStaticFieldAccessor {
 	public UnsafeStaticDoubleFieldAccessor(Field f) {
 		super(f);
@@ -1364,6 +1390,7 @@ class UnsafeStaticDoubleFieldAccessor extends UnsafeStaticFieldAccessor {
 	}
 }
 
+@SuppressWarnings("removal")
 class UnsafeQualifiedStaticObjectFieldAccessor extends UnsafeStaticObjectFieldAccessor {
 	public UnsafeQualifiedStaticObjectFieldAccessor(Field f) {
 		super(f);
@@ -1372,16 +1399,17 @@ class UnsafeQualifiedStaticObjectFieldAccessor extends UnsafeStaticObjectFieldAc
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getObjectStatic() {
-		return (T) unsafe.getReferenceVolatile(base, offset);
+		return (T) unsafe.getObjectVolatile(base, offset);
 	}
 
 	@Override
 	public void setObjectStatic(Object value) {
 		ensureValue(value);
-		unsafe.putReferenceVolatile(base, offset, value);
+		unsafe.putObjectVolatile(base, offset, value);
 	}
 }
 
+@SuppressWarnings("removal")
 class UnsafeQualifiedStaticBooleanFieldAccessor extends UnsafeStaticBooleanFieldAccessor {
 	public UnsafeQualifiedStaticBooleanFieldAccessor(Field f) {
 		super(f);
@@ -1398,6 +1426,7 @@ class UnsafeQualifiedStaticBooleanFieldAccessor extends UnsafeStaticBooleanField
 	}
 }
 
+@SuppressWarnings("removal")
 class UnsafeQualifiedStaticByteFieldAccessor extends UnsafeStaticByteFieldAccessor {
 	public UnsafeQualifiedStaticByteFieldAccessor(Field f) {
 		super(f);
@@ -1414,6 +1443,7 @@ class UnsafeQualifiedStaticByteFieldAccessor extends UnsafeStaticByteFieldAccess
 	}
 }
 
+@SuppressWarnings("removal")
 class UnsafeQualifiedStaticCharFieldAccessor extends UnsafeStaticCharFieldAccessor {
 	public UnsafeQualifiedStaticCharFieldAccessor(Field f) {
 		super(f);
@@ -1430,6 +1460,7 @@ class UnsafeQualifiedStaticCharFieldAccessor extends UnsafeStaticCharFieldAccess
 	}
 }
 
+@SuppressWarnings("removal")
 class UnsafeQualifiedStaticShortFieldAccessor extends UnsafeStaticShortFieldAccessor {
 	public UnsafeQualifiedStaticShortFieldAccessor(Field f) {
 		super(f);
@@ -1446,6 +1477,7 @@ class UnsafeQualifiedStaticShortFieldAccessor extends UnsafeStaticShortFieldAcce
 	}
 }
 
+@SuppressWarnings("removal")
 class UnsafeQualifiedStaticIntFieldAccessor extends UnsafeStaticShortFieldAccessor {
 	public UnsafeQualifiedStaticIntFieldAccessor(Field f) {
 		super(f);
@@ -1462,6 +1494,7 @@ class UnsafeQualifiedStaticIntFieldAccessor extends UnsafeStaticShortFieldAccess
 	}
 }
 
+@SuppressWarnings("removal")
 class UnsafeQualifiedStaticLongFieldAccessor extends UnsafeStaticLongFieldAccessor {
 	public UnsafeQualifiedStaticLongFieldAccessor(Field f) {
 		super(f);
@@ -1478,6 +1511,7 @@ class UnsafeQualifiedStaticLongFieldAccessor extends UnsafeStaticLongFieldAccess
 	}
 }
 
+@SuppressWarnings("removal")
 class UnsafeQualifiedStaticFloatFieldAccessor extends UnsafeStaticFloatFieldAccessor {
 	public UnsafeQualifiedStaticFloatFieldAccessor(Field f) {
 		super(f);
@@ -1494,6 +1528,7 @@ class UnsafeQualifiedStaticFloatFieldAccessor extends UnsafeStaticFloatFieldAcce
 	}
 }
 
+@SuppressWarnings("removal")
 class UnsafeQualifiedStaticDoubleFieldAccessor extends UnsafeStaticDoubleFieldAccessor {
 	public UnsafeQualifiedStaticDoubleFieldAccessor(Field f) {
 		super(f);

@@ -1,7 +1,6 @@
 package endfield.desktop;
 
 import arc.func.Prov;
-import arc.util.Structs;
 import dynamilize.FunctionType;
 import endfield.util.CollectionObjectMap;
 import endfield.util.MethodInvokeHelper;
@@ -38,24 +37,19 @@ public class DesktopMethodInvokeHelper implements MethodInvokeHelper {
 
 		Class<?> curr = clazz;
 
-		if (!Structs.contains(argTypes.getTypes(), void.class)) {
-			while (curr != null) {
-				Method method = classHelper.findMethod(curr, name, argTypes.getTypes());
+		while (curr != null) {
+			Method method = classHelper.findMethod(curr, name, argTypes.getTypes());
 
-				if (method != null) {
-					res = lookup.unreflect(method);
-				}
-
-				if (res != null) {
-					map.put(inst(res.type()), res);
-					break;
-				}
-
-				curr = curr.getSuperclass();
+			if (method != null) {
+				res = lookup.unreflect(method);
+				map.put(inst(res.type()), res);
+				break;
 			}
 
-			if (res != null) return res;
+			curr = curr.getSuperclass();
 		}
+
+		if (res != null) return res;
 
 		curr = clazz;
 		a:
@@ -96,6 +90,7 @@ public class DesktopMethodInvokeHelper implements MethodInvokeHelper {
 		if (cstr != null) {
 			cstr.setAccessible(true);
 			res = lookup.unreflectConstructor(cstr);
+			map.put(from(cstr), res);
 		}
 
 		if (res != null) return res;

@@ -1,3 +1,17 @@
+import arc.util.serialization.Jval
+
+buildscript {
+	repositories {
+		mavenCentral()
+		maven { url "https://raw.githubusercontent.com/Zelaux/MindustryRepo/master/repository" }
+		maven { url "https://www.jitpack.io" }
+	}
+
+	dependencies {
+		classpath "com.github.Anuken.Arc:arc-core:$mindustryVersion"
+	}
+}
+
 apply plugin: 'java'
 
 sourceSets.main.java.srcDir('src')
@@ -43,7 +57,46 @@ dependencies {
 			"$libsDir/libs/mindustry-android.jar"
 	)
 
-	implementation files("$libsDir/libs/field-utils.jar", "$libsDir/libs/hiddenapibypass.jar")
+	implementation files("$libsDir/libs/field-utils.jar")
+}
+
+tasks.register("list") {
+	inputs.files tasks.compileJava, configurations.runtimeClasspath
+
+	def output = file("$temporaryDir/classes-android.json")
+	outputs.file output
+
+	doFirst {
+		def packages = Jval.newArray()
+		def classes = Jval.newArray()
+
+		def proc = { def proc, String path, File dir ->
+			for (def child : dir.listFiles()) {
+				if (child.directory) {
+					def name = child.name
+					if (!path.startsWith("endfield") && name != "endfield") continue
+
+					def visited = path.empty ? name : "$path.$name"
+
+					packages.add(visited)
+					proc(proc, visited, child)
+				} else {
+					def dot = child.name.lastIndexOf(".")
+					if (dot == -1) continue
+
+					def name = child.name.substring(0, dot)
+					def ext = child.name.substring(dot + 1)
+
+					if (ext == "class") classes.add("$path.$name")
+				}
+			}
+		}
+
+		sourceSets.main.runtimeClasspath.forEach { proc(proc, "", it) }
+
+		def compacted = Jval.newObject().put("packages", packages).put("classes", classes)
+		output.withWriter { compacted.writeTo(it, Jval.Jformat.formatted) }
+	}
 }
 
 jar {
@@ -54,7 +107,7 @@ jar {
 	}
 }
 
-task jarAndroid(type: Jar) {
+tasks.register("jarAndroid", Jar) {
 	dependsOn "jar"
 
 	archiveFileName = "${rootProject.name}Android.jar"

@@ -8,6 +8,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import static endfield.desktop.DesktopImpl.lookup;
+import static endfield.desktop.Unsafer.getGetMessage;
+import static endfield.desktop.Unsafer.getSetMessage;
 
 public abstract class MethodHandleFieldAccessor implements FieldAccessor {
 	protected final Field field;
@@ -16,14 +18,16 @@ public abstract class MethodHandleFieldAccessor implements FieldAccessor {
 	protected MethodHandleFieldAccessor(Field f) {
 		try {
 			field = f;
+			Class<?> decl = f.getDeclaringClass();
+			String name = f.getName();
 			Class<?> type = f.getType(), rtype = type.isPrimitive() ? type : Object.class;
 
 			if (Modifier.isStatic(f.getModifiers())) {
-				getter = lookup.findStaticGetter(f.getDeclaringClass(), f.getName(), type).asType(MethodType.methodType(rtype));
-				setter = lookup.findStaticSetter(f.getDeclaringClass(), f.getName(), type).asType(MethodType.methodType(void.class, rtype));
+				getter = lookup.findStaticGetter(decl, name, type).asType(MethodType.methodType(rtype));
+				setter = lookup.findStaticSetter(decl, name, type).asType(MethodType.methodType(void.class, rtype));
 			} else {
-				getter = lookup.findGetter(f.getDeclaringClass(), f.getName(), type).asType(MethodType.methodType(rtype));
-				setter = lookup.findSetter(f.getDeclaringClass(), f.getName(), type).asType(MethodType.methodType(void.class, Object.class, rtype));
+				getter = lookup.findGetter(decl, name, type).asType(MethodType.methodType(rtype));
+				setter = lookup.findSetter(decl, name, type).asType(MethodType.methodType(void.class, Object.class, rtype));
 			}
 		} catch (NoSuchFieldException | IllegalAccessException e) {
 			throw new RuntimeException(e);
@@ -36,25 +40,25 @@ public abstract class MethodHandleFieldAccessor implements FieldAccessor {
 		if (Modifier.isStatic(f.getModifiers())) {
 			if (type.isPrimitive()) {
 				if (type == boolean.class) return new MethodHandleStaticBooleanFieldAccessor(f);
-				if (type == byte.class) return new MethodHandleStaticByteFieldAccessor(f);
-				if (type == char.class) return new MethodHandleStaticCharFieldAccessor(f);
-				if (type == short.class) return new MethodHandleStaticShortFieldAccessor(f);
-				if (type == int.class) return new MethodHandleStaticIntFieldAccessor(f);
-				if (type == long.class) return new MethodHandleStaticLongFieldAccessor(f);
-				if (type == float.class) return new MethodHandleStaticFloatFieldAccessor(f);
-				if (type == double.class) return new MethodHandleStaticDoubleFieldAccessor(f);
+				else if (type == byte.class) return new MethodHandleStaticByteFieldAccessor(f);
+				else if (type == char.class) return new MethodHandleStaticCharFieldAccessor(f);
+				else if (type == short.class) return new MethodHandleStaticShortFieldAccessor(f);
+				else if (type == int.class) return new MethodHandleStaticIntFieldAccessor(f);
+				else if (type == long.class) return new MethodHandleStaticLongFieldAccessor(f);
+				else if (type == float.class) return new MethodHandleStaticFloatFieldAccessor(f);
+				else if (type == double.class) return new MethodHandleStaticDoubleFieldAccessor(f);
 				else throw new IllegalArgumentException("unknown type of field " + f);
 			} else return new MethodHandleStaticObjectFieldAccessor(f);
 		} else {
 			if (type.isPrimitive()) {
 				if (type == boolean.class) return new MethodHandleBooleanFieldAccessor(f);
-				if (type == byte.class) return new MethodHandleByteFieldAccessor(f);
-				if (type == char.class) return new MethodHandleCharFieldAccessor(f);
-				if (type == short.class) return new MethodHandleShortFieldAccessor(f);
-				if (type == int.class) return new MethodHandleIntFieldAccessor(f);
-				if (type == long.class) return new MethodHandleLongFieldAccessor(f);
-				if (type == float.class) return new MethodHandleFloatFieldAccessor(f);
-				if (type == double.class) return new MethodHandleDoubleFieldAccessor(f);
+				else if (type == byte.class) return new MethodHandleByteFieldAccessor(f);
+				else if (type == char.class) return new MethodHandleCharFieldAccessor(f);
+				else if (type == short.class) return new MethodHandleShortFieldAccessor(f);
+				else if (type == int.class) return new MethodHandleIntFieldAccessor(f);
+				else if (type == long.class) return new MethodHandleLongFieldAccessor(f);
+				else if (type == float.class) return new MethodHandleFloatFieldAccessor(f);
+				else if (type == double.class) return new MethodHandleDoubleFieldAccessor(f);
 				else throw new IllegalArgumentException("unknown type of field " + f);
 			} else return new MethodHandleObjectFieldAccessor(f);
 		}
@@ -62,202 +66,202 @@ public abstract class MethodHandleFieldAccessor implements FieldAccessor {
 
 	@Override
 	public <T> T get(Object object) {
-		throw new IllegalArgumentException(field.toString());
+		throw new IllegalArgumentException(getGetMessage(field, Object.class.getName()));
 	}
 
 	@Override
 	public <T> T getStatic() {
-		throw new IllegalArgumentException(field.toString());
+		throw new IllegalArgumentException(getGetMessage(field, Object.class.getName()));
 	}
 
 	@Override
 	public void set(Object object, Object value) {
-		throw new IllegalArgumentException(field.toString());
+		throw new IllegalArgumentException(getSetMessage(field, value));
 	}
 
 	@Override
 	public void setStatic(Object value) {
-		throw new IllegalArgumentException(field.toString());
+		throw new IllegalArgumentException(getSetMessage(field, value));
 	}
 
 	@Override
 	public <T> T getObject(Object object) {
-		throw new IllegalArgumentException(field.toString());
+		throw new IllegalArgumentException(getGetMessage(field, Object.class.getName()));
 	}
 
 	@Override
 	public <T> T getObjectStatic() {
-		throw new IllegalArgumentException(field.toString());
+		throw new IllegalArgumentException(getGetMessage(field, Object.class.getName()));
 	}
 
 	@Override
 	public void setObject(Object object, Object value) {
-		throw new IllegalArgumentException(field.toString());
+		throw new IllegalArgumentException(getSetMessage(field, value));
 	}
 
 	@Override
 	public void setObjectStatic(Object value) {
-		throw new IllegalArgumentException(field.toString());
+		throw new IllegalArgumentException(getSetMessage(field, value));
 	}
 
 	@Override
 	public boolean getBoolean(Object object) {
-		throw new IllegalArgumentException(field.toString());
+		throw new IllegalArgumentException(getGetMessage(field, "boolean"));
 	}
 
 	@Override
 	public boolean getBooleanStatic() {
-		throw new IllegalArgumentException(field.toString());
+		throw new IllegalArgumentException(getGetMessage(field, "boolean"));
 	}
 
 	@Override
 	public void setBoolean(Object object, boolean value) {
-		throw new IllegalArgumentException(field.toString());
+		throw new IllegalArgumentException(getSetMessage(field, "boolean", String.valueOf(value)));
 	}
 
 	@Override
 	public void setBooleanStatic(boolean value) {
-		throw new IllegalArgumentException(field.toString());
+		throw new IllegalArgumentException(getSetMessage(field, "boolean", String.valueOf(value)));
 	}
 
 	@Override
 	public byte getByte(Object object) {
-		throw new IllegalArgumentException(field.toString());
+		throw new IllegalArgumentException(getGetMessage(field, "boolean"));
 	}
 
 	@Override
 	public byte getByteStatic() {
-		throw new IllegalArgumentException(field.toString());
+		throw new IllegalArgumentException(getGetMessage(field, "boolean"));
 	}
 
 	@Override
 	public void setByte(Object object, byte value) {
-		throw new IllegalArgumentException(field.toString());
+		throw new IllegalArgumentException(getSetMessage(field, "byte", String.valueOf(value)));
 	}
 
 	@Override
 	public void setByteStatic(byte value) {
-		throw new IllegalArgumentException(field.toString());
+		throw new IllegalArgumentException(getSetMessage(field, "byte", String.valueOf(value)));
 	}
 
 	@Override
 	public char getChar(Object object) {
-		throw new IllegalArgumentException(field.toString());
+		throw new IllegalArgumentException(getGetMessage(field, "char"));
 	}
 
 	@Override
 	public char getCharStatic() {
-		throw new IllegalArgumentException(field.toString());
+		throw new IllegalArgumentException(getGetMessage(field, "char"));
 	}
 
 	@Override
 	public void setChar(Object object, char value) {
-		throw new IllegalArgumentException(field.toString());
+		throw new IllegalArgumentException(getSetMessage(field, "char", String.valueOf(value)));
 	}
 
 	@Override
 	public void setCharStatic(char value) {
-		throw new IllegalArgumentException(field.toString());
+		throw new IllegalArgumentException(getSetMessage(field, "char", String.valueOf(value)));
 	}
 
 	@Override
 	public short getShort(Object object) {
-		throw new IllegalArgumentException(field.toString());
+		throw new IllegalArgumentException(getGetMessage(field, "short"));
 	}
 
 	@Override
 	public short getShortStatic() {
-		throw new IllegalArgumentException(field.toString());
+		throw new IllegalArgumentException(getGetMessage(field, "short"));
 	}
 
 	@Override
 	public void setShort(Object object, short value) {
-		throw new IllegalArgumentException(field.toString());
+		throw new IllegalArgumentException(getSetMessage(field, "short", String.valueOf(value)));
 	}
 
 	@Override
 	public void setShortStatic(short value) {
-		throw new IllegalArgumentException(field.toString());
+		throw new IllegalArgumentException(getSetMessage(field, "short", String.valueOf(value)));
 	}
 
 	@Override
 	public int getInt(Object object) {
-		throw new IllegalArgumentException(field.toString());
+		throw new IllegalArgumentException(getGetMessage(field, "int"));
 	}
 
 	@Override
 	public int getIntStatic() {
-		throw new IllegalArgumentException(field.toString());
+		throw new IllegalArgumentException(getGetMessage(field, "int"));
 	}
 
 	@Override
 	public void setInt(Object object, int value) {
-		throw new IllegalArgumentException(field.toString());
+		throw new IllegalArgumentException(getSetMessage(field, "int", String.valueOf(value)));
 	}
 
 	@Override
 	public void setIntStatic(int value) {
-		throw new IllegalArgumentException(field.toString());
+		throw new IllegalArgumentException(getSetMessage(field, "int", String.valueOf(value)));
 	}
 
 	@Override
 	public long getLong(Object object) {
-		throw new IllegalArgumentException(field.toString());
+		throw new IllegalArgumentException(getGetMessage(field, "long"));
 	}
 
 	@Override
 	public long getLongStatic() {
-		throw new IllegalArgumentException(field.toString());
+		throw new IllegalArgumentException(getGetMessage(field, "long"));
 	}
 
 	@Override
 	public void setLong(Object object, long value) {
-		throw new IllegalArgumentException(field.toString());
+		throw new IllegalArgumentException(getSetMessage(field, "long", String.valueOf(value)));
 	}
 
 	@Override
 	public void setLongStatic(long value) {
-		throw new IllegalArgumentException(field.toString());
+		throw new IllegalArgumentException(getSetMessage(field, "long", String.valueOf(value)));
 	}
 
 	@Override
 	public float getFloat(Object object) {
-		throw new IllegalArgumentException(field.toString());
+		throw new IllegalArgumentException(getGetMessage(field, "float"));
 	}
 
 	@Override
 	public float getFloatStatic() {
-		throw new IllegalArgumentException(field.toString());
+		throw new IllegalArgumentException(getGetMessage(field, "float"));
 	}
 
 	@Override
 	public void setFloat(Object object, float value) {
-		throw new IllegalArgumentException(field.toString());
+		throw new IllegalArgumentException(getSetMessage(field, "float", String.valueOf(value)));
 	}
 
 	@Override
 	public void setFloatStatic(float value) {
-		throw new IllegalArgumentException(field.toString());
+		throw new IllegalArgumentException(getSetMessage(field, "float", String.valueOf(value)));
 	}
 
 	@Override
 	public double getDouble(Object object) {
-		throw new IllegalArgumentException(field.toString());
+		throw new IllegalArgumentException(getGetMessage(field, "double"));
 	}
 
 	@Override
 	public double getDoubleStatic() {
-		throw new IllegalArgumentException(field.toString());
+		throw new IllegalArgumentException(getGetMessage(field, "double"));
 	}
 
 	@Override
 	public void setDouble(Object object, double value) {
-		throw new IllegalArgumentException(field.toString());
+		throw new IllegalArgumentException(getSetMessage(field, "double", String.valueOf(value)));
 	}
 
 	@Override
 	public void setDoubleStatic(double value) {
-		throw new IllegalArgumentException(field.toString());
+		throw new IllegalArgumentException(getSetMessage(field, "double", String.valueOf(value)));
 	}
 }
 

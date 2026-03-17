@@ -2,6 +2,7 @@ package endfield.android;
 
 import arc.util.Log;
 import endfield.android.util.field.AndroidField;
+import org.jetbrains.annotations.Nullable;
 import sun.misc.Unsafe;
 
 import java.lang.reflect.Field;
@@ -32,6 +33,33 @@ public final class Unsafer {
 	}
 
 	private Unsafer() {}
+
+	public static String getGetMessage(Field field, String type) {
+		return "Attempt to get " + field.getType().getName() + " field \"" +
+				field.getDeclaringClass().getName() + "." + field.getName() + "\" with illegal data type conversion to " + type;
+	}
+
+	public static String getSetMessage(Field field, @Nullable Object object) {
+		return getSetMessage(field, object == null ? "" : object.getClass().getName(), "");
+	}
+
+	public static String getSetMessage(Field field, String attemptedType, String attemptedValue) {
+		StringBuilder err = new StringBuilder().append("Can not set");
+		if (Modifier.isStatic(field.getModifiers()))
+			err.append(" static");
+		if (Modifier.isFinal(field.getModifiers()))
+			err.append(" final");
+		err.append(" ").append(field.getType().getName()).append(" field ").append(field.getDeclaringClass().getName()).append(".").append(field.getName()).append(" to ");
+		if (!attemptedValue.isEmpty()) {
+			err.append("(").append(attemptedType).append(")").append(attemptedValue);
+		} else {
+			if (!attemptedType.isEmpty())
+				err.append(attemptedType);
+			else
+				err.append("null value");
+		}
+		return err.toString();
+	}
 
 	public static void setByte(Field field, Object object, byte value) {
 		long offset = AndroidField.fieldOffset(field);
@@ -342,9 +370,9 @@ public final class Unsafer {
 		long offset = AndroidField.fieldOffset(field);
 		Class<?> clazz = field.getType();
 		if (Modifier.isVolatile(field.getModifiers()))
-			put1(value, object, offset, clazz);
+			putVolatile(value, object, offset, clazz);
 		else
-			put0(value, object, offset, clazz);
+			put(value, object, offset, clazz);
 	}
 
 	public static void setStatic(Field field, Object value) {
@@ -353,9 +381,9 @@ public final class Unsafer {
 		Class<?> clazz = field.getType();
 
 		if (Modifier.isVolatile(field.getModifiers()))
-			put1(value, base, offset, clazz);
+			putVolatile(value, base, offset, clazz);
 		else
-			put0(value, base, offset, clazz);
+			put(value, base, offset, clazz);
 	}
 
 	public static Object get(Field field, Object object) {
@@ -363,8 +391,8 @@ public final class Unsafer {
 		Class<?> clazz = field.getType();
 
 		return Modifier.isVolatile(field.getModifiers()) ?
-				get1(object, offset, clazz) :
-				get0(object, offset, clazz);
+				getVolatile(object, offset, clazz) :
+				get(object, offset, clazz);
 	}
 
 	public static Object getStatic(Field field) {
@@ -373,69 +401,73 @@ public final class Unsafer {
 		Class<?> clazz = field.getType();
 
 		return Modifier.isVolatile(field.getModifiers()) ?
-				get1(base, offset, clazz) :
-				get0(base, offset, clazz);
+				getVolatile(base, offset, clazz) :
+				get(base, offset, clazz);
 	}
 
-	static void put0(Object value, Object object, long offset, Class<?> clazz) {
-		if (clazz.isPrimitive()) {
-			if (clazz == int.class) unsafe.putInt(object, offset, (int) value);
-			else if (clazz == float.class) unsafe.putFloat(object, offset, (float) value);
-			else if (clazz == boolean.class) unsafe.putBoolean(object, offset, (boolean) value);
-			else if (clazz == byte.class) unsafe.putByte(object, offset, (byte) value);
-			else if (clazz == double.class) unsafe.putDouble(object, offset, (double) value);
-			else if (clazz == long.class) unsafe.putLong(object, offset, (long) value);
-			else if (clazz == char.class) unsafe.putChar(object, offset, (char) value);
-			else if (clazz == short.class) unsafe.putShort(object, offset, (short) value);
-			else throw new IllegalArgumentException("unknown type of field " + clazz);
+	static void put(Object value, Object object, long offset, Class<?> type) {
+		if (type.isPrimitive()) {
+			if (type == int.class) unsafe.putInt(object, offset, (int) value);
+			else if (type == float.class) unsafe.putFloat(object, offset, (float) value);
+			else if (type == boolean.class) unsafe.putBoolean(object, offset, (boolean) value);
+			else if (type == byte.class) unsafe.putByte(object, offset, (byte) value);
+			else if (type == double.class) unsafe.putDouble(object, offset, (double) value);
+			else if (type == long.class) unsafe.putLong(object, offset, (long) value);
+			else if (type == char.class) unsafe.putChar(object, offset, (char) value);
+			else if (type == short.class) unsafe.putShort(object, offset, (short) value);
+			else throw new IllegalArgumentException("unknown type of field " + type);
 		} else {
+			if (value != null && !type.isInstance(value)) throw new IllegalArgumentException();
+
 			unsafe.putObject(object, offset, value);
 		}
 	}
 
-	static void put1(Object value, Object object, long offset, Class<?> clazz) {
-		if (clazz.isPrimitive()) {
-			if (clazz == int.class) unsafe.putIntVolatile(object, offset, (int) value);
-			else if (clazz == float.class) unsafe.putFloatVolatile(object, offset, (float) value);
-			else if (clazz == boolean.class) unsafe.putBooleanVolatile(object, offset, (boolean) value);
-			else if (clazz == byte.class) unsafe.putByteVolatile(object, offset, (byte) value);
-			else if (clazz == long.class) unsafe.putLongVolatile(object, offset, (long) value);
-			else if (clazz == double.class) unsafe.putDoubleVolatile(object, offset, (double) value);
-			else if (clazz == char.class) unsafe.putCharVolatile(object, offset, (char) value);
-			else if (clazz == short.class) unsafe.putShortVolatile(object, offset, (short) value);
-			else throw new IllegalArgumentException("unknown type of field " + clazz);
+	static void putVolatile(Object value, Object object, long offset, Class<?> type) {
+		if (type.isPrimitive()) {
+			if (type == int.class) unsafe.putIntVolatile(object, offset, (int) value);
+			else if (type == float.class) unsafe.putFloatVolatile(object, offset, (float) value);
+			else if (type == boolean.class) unsafe.putBooleanVolatile(object, offset, (boolean) value);
+			else if (type == byte.class) unsafe.putByteVolatile(object, offset, (byte) value);
+			else if (type == long.class) unsafe.putLongVolatile(object, offset, (long) value);
+			else if (type == double.class) unsafe.putDoubleVolatile(object, offset, (double) value);
+			else if (type == char.class) unsafe.putCharVolatile(object, offset, (char) value);
+			else if (type == short.class) unsafe.putShortVolatile(object, offset, (short) value);
+			else throw new IllegalArgumentException("unknown type of field " + type);
 		} else {
+			if (value != null && !type.isInstance(value)) throw new IllegalArgumentException();
+
 			unsafe.putObjectVolatile(object, offset, value);
 		}
 	}
 
-	static Object get0(Object object, long offset, Class<?> clazz) {
-		if (clazz.isPrimitive()) {
-			if (clazz == int.class) return unsafe.getInt(object, offset);
-			else if (clazz == float.class) return unsafe.getFloat(object, offset);
-			else if (clazz == boolean.class) return unsafe.getBoolean(object, offset);
-			else if (clazz == byte.class) return unsafe.getByte(object, offset);
-			else if (clazz == long.class) return unsafe.getDouble(object, offset);
-			else if (clazz == double.class) return unsafe.getLong(object, offset);
-			else if (clazz == char.class) return unsafe.getChar(object, offset);
-			else if (clazz == short.class) return unsafe.getShort(object, offset);
-			else throw new IllegalArgumentException("unknown type of field " + clazz);
+	static Object get(Object object, long offset, Class<?> type) {
+		if (type.isPrimitive()) {
+			if (type == int.class) return unsafe.getInt(object, offset);
+			else if (type == float.class) return unsafe.getFloat(object, offset);
+			else if (type == boolean.class) return unsafe.getBoolean(object, offset);
+			else if (type == byte.class) return unsafe.getByte(object, offset);
+			else if (type == long.class) return unsafe.getDouble(object, offset);
+			else if (type == double.class) return unsafe.getLong(object, offset);
+			else if (type == char.class) return unsafe.getChar(object, offset);
+			else if (type == short.class) return unsafe.getShort(object, offset);
+			else throw new IllegalArgumentException("unknown type of field " + type);
 		} else {
 			return unsafe.getObject(object, offset);
 		}
 	}
 
-	static Object get1(Object object, long offset, Class<?> clazz) {
-		if (clazz.isPrimitive()) {
-			if (clazz == int.class) return unsafe.getIntVolatile(object, offset);
-			else if (clazz == float.class) return unsafe.getFloatVolatile(object, offset);
-			else if (clazz == boolean.class) return unsafe.getBooleanVolatile(object, offset);
-			else if (clazz == byte.class) return unsafe.getByteVolatile(object, offset);
-			else if (clazz == long.class) return unsafe.getLongVolatile(object, offset);
-			else if (clazz == double.class) return unsafe.getDoubleVolatile(object, offset);
-			else if (clazz == char.class) return unsafe.getCharVolatile(object, offset);
-			else if (clazz == short.class) return unsafe.getShortVolatile(object, offset);
-			else throw new IllegalArgumentException("unknown type of field " + clazz);
+	static Object getVolatile(Object object, long offset, Class<?> type) {
+		if (type.isPrimitive()) {
+			if (type == int.class) return unsafe.getIntVolatile(object, offset);
+			else if (type == float.class) return unsafe.getFloatVolatile(object, offset);
+			else if (type == boolean.class) return unsafe.getBooleanVolatile(object, offset);
+			else if (type == byte.class) return unsafe.getByteVolatile(object, offset);
+			else if (type == long.class) return unsafe.getLongVolatile(object, offset);
+			else if (type == double.class) return unsafe.getDoubleVolatile(object, offset);
+			else if (type == char.class) return unsafe.getCharVolatile(object, offset);
+			else if (type == short.class) return unsafe.getShortVolatile(object, offset);
+			else throw new IllegalArgumentException("unknown type of field " + type);
 		} else {
 			return unsafe.getObjectVolatile(object, offset);
 		}

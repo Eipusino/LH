@@ -85,9 +85,7 @@ public class AndroidImpl implements PlatformImpl {
 
 	@Override
 	public FieldAccessor fieldAccessor(Field field) {
-		AndroidFieldAccessHelper.setAccessFlags(field);
-
-		return PlatformImpl.super.fieldAccessor(field);
+		return UnsafeFieldAccessor.obtainFieldAccessor(field);
 	}
 
 	@Override

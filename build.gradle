@@ -18,6 +18,9 @@ ext {
 dependencies {
 	implementation "org.ow2.asm:asm:9.6"
 	implementation "org.ow2.asm:asm-commons:9.6"
+
+	implementation "com.github.Anuken.Arc:arc-core:$mindustryVersion"
+	implementation "com.github.Anuken.Mindustry:core:$mindustryVersion"
 }
 
 java {

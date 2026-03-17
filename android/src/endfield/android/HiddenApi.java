@@ -1,9 +1,7 @@
 package endfield.android;
 
-import arc.util.Log;
 import arc.util.OS;
 import dalvik.system.VMRuntime;
-import org.lsposed.hiddenapibypass.HiddenApiBypass;
 
 import java.lang.reflect.Method;
 
@@ -54,11 +52,7 @@ public class HiddenApi {
 	static long offset;
 
 	static void load() throws Throwable {
-		try {
-			if (HiddenApiBypass.setHiddenApiExemptions(values)) return;
-		} catch (Throwable e) {
-			Log.err(e);
-		}
+		if (Propertys.load()) return;
 
 		runtime = VMRuntime.getRuntime();
 
