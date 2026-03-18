@@ -401,36 +401,32 @@ public final class Unsafer {
 
 	static void put(Object value, Object object, long offset, Class<?> type) {
 		if (type.isPrimitive()) {
-			if (type == int.class) unsafe.putInt(object, offset, (int) value);
-			else if (type == float.class) unsafe.putFloat(object, offset, (float) value);
+			if (type == int.class) unsafe.putInt(object, offset, ((Number) value).intValue());
+			else if (type == float.class) unsafe.putFloat(object, offset, ((Number) value).floatValue());
 			else if (type == boolean.class) unsafe.putBoolean(object, offset, (boolean) value);
-			else if (type == byte.class) unsafe.putByte(object, offset, (byte) value);
-			else if (type == double.class) unsafe.putDouble(object, offset, (double) value);
-			else if (type == long.class) unsafe.putLong(object, offset, (long) value);
+			else if (type == byte.class) unsafe.putByte(object, offset, ((Number) value).byteValue());
+			else if (type == double.class) unsafe.putDouble(object, offset, ((Number) value).doubleValue());
+			else if (type == long.class) unsafe.putLong(object, offset, ((Number) value).longValue());
 			else if (type == char.class) unsafe.putChar(object, offset, (char) value);
-			else if (type == short.class) unsafe.putShort(object, offset, (short) value);
+			else if (type == short.class) unsafe.putShort(object, offset, ((Number) value).shortValue());
 			else throw new IllegalArgumentException("unknown type of field " + type);
 		} else {
-			if (value != null && !type.isInstance(value)) throw new IllegalArgumentException();
-
 			unsafe.putReference(object, offset, value);
 		}
 	}
 
 	static void putVolatile(Object value, Object object, long offset, Class<?> type) {
 		if (type.isPrimitive()) {
-			if (type == int.class) unsafe.putIntVolatile(object, offset, (int) value);
-			else if (type == float.class) unsafe.putFloatVolatile(object, offset, (float) value);
+			if (type == int.class) unsafe.putIntVolatile(object, offset, ((Number) value).intValue());
+			else if (type == float.class) unsafe.putFloatVolatile(object, offset, ((Number) value).floatValue());
 			else if (type == boolean.class) unsafe.putBooleanVolatile(object, offset, (boolean) value);
-			else if (type == byte.class) unsafe.putByteVolatile(object, offset, (byte) value);
-			else if (type == long.class) unsafe.putLongVolatile(object, offset, (long) value);
-			else if (type == double.class) unsafe.putDoubleVolatile(object, offset, (double) value);
+			else if (type == byte.class) unsafe.putByteVolatile(object, offset, ((Number) value).byteValue());
+			else if (type == long.class) unsafe.putLongVolatile(object, offset, ((Number) value).longValue());
+			else if (type == double.class) unsafe.putDoubleVolatile(object, offset, ((Number) value).doubleValue());
 			else if (type == char.class) unsafe.putCharVolatile(object, offset, (char) value);
-			else if (type == short.class) unsafe.putShortVolatile(object, offset, (short) value);
+			else if (type == short.class) unsafe.putShortVolatile(object, offset, ((Number) value).shortValue());
 			else throw new IllegalArgumentException("unknown type of field " + type);
 		} else {
-			if (value != null && !type.isInstance(value)) throw new IllegalArgumentException();
-
 			unsafe.putReferenceVolatile(object, offset, value);
 		}
 	}

@@ -8,12 +8,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 @SuppressWarnings("rawtypes")
-public final class Propertys {
+public final class AndroidProperties {
 	static Property<Class, Method[]> methods;
 	static Property<Class, Constructor[]> constructors;
 	static Property<Class, Field[]> fields;
 
-	private Propertys() {}
+	private AndroidProperties() {}
 
 	static boolean load() {
 		try {
@@ -24,6 +24,8 @@ public final class Propertys {
 			for (Method method : methods.get(VMRuntime.class)) {
 				if (method.getName().equals("setHiddenApiExemptions")) {
 					method.invoke(VMRuntime.getRuntime(), (Object) HiddenApi.values);
+
+					HiddenApi.method = method;
 
 					return true;
 				}

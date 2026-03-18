@@ -17,7 +17,7 @@ public class HiddenApi {
 	 */
 	public static final long artMethodOffset = 24l;
 
-	static final String[] values = {
+	static String[] values = {
 			"Ldalvik/system/BaseDexClassLoader;",
 			"Ldalvik/system/VMRuntime;",
 			"Ldalvik/system/VMStack;",
@@ -25,6 +25,7 @@ public class HiddenApi {
 			"Ljava/lang/Class;->getPrimitiveClass(Ljava/lang/String;)Ljava/lang/Class;",
 			"Ljava/lang/Enum;",
 			"Ljava/lang/Object;->internalClone()Ljava/lang/Object;",
+			"Ljava/lang/invoke/MethodHandle;->artFieldOrMethod:J",
 			"Ljava/lang/invoke/MethodHandles$Lookup;-><init>(Ljava/lang/Class;I)V",
 			"Ljava/lang/reflect/AccessibleObject;->override:Z",
 			"Ljava/lang/reflect/Executable;->accessFlags:I",
@@ -44,7 +45,7 @@ public class HiddenApi {
 	// Not using the 'L' wildcard is to ensure basic security and prevent strange issues caused by things we don't want to call in certain parts of the program.
 	//static final String[] values = {"L"};
 
-	static Method setHiddenApiExemptionsMethod;
+	static Method method;
 
 	static Object[] oneArray;
 	static int[] intArray;
@@ -52,7 +53,7 @@ public class HiddenApi {
 	static long offset;
 
 	static void load() throws Throwable {
-		if (Propertys.load()) return;
+		if (AndroidProperties.load()) return;
 
 		runtime = VMRuntime.getRuntime();
 
@@ -62,10 +63,10 @@ public class HiddenApi {
 
 		// In higher versions, the setHiddenApiExertions method cannot be directly reflected to obtain it, so the artMethod needs to be modified
 		// Sdk_version>28 (exact number unknown)
-		setHiddenApiExemptionsMethod = findMethod();
+		method = findMethod();
 
-		setHiddenApiExemptionsMethod.setAccessible(true);
-		setHiddenApiExemptionsMethod.invoke(runtime, (Object) values);
+		method.setAccessible(true);
+		method.invoke(runtime, (Object) values);
 	}
 
 	private static Method findMethod() throws NoSuchMethodException {

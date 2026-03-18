@@ -289,6 +289,26 @@ public abstract class UnsafeFieldAccessor implements FieldAccessor {
 	public void setDoubleStatic(double value) {
 		throw new IllegalArgumentException(getSetMessage(field, "double", String.valueOf(value)));
 	}
+
+	@Override
+	public Field getField() {
+		return field;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return obj == this || obj instanceof FieldAccessor other && other.getField().equals(field);
+	}
+
+	@Override
+	public int hashCode() {
+		return field.hashCode();
+	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + '{' + field.toString() + '}';
+	}
 }
 
 @SuppressWarnings("removal")
