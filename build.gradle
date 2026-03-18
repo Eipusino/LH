@@ -7,7 +7,27 @@ sourceSets.main.java.srcDir('src')
 repositories {
 	mavenCentral()
 	maven { url "https://raw.githubusercontent.com/Zelaux/MindustryRepo/master/repository" }
-	maven { url 'https://www.jitpack.io' }
+
+	//Downloads the server-release JAR file from Mindustry releases; does not use any real repository. Surprisingly, this is the most reliable option.
+	ivy {
+		url 'https://github.com/'
+		patternLayout { artifact '/[organisation]/[module]/releases/download/[revision]/server-release.jar' }
+		metadataSources { artifact() }
+	}
+
+	//"Latest" option to depend on BE builds.
+	ivy {
+		url 'https://github.com/'
+		patternLayout { artifact '/[organisation]/[module]/releases/download/master/[revision].jar' }
+		metadataSources { artifact() }
+	}
+
+	//Do the same with jabel
+	ivy {
+		url 'https://github.com/'
+		patternLayout { artifact '/[organisation]/[module]/releases/download/[revision]/jabel.jar' }
+		metadataSources { artifact() }
+	}
 }
 
 ext {
@@ -19,8 +39,7 @@ dependencies {
 	implementation "org.ow2.asm:asm:9.6"
 	implementation "org.ow2.asm:asm-commons:9.6"
 
-	implementation "com.github.Anuken.Arc:arc-core:$mindustryVersion"
-	implementation "com.github.Anuken.Mindustry:core:$mindustryVersion"
+	implementation "Anuken:Mindustry:$mindustryVersion"
 }
 
 java {

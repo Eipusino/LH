@@ -4,11 +4,31 @@ buildscript {
 	repositories {
 		mavenCentral()
 		maven { url "https://raw.githubusercontent.com/Zelaux/MindustryRepo/master/repository" }
-		maven { url "https://www.jitpack.io" }
+
+		//Downloads the server-release JAR file from Mindustry releases; does not use any real repository. Surprisingly, this is the most reliable option.
+		ivy {
+			url 'https://github.com/'
+			patternLayout { artifact '/[organisation]/[module]/releases/download/[revision]/server-release.jar' }
+			metadataSources { artifact() }
+		}
+
+		//"Latest" option to depend on BE builds.
+		ivy {
+			url 'https://github.com/'
+			patternLayout { artifact '/[organisation]/[module]/releases/download/master/[revision].jar' }
+			metadataSources { artifact() }
+		}
+
+		//Do the same with jabel
+		ivy {
+			url 'https://github.com/'
+			patternLayout { artifact '/[organisation]/[module]/releases/download/[revision]/jabel.jar' }
+			metadataSources { artifact() }
+		}
 	}
 
 	dependencies {
-		classpath "com.github.Anuken.Arc:arc-core:$mindustryVersion"
+		classpath "Anuken:Mindustry:$mindustryVersion"
 	}
 }
 
@@ -19,7 +39,27 @@ sourceSets.main.java.srcDir('src')
 repositories {
 	mavenCentral()
 	maven { url "https://raw.githubusercontent.com/Zelaux/MindustryRepo/master/repository" }
-	maven { url 'https://www.jitpack.io' }
+
+	//Downloads the server-release JAR file from Mindustry releases; does not use any real repository. Surprisingly, this is the most reliable option.
+	ivy {
+		url 'https://github.com/'
+		patternLayout { artifact '/[organisation]/[module]/releases/download/[revision]/server-release.jar' }
+		metadataSources { artifact() }
+	}
+
+	//"Latest" option to depend on BE builds.
+	ivy {
+		url 'https://github.com/'
+		patternLayout { artifact '/[organisation]/[module]/releases/download/master/[revision].jar' }
+		metadataSources { artifact() }
+	}
+
+	//Do the same with jabel
+	ivy {
+		url 'https://github.com/'
+		patternLayout { artifact '/[organisation]/[module]/releases/download/[revision]/jabel.jar' }
+		metadataSources { artifact() }
+	}
 }
 
 java {
@@ -42,9 +82,7 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 dependencies {
-	compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
-	//compileOnly "com.github.Anuken.Arc:backend-android:$mindustryVersion"
-	compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
+	compileOnly "Anuken:Mindustry:$mindustryVersion"
 
 	compileOnly "com.jakewharton.android.repackaged:dalvik-dx:9.0.0_r3"
 
