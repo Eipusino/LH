@@ -62,6 +62,6 @@ public class DesktopConstructorAccessor implements ConstructorAccessor {
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + '{' + constructor.toString() + '}';
+		return getClass().getSimpleName() + ": " + constructor.toString();
 	}
 }

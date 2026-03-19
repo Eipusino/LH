@@ -1,6 +1,7 @@
 package endfield.android;
 
 import android.util.Property;
+import arc.util.Log;
 import dalvik.system.VMRuntime;
 
 import java.lang.reflect.Constructor;
@@ -31,8 +32,12 @@ public final class AndroidProperties {
 				}
 			}
 
+			Log.info("Property not found setHiddenApiExemptions");
+
 			return false;
 		} catch (Throwable e) {
+			Log.err(e);
+
 			return false;
 		}
 	}

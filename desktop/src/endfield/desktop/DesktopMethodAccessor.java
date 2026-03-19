@@ -87,6 +87,6 @@ public class DesktopMethodAccessor implements MethodAccessor {
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + '{' + method.toString() + '}';
+		return getClass().getSimpleName() + ": " + method.toString();
 	}
 }

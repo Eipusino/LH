@@ -281,7 +281,7 @@ public abstract class MethodHandleFieldAccessor implements FieldAccessor {
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + '{' + field.toString() + '}';
+		return getClass().getSimpleName() + ": " + field.toString();
 	}
 }
 
