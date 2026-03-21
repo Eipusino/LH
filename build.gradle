@@ -58,7 +58,7 @@ tasks.withType(JavaCompile).configureEach {
 	])
 }
 
-task jarAndroid {
+tasks.register('jarAndroid') {
 	dependsOn "jar"
 
 	doLast {
@@ -84,7 +84,7 @@ jar {
 	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
-task deploy(type: Jar) {
+tasks.register('deploy', Jar) {
 	dependsOn jarAndroid
 	dependsOn jar
 	archiveFileName = "${project.name}.jar"

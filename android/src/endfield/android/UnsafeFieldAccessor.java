@@ -11,7 +11,7 @@ import static endfield.android.Unsafer.getSetMessage;
 import static endfield.android.Unsafer.unsafe;
 
 @SuppressWarnings("removal")
-public abstract class UnsafeFieldAccessor implements FieldAccessor {
+abstract class UnsafeFieldAccessor implements FieldAccessor {
 	protected final Field field;
 	protected final long offset;
 
@@ -963,7 +963,7 @@ abstract class UnsafeStaticFieldAccessor extends UnsafeFieldAccessor {
 		super(f);
 
 		if (Modifier.isStatic(f.getModifiers())) base = f.getDeclaringClass();
-		else throw new IllegalArgumentException(f.toString());
+		else throw new IllegalArgumentException("This field is not a static field: " + f);
 	}
 }
 

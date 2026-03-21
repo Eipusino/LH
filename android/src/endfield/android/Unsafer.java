@@ -27,8 +27,14 @@ public final class Unsafer {
 			Field field = Unsafe.class.getDeclaredField("theInternalUnsafe");
 			field.setAccessible(true);
 			internalUnsafe = field.get(null);
-		} catch (NoSuchFieldException | IllegalAccessException e) {
-			Log.err(e);
+		} catch (Exception e) {
+			try {
+				Field field = Class.forName("jdk.internal.misc.Unsafe", true, null).getDeclaredField("theUnsafe");
+				field.setAccessible(true);
+				internalUnsafe = field.get(null);
+			} catch (Exception ex) {
+				Log.warn("jdk.internal.misc.Unsafe cannot be accessed on this device");
+			}
 		}
 	}
 

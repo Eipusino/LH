@@ -11,7 +11,7 @@ import static endfield.desktop.DesktopImpl.lookup;
 import static endfield.desktop.Unsafer.getGetMessage;
 import static endfield.desktop.Unsafer.getSetMessage;
 
-public abstract class MethodHandleFieldAccessor implements FieldAccessor {
+abstract class MethodHandleFieldAccessor implements FieldAccessor {
 	protected final Field field;
 	protected final MethodHandle getter, setter;
 
