@@ -11,7 +11,7 @@ import static endfield.desktop.DesktopImpl.lookup;
 import static endfield.desktop.Unsafer.getGetMessage;
 import static endfield.desktop.Unsafer.getSetMessage;
 
-abstract class MethodHandleFieldAccessor implements FieldAccessor {
+public abstract class MethodHandleFieldAccessor implements FieldAccessor {
 	protected final Field field;
 	protected final MethodHandle getter, setter;
 
@@ -34,7 +34,7 @@ abstract class MethodHandleFieldAccessor implements FieldAccessor {
 		}
 	}
 
-	public static FieldAccessor obtainFieldAccessor(Field f) {
+	public static FieldAccessor getMethodHandleFieldAccessor(Field f) {
 		Class<?> type = f.getType();
 
 		if (Modifier.isStatic(f.getModifiers())) {
@@ -271,7 +271,7 @@ abstract class MethodHandleFieldAccessor implements FieldAccessor {
 
 	@Override
 	public boolean equals(Object obj) {
-		return obj == this || obj instanceof FieldAccessor other && other.getField().equals(field);
+		return obj == this || obj instanceof MethodHandleFieldAccessor other && other.getField().equals(field);
 	}
 
 	@Override

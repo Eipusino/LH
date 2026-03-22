@@ -20,8 +20,6 @@ import static endfield.desktop.DesktopImpl.lookup;
  * @author Eipusino
  */
 public final class Demodulator {
-	//public static Map<Class<?>, Set<String>> fieldFilterMap;
-
 	static final MethodHandle implAddOpens;
 
 	private Demodulator() {}
@@ -79,15 +77,4 @@ public final class Demodulator {
 		openModule(base, "jdk.internal.reflect", main);
 		openModule(base, "sun.nio.ch", main);
 	}
-
-	// We directly call the private native method within Class to bypass filtering, so there is no need to do so.
-	/*@SuppressWarnings("unchecked")
-	static void ensureFieldOpen() {
-		try {
-			fieldFilterMap = (Map<Class<?>, Set<String>>) lookup.findStaticGetter(Reflection.class, "fieldFilterMap", Map.class).invokeExact();
-			fieldFilterMap.clear();
-		} catch (Throwable e) {
-			Log.err(e);
-		}
-	}*/
 }

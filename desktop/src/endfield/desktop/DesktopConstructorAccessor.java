@@ -45,7 +45,7 @@ public class DesktopConstructorAccessor implements ConstructorAccessor {
 
 	@Override
 	public boolean equals(Object obj) {
-		return obj == this || obj instanceof ConstructorAccessor other && other.getConstructor().equals(constructor);
+		return obj == this || obj instanceof DesktopConstructorAccessor other && other.getConstructor().equals(constructor);
 	}
 
 	@Override

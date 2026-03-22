@@ -13,19 +13,17 @@ import static endfield.desktop.DesktopImpl.lookup;
 public class DesktopMethodAccessor implements MethodAccessor {
 	final Method method;
 	final MethodHandle spreadHandle;
-	final boolean isStatic;
 
 	int hash;
 
 	public DesktopMethodAccessor(Method met) {
 		try {
 			method = met;
-			isStatic = Modifier.isStatic(met.getModifiers());
 			MethodHandle target = lookup.unreflect(met);
 
 			int paramCount = target.type().parameterCount();
 
-			if (isStatic) {
+			if (Modifier.isStatic(met.getModifiers())) {
 				spreadHandle = target.asSpreader(Object[].class, paramCount)
 						.asType(MethodType.methodType(Object.class, Object[].class));
 			} else {
@@ -69,7 +67,7 @@ public class DesktopMethodAccessor implements MethodAccessor {
 
 	@Override
 	public boolean equals(Object obj) {
-		return obj == this || obj instanceof MethodAccessor other && other.getMethod().equals(method);
+		return obj == this || obj instanceof DesktopMethodAccessor other && other.getMethod().equals(method);
 	}
 
 	@Override

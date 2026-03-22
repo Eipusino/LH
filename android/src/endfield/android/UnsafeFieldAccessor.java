@@ -11,7 +11,7 @@ import static endfield.android.Unsafer.getSetMessage;
 import static endfield.android.Unsafer.unsafe;
 
 @SuppressWarnings("removal")
-abstract class UnsafeFieldAccessor implements FieldAccessor {
+public abstract class UnsafeFieldAccessor implements FieldAccessor {
 	protected final Field field;
 	protected final long offset;
 
@@ -20,7 +20,7 @@ abstract class UnsafeFieldAccessor implements FieldAccessor {
 		offset = AndroidField.fieldOffset(f);
 	}
 
-	public static FieldAccessor obtainFieldAccessor(Field f) {
+	public static FieldAccessor getUnsafeFieldAccessor(Field f) {
 		Class<?> type = f.getType();
 		int modifiers = f.getModifiers();
 		boolean isStatic = Modifier.isStatic(modifiers), isVolatile = Modifier.isVolatile(modifiers);
@@ -297,7 +297,7 @@ abstract class UnsafeFieldAccessor implements FieldAccessor {
 
 	@Override
 	public boolean equals(Object obj) {
-		return obj == this || obj instanceof FieldAccessor other && other.getField().equals(field);
+		return obj == this || obj instanceof UnsafeFieldAccessor other && other.getField().equals(field);
 	}
 
 	@Override

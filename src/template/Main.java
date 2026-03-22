@@ -1,29 +1,32 @@
 package template;
 
-import sun.reflect.ReflectionFactory;
+import jdk.internal.misc.Unsafe;
 
-import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles.Lookup;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 public class Main {
-	static final Status status = Status.A;
+	static final Unsafe unsafe;
+	static final Lookup lookup;
 
-	static void main(String... args) {
+	static {
+		unsafe = Unsafe.getUnsafe();
+
 		try {
-			ReflectionFactory factory = ReflectionFactory.getReflectionFactory();
-			Lookup lookup = (Lookup) factory.newConstructorForSerialization(Lookup.class, Lookup.class.getDeclaredConstructor(Class.class, Class.class, int.class)).newInstance(Object.class, null, -1);
-
-			MethodHandle setStatus = lookup.findStaticSetter(Main.class, "status", Status.class);
-
-			setStatus.invokeExact(Status.B);
-
-			System.out.println(status);
-		} catch (Throwable e) {
-			e.printStackTrace();
+			Field field = Lookup.class.getDeclaredField("IMPL_LOOKUP");
+			field.setAccessible(true);
+			lookup = (Lookup) field.get(null);
+		} catch (NoSuchFieldException | IllegalAccessException e) {
+			throw new RuntimeException(e);
 		}
 	}
 
-	public enum Status {
-		A, B;
+	static void main(String... args) {
+		try {
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
 	}
 }

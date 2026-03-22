@@ -105,7 +105,7 @@ public class DesktopImpl implements PlatformImpl {
 
 	@Override
 	public FieldAccessor fieldAccessor(Field field) {
-		return MethodHandleFieldAccessor.obtainFieldAccessor(field);
+		return MethodHandleFieldAccessor.getMethodHandleFieldAccessor(field);
 	}
 
 	@Override
