@@ -42,6 +42,7 @@ public class DesktopImpl implements PlatformImpl {
 					.newInstance(EndFieldMod.class, null, -1);
 
 			Demodulator.openModules();
+			Demodulator.ensureFieldOpen();
 
 			classHelper = new DesktopClassHelper();
 			fieldAccessHelper = new DesktopUnsafeFieldAccessHelper();
@@ -94,10 +95,10 @@ public class DesktopImpl implements PlatformImpl {
 				return (T) clone.invokeExact(object);
 			}
 
-			T t = (T) unsafe.allocateInstance(object.getClass());
+			T out = (T) unsafe.allocateInstance(object.getClass());
 			// The performance overhead may be high, but there is currently no other way.
-			ObjectHandler.copyField(object, t);
-			return t;
+			ObjectHandler.copyField(object, out);
+			return out;
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}

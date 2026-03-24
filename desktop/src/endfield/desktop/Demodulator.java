@@ -1,10 +1,13 @@
 package endfield.desktop;
 
+import arc.util.Log;
 import endfield.core.EndFieldMod;
 import jdk.internal.module.Modules;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodType;
+import java.lang.invoke.VarHandle;
+import java.util.Map;
 
 import static endfield.desktop.DesktopImpl.lookup;
 
@@ -22,6 +25,8 @@ import static endfield.desktop.DesktopImpl.lookup;
 public final class Demodulator {
 	static final MethodHandle implAddOpens;
 
+	static VarHandle fieldFilterMap, methodFilterMap;
+
 	private Demodulator() {}
 
 	static {
@@ -33,11 +38,7 @@ public final class Demodulator {
 	}
 
 	public static void makeOpenModule(Module from, Class<?> clazz, Module to) {
-		if (clazz.isArray()) {
-			makeOpenModule(from, clazz.getComponentType(), to);
-		} else {
-			makeOpenModule(from, clazz.getPackage(), to);
-		}
+		makeOpenModule(from, clazz.getPackage(), to);
 	}
 
 	public static void makeOpenModule(Module from, Package pac, Module to) {
@@ -54,13 +55,13 @@ public final class Demodulator {
 	public static void makeOpenModule(Module from, String pac, Module to) {
 		if (from.isOpen(pac, to)) return;
 
-		Modules.addExports(from, pac, to);
+		Modules.addOpens(from, pac, to);
 	}
 
 	public static void makeOpenModule(Module from, String pac) {
 		if (from.isOpen(pac)) return;
 
-		Modules.addExports(from, pac);
+		Modules.addOpensToAllUnnamed(from, pac);
 	}
 
 	static void openModule(Module from, String pn, Module to) throws Throwable {
@@ -76,5 +77,19 @@ public final class Demodulator {
 		openModule(base, "jdk.internal.module", main);
 		openModule(base, "jdk.internal.reflect", main);
 		openModule(base, "sun.nio.ch", main);
+	}
+
+	public static void ensureFieldOpen() {
+		try {
+			Class<?> decl = Class.forName("jdk.internal.reflect.Reflection");
+
+			fieldFilterMap = lookup.findStaticVarHandle(decl, "fieldFilterMap", Map.class);
+			methodFilterMap = lookup.findStaticVarHandle(decl, "methodFilterMap", Map.class);
+
+			fieldFilterMap.set(Map.of());
+			methodFilterMap.set(Map.of());
+		} catch (Exception e) {
+			Log.err(e);
+		}
 	}
 }
