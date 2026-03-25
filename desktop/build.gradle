@@ -63,8 +63,8 @@ repositories {
 }
 
 java {
-	targetCompatibility = JavaVersion.VERSION_16
-	sourceCompatibility = JavaVersion.VERSION_16
+	targetCompatibility = JavaVersion.VERSION_17
+	sourceCompatibility = JavaVersion.VERSION_17
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -84,7 +84,7 @@ dependencies {
 	def libsDir = project(":").projectDir
 
 	compileOnly files(
-			"$libsDir/libs/EndfieldMod-260324a.jar"
+			"$libsDir/libs/EndfieldMod-260325a.jar"
 	)
 }
 

@@ -26,7 +26,7 @@ public abstract class MethodHandleFieldAccessor implements FieldAccessor {
 				getter = lookup.findStaticGetter(decl, name, type).asType(MethodType.methodType(rtype));
 				setter = lookup.findStaticSetter(decl, name, type).asType(MethodType.methodType(void.class, rtype));
 			} else {
-				getter = lookup.findGetter(decl, name, type).asType(MethodType.methodType(rtype));
+				getter = lookup.findGetter(decl, name, type).asType(MethodType.methodType(rtype, Object.class));
 				setter = lookup.findSetter(decl, name, type).asType(MethodType.methodType(void.class, Object.class, rtype));
 			}
 		} catch (NoSuchFieldException | IllegalAccessException e) {
