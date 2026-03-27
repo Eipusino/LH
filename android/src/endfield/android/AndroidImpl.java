@@ -19,7 +19,9 @@ import static endfield.Vars2.accessibleHelper;
 import static endfield.Vars2.classHelper;
 import static endfield.Vars2.fieldAccessHelper;
 import static endfield.Vars2.methodInvokeHelper;
+import static endfield.android.Unsafer.unsafe;
 
+@SuppressWarnings("removal")
 public class AndroidImpl implements PlatformImpl {
 	static Constructor<Lookup> constructor;
 
@@ -99,5 +101,10 @@ public class AndroidImpl implements PlatformImpl {
 		Objects.requireNonNull(dst);
 
 		Memory.memmove(dst, dstOffset, src, srcOffset, numBytes);
+	}
+
+	@Override
+	public long arrayBaseOffset(Class<?> arrayClass) {
+		return unsafe.arrayBaseOffset(arrayClass);
 	}
 }

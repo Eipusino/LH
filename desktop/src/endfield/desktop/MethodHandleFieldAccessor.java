@@ -70,17 +70,7 @@ public abstract class MethodHandleFieldAccessor implements FieldAccessor {
 	}
 
 	@Override
-	public <T> T getStatic() {
-		throw new IllegalArgumentException(getGetMessage(field, Object.class.getName()));
-	}
-
-	@Override
 	public void set(Object object, Object value) {
-		throw new IllegalArgumentException(getSetMessage(field, value));
-	}
-
-	@Override
-	public void setStatic(Object value) {
 		throw new IllegalArgumentException(getSetMessage(field, value));
 	}
 
@@ -90,17 +80,7 @@ public abstract class MethodHandleFieldAccessor implements FieldAccessor {
 	}
 
 	@Override
-	public <T> T getObjectStatic() {
-		throw new IllegalArgumentException(getGetMessage(field, Object.class.getName()));
-	}
-
-	@Override
 	public void setObject(Object object, Object value) {
-		throw new IllegalArgumentException(getSetMessage(field, value));
-	}
-
-	@Override
-	public void setObjectStatic(Object value) {
 		throw new IllegalArgumentException(getSetMessage(field, value));
 	}
 
@@ -110,17 +90,7 @@ public abstract class MethodHandleFieldAccessor implements FieldAccessor {
 	}
 
 	@Override
-	public boolean getBooleanStatic() {
-		throw new IllegalArgumentException(getGetMessage(field, "boolean"));
-	}
-
-	@Override
 	public void setBoolean(Object object, boolean value) {
-		throw new IllegalArgumentException(getSetMessage(field, "boolean", String.valueOf(value)));
-	}
-
-	@Override
-	public void setBooleanStatic(boolean value) {
 		throw new IllegalArgumentException(getSetMessage(field, "boolean", String.valueOf(value)));
 	}
 
@@ -130,17 +100,7 @@ public abstract class MethodHandleFieldAccessor implements FieldAccessor {
 	}
 
 	@Override
-	public byte getByteStatic() {
-		throw new IllegalArgumentException(getGetMessage(field, "boolean"));
-	}
-
-	@Override
 	public void setByte(Object object, byte value) {
-		throw new IllegalArgumentException(getSetMessage(field, "byte", String.valueOf(value)));
-	}
-
-	@Override
-	public void setByteStatic(byte value) {
 		throw new IllegalArgumentException(getSetMessage(field, "byte", String.valueOf(value)));
 	}
 
@@ -150,17 +110,7 @@ public abstract class MethodHandleFieldAccessor implements FieldAccessor {
 	}
 
 	@Override
-	public char getCharStatic() {
-		throw new IllegalArgumentException(getGetMessage(field, "char"));
-	}
-
-	@Override
 	public void setChar(Object object, char value) {
-		throw new IllegalArgumentException(getSetMessage(field, "char", String.valueOf(value)));
-	}
-
-	@Override
-	public void setCharStatic(char value) {
 		throw new IllegalArgumentException(getSetMessage(field, "char", String.valueOf(value)));
 	}
 
@@ -170,17 +120,7 @@ public abstract class MethodHandleFieldAccessor implements FieldAccessor {
 	}
 
 	@Override
-	public short getShortStatic() {
-		throw new IllegalArgumentException(getGetMessage(field, "short"));
-	}
-
-	@Override
 	public void setShort(Object object, short value) {
-		throw new IllegalArgumentException(getSetMessage(field, "short", String.valueOf(value)));
-	}
-
-	@Override
-	public void setShortStatic(short value) {
 		throw new IllegalArgumentException(getSetMessage(field, "short", String.valueOf(value)));
 	}
 
@@ -190,17 +130,7 @@ public abstract class MethodHandleFieldAccessor implements FieldAccessor {
 	}
 
 	@Override
-	public int getIntStatic() {
-		throw new IllegalArgumentException(getGetMessage(field, "int"));
-	}
-
-	@Override
 	public void setInt(Object object, int value) {
-		throw new IllegalArgumentException(getSetMessage(field, "int", String.valueOf(value)));
-	}
-
-	@Override
-	public void setIntStatic(int value) {
 		throw new IllegalArgumentException(getSetMessage(field, "int", String.valueOf(value)));
 	}
 
@@ -210,17 +140,7 @@ public abstract class MethodHandleFieldAccessor implements FieldAccessor {
 	}
 
 	@Override
-	public long getLongStatic() {
-		throw new IllegalArgumentException(getGetMessage(field, "long"));
-	}
-
-	@Override
 	public void setLong(Object object, long value) {
-		throw new IllegalArgumentException(getSetMessage(field, "long", String.valueOf(value)));
-	}
-
-	@Override
-	public void setLongStatic(long value) {
 		throw new IllegalArgumentException(getSetMessage(field, "long", String.valueOf(value)));
 	}
 
@@ -230,17 +150,7 @@ public abstract class MethodHandleFieldAccessor implements FieldAccessor {
 	}
 
 	@Override
-	public float getFloatStatic() {
-		throw new IllegalArgumentException(getGetMessage(field, "float"));
-	}
-
-	@Override
 	public void setFloat(Object object, float value) {
-		throw new IllegalArgumentException(getSetMessage(field, "float", String.valueOf(value)));
-	}
-
-	@Override
-	public void setFloatStatic(float value) {
 		throw new IllegalArgumentException(getSetMessage(field, "float", String.valueOf(value)));
 	}
 
@@ -250,17 +160,7 @@ public abstract class MethodHandleFieldAccessor implements FieldAccessor {
 	}
 
 	@Override
-	public double getDoubleStatic() {
-		throw new IllegalArgumentException(getGetMessage(field, "double"));
-	}
-
-	@Override
 	public void setDouble(Object object, double value) {
-		throw new IllegalArgumentException(getSetMessage(field, "double", String.valueOf(value)));
-	}
-
-	@Override
-	public void setDoubleStatic(double value) {
 		throw new IllegalArgumentException(getSetMessage(field, "double", String.valueOf(value)));
 	}
 
@@ -796,18 +696,18 @@ class MethodHandleStaticObjectFieldAccessor extends MethodHandleFieldAccessor {
 	}
 
 	@Override
-	public <T> T getStatic() {
-		return getObjectStatic();
+	public <T> T get(Object object) {
+		return getObject(object);
 	}
 
 	@Override
-	public void setStatic(Object value) {
-		setObjectStatic(value);
+	public void set(Object object, Object value) {
+		setObject(object, value);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T getObjectStatic() {
+	public <T> T getObject(Object object) {
 		try {
 			return (T) getter.invokeExact();
 		} catch (Throwable e) {
@@ -816,7 +716,7 @@ class MethodHandleStaticObjectFieldAccessor extends MethodHandleFieldAccessor {
 	}
 
 	@Override
-	public void setObjectStatic(Object value) {
+	public void setObject(Object object, Object value) {
 		try {
 			setter.invokeExact(value);
 		} catch (Throwable e) {
@@ -832,17 +732,17 @@ class MethodHandleStaticBooleanFieldAccessor extends MethodHandleFieldAccessor {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T getStatic() {
-		return (T) Boolean.valueOf(getBooleanStatic());
+	public <T> T get(Object object) {
+		return (T) Boolean.valueOf(getBoolean(object));
 	}
 
 	@Override
-	public void setStatic(Object value) {
-		setBooleanStatic((boolean) value);
+	public void set(Object object, Object value) {
+		setBoolean(object, (boolean) value);
 	}
 
 	@Override
-	public boolean getBooleanStatic() {
+	public boolean getBoolean(Object object) {
 		try {
 			return (boolean) getter.invokeExact();
 		} catch (Throwable e) {
@@ -851,7 +751,7 @@ class MethodHandleStaticBooleanFieldAccessor extends MethodHandleFieldAccessor {
 	}
 
 	@Override
-	public void setBooleanStatic(boolean value) {
+	public void setBoolean(Object object, boolean value) {
 		try {
 			setter.invokeExact(value);
 		} catch (Throwable e) {
@@ -867,17 +767,17 @@ class MethodHandleStaticByteFieldAccessor extends MethodHandleFieldAccessor {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T getStatic() {
-		return (T) Byte.valueOf(getByteStatic());
+	public <T> T get(Object object) {
+		return (T) Byte.valueOf(getByte(object));
 	}
 
 	@Override
-	public void setStatic(Object value) {
-		setByteStatic(((Number) value).byteValue());
+	public void set(Object object, Object value) {
+		setByte(object, ((Number) value).byteValue());
 	}
 
 	@Override
-	public byte getByteStatic() {
+	public byte getByte(Object object) {
 		try {
 			return (byte) getter.invokeExact();
 		} catch (Throwable e) {
@@ -886,7 +786,7 @@ class MethodHandleStaticByteFieldAccessor extends MethodHandleFieldAccessor {
 	}
 
 	@Override
-	public void setByteStatic(byte value) {
+	public void setByte(Object object, byte value) {
 		try {
 			setter.invokeExact(value);
 		} catch (Throwable e) {
@@ -895,28 +795,28 @@ class MethodHandleStaticByteFieldAccessor extends MethodHandleFieldAccessor {
 	}
 
 	@Override
-	public short getShortStatic() {
-		return getByteStatic();
+	public short getShort(Object object) {
+		return getByte(object);
 	}
 
 	@Override
-	public int getIntStatic() {
-		return getByteStatic();
+	public int getInt(Object object) {
+		return getByte(object);
 	}
 
 	@Override
-	public long getLongStatic() {
-		return getByteStatic();
+	public long getLong(Object object) {
+		return getByte(object);
 	}
 
 	@Override
-	public float getFloatStatic() {
-		return getByteStatic();
+	public float getFloat(Object object) {
+		return getByte(object);
 	}
 
 	@Override
-	public double getDoubleStatic() {
-		return getByteStatic();
+	public double getDouble(Object object) {
+		return getByte(object);
 	}
 }
 
@@ -927,17 +827,17 @@ class MethodHandleStaticCharFieldAccessor extends MethodHandleFieldAccessor {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T getStatic() {
-		return (T) Character.valueOf(getCharStatic());
+	public <T> T get(Object object) {
+		return (T) Character.valueOf(getChar(object));
 	}
 
 	@Override
-	public void setStatic(Object value) {
-		setCharStatic((char) value);
+	public void set(Object object, Object value) {
+		setChar(object, (char) value);
 	}
 
 	@Override
-	public char getCharStatic() {
+	public char getChar(Object object) {
 		try {
 			return (char) getter.invokeExact();
 		} catch (Throwable e) {
@@ -946,7 +846,7 @@ class MethodHandleStaticCharFieldAccessor extends MethodHandleFieldAccessor {
 	}
 
 	@Override
-	public void setCharStatic(char value) {
+	public void setChar(Object object, char value) {
 		try {
 			setter.invokeExact(value);
 		} catch (Throwable e) {
@@ -955,23 +855,23 @@ class MethodHandleStaticCharFieldAccessor extends MethodHandleFieldAccessor {
 	}
 
 	@Override
-	public int getIntStatic() {
-		return getCharStatic();
+	public int getInt(Object object) {
+		return getChar(object);
 	}
 
 	@Override
-	public long getLongStatic() {
-		return getCharStatic();
+	public long getLong(Object object) {
+		return getChar(object);
 	}
 
 	@Override
-	public float getFloatStatic() {
-		return getCharStatic();
+	public float getFloat(Object object) {
+		return getChar(object);
 	}
 
 	@Override
-	public double getDoubleStatic() {
-		return getCharStatic();
+	public double getDouble(Object object) {
+		return getChar(object);
 	}
 }
 
@@ -982,22 +882,22 @@ class MethodHandleStaticShortFieldAccessor extends MethodHandleFieldAccessor {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T getStatic() {
-		return (T) Short.valueOf(getShortStatic());
+	public <T> T get(Object object) {
+		return (T) Short.valueOf(getShort(object));
 	}
 
 	@Override
-	public void setStatic(Object value) {
-		setShortStatic(((Number) value).shortValue());
+	public void set(Object object, Object value) {
+		setShort(object, ((Number) value).shortValue());
 	}
 
 	@Override
-	public void setByteStatic(byte value) {
-		setShortStatic(value);
+	public void setByte(Object object, byte value) {
+		setShort(object, value);
 	}
 
 	@Override
-	public short getShortStatic() {
+	public short getShort(Object object) {
 		try {
 			return (short) getter.invokeExact();
 		} catch (Throwable e) {
@@ -1006,7 +906,7 @@ class MethodHandleStaticShortFieldAccessor extends MethodHandleFieldAccessor {
 	}
 
 	@Override
-	public void setShortStatic(short value) {
+	public void setShort(Object object, short value) {
 		try {
 			setter.invokeExact(value);
 		} catch (Throwable e) {
@@ -1015,23 +915,23 @@ class MethodHandleStaticShortFieldAccessor extends MethodHandleFieldAccessor {
 	}
 
 	@Override
-	public int getIntStatic() {
-		return getShortStatic();
+	public int getInt(Object object) {
+		return getShort(object);
 	}
 
 	@Override
-	public long getLongStatic() {
-		return getShortStatic();
+	public long getLong(Object object) {
+		return getShort(object);
 	}
 
 	@Override
-	public float getFloatStatic() {
-		return getShortStatic();
+	public float getFloat(Object object) {
+		return getShort(object);
 	}
 
 	@Override
-	public double getDoubleStatic() {
-		return getShortStatic();
+	public double getDouble(Object object) {
+		return getShort(object);
 	}
 }
 
@@ -1042,32 +942,32 @@ class MethodHandleStaticIntFieldAccessor extends MethodHandleFieldAccessor {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T getStatic() {
-		return (T) Integer.valueOf(getIntStatic());
+	public <T> T get(Object object) {
+		return (T) Integer.valueOf(getInt(object));
 	}
 
 	@Override
-	public void setStatic(Object value) {
-		setIntStatic(((Number) value).intValue());
+	public void set(Object object, Object value) {
+		setInt(object, ((Number) value).intValue());
 	}
 
 	@Override
-	public void setByteStatic(byte value) {
-		setIntStatic(value);
+	public void setByte(Object object, byte value) {
+		setInt(object, value);
 	}
 
 	@Override
-	public void setCharStatic(char value) {
-		setIntStatic(value);
+	public void setChar(Object object, char value) {
+		setInt(object, value);
 	}
 
 	@Override
-	public void setShortStatic(short value) {
-		setIntStatic(value);
+	public void setShort(Object object, short value) {
+		setInt(object, value);
 	}
 
 	@Override
-	public int getIntStatic() {
+	public int getInt(Object object) {
 		try {
 			return (int) getter.invokeExact();
 		} catch (Throwable e) {
@@ -1076,7 +976,7 @@ class MethodHandleStaticIntFieldAccessor extends MethodHandleFieldAccessor {
 	}
 
 	@Override
-	public void setIntStatic(int value) {
+	public void setInt(Object object, int value) {
 		try {
 			setter.invokeExact(value);
 		} catch (Throwable e) {
@@ -1085,18 +985,18 @@ class MethodHandleStaticIntFieldAccessor extends MethodHandleFieldAccessor {
 	}
 
 	@Override
-	public long getLongStatic() {
-		return getIntStatic();
+	public long getLong(Object object) {
+		return getInt(object);
 	}
 
 	@Override
-	public float getFloatStatic() {
-		return getIntStatic();
+	public float getFloat(Object object) {
+		return getInt(object);
 	}
 
 	@Override
-	public double getDoubleStatic() {
-		return getIntStatic();
+	public double getDouble(Object object) {
+		return getInt(object);
 	}
 }
 
@@ -1107,37 +1007,37 @@ class MethodHandleStaticLongFieldAccessor extends MethodHandleFieldAccessor {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T getStatic() {
-		return (T) Long.valueOf(getLongStatic());
+	public <T> T get(Object object) {
+		return (T) Long.valueOf(getLong(object));
 	}
 
 	@Override
-	public void setStatic(Object value) {
-		setLongStatic(((Number) value).longValue());
+	public void set(Object object, Object value) {
+		setLong(object, ((Number) value).longValue());
 	}
 
 	@Override
-	public void setByteStatic(byte value) {
-		setLongStatic(value);
+	public void setByte(Object object, byte value) {
+		setLong(object, value);
 	}
 
 	@Override
-	public void setCharStatic(char value) {
-		setLongStatic(value);
+	public void setChar(Object object, char value) {
+		setLong(object, value);
 	}
 
 	@Override
-	public void setShortStatic(short value) {
-		setLongStatic(value);
+	public void setShort(Object object, short value) {
+		setLong(object, value);
 	}
 
 	@Override
-	public void setIntStatic(int value) {
-		setLongStatic(value);
+	public void setInt(Object object, int value) {
+		setLong(object, value);
 	}
 
 	@Override
-	public long getLongStatic() {
+	public long getLong(Object object) {
 		try {
 			return (long) getter.invokeExact();
 		} catch (Throwable e) {
@@ -1146,7 +1046,7 @@ class MethodHandleStaticLongFieldAccessor extends MethodHandleFieldAccessor {
 	}
 
 	@Override
-	public void setLongStatic(long value) {
+	public void setLong(Object object, long value) {
 		try {
 			setter.invokeExact(value);
 		} catch (Throwable e) {
@@ -1155,13 +1055,13 @@ class MethodHandleStaticLongFieldAccessor extends MethodHandleFieldAccessor {
 	}
 
 	@Override
-	public float getFloatStatic() {
-		return getLongStatic();
+	public float getFloat(Object object) {
+		return getLong(object);
 	}
 
 	@Override
-	public double getDoubleStatic() {
-		return getLongStatic();
+	public double getDouble(Object object) {
+		return getLong(object);
 	}
 }
 
@@ -1172,42 +1072,42 @@ class MethodHandleStaticFloatFieldAccessor extends MethodHandleFieldAccessor {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T getStatic() {
-		return (T) Float.valueOf(getFloatStatic());
+	public <T> T get(Object object) {
+		return (T) Float.valueOf(getFloat(object));
 	}
 
 	@Override
-	public void setStatic(Object value) {
-		setFloatStatic(((Number) value).floatValue());
+	public void set(Object object, Object value) {
+		setFloat(object, ((Number) value).floatValue());
 	}
 
 	@Override
-	public void setByteStatic(byte value) {
-		setFloatStatic(value);
+	public void setByte(Object object, byte value) {
+		setFloat(object, value);
 	}
 
 	@Override
-	public void setCharStatic(char value) {
-		setFloatStatic(value);
+	public void setChar(Object object, char value) {
+		setFloat(object, value);
 	}
 
 	@Override
-	public void setShortStatic(short value) {
-		setFloatStatic(value);
+	public void setShort(Object object, short value) {
+		setFloat(object, value);
 	}
 
 	@Override
-	public void setIntStatic(int value) {
-		setFloatStatic(value);
+	public void setInt(Object object, int value) {
+		setFloat(object, value);
 	}
 
 	@Override
-	public void setLongStatic(long value) {
-		setFloatStatic(value);
+	public void setLong(Object object, long value) {
+		setFloat(object, value);
 	}
 
 	@Override
-	public float getFloatStatic() {
+	public float getFloat(Object object) {
 		try {
 			return (float) getter.invokeExact();
 		} catch (Throwable e) {
@@ -1216,7 +1116,7 @@ class MethodHandleStaticFloatFieldAccessor extends MethodHandleFieldAccessor {
 	}
 
 	@Override
-	public void setFloatStatic(float value) {
+	public void setFloat(Object object, float value) {
 		try {
 			setter.invokeExact(value);
 		} catch (Throwable e) {
@@ -1225,8 +1125,8 @@ class MethodHandleStaticFloatFieldAccessor extends MethodHandleFieldAccessor {
 	}
 
 	@Override
-	public double getDoubleStatic() {
-		return getFloatStatic();
+	public double getDouble(Object object) {
+		return getFloat(object);
 	}
 }
 
@@ -1237,47 +1137,47 @@ class MethodHandleStaticDoubleFieldAccessor extends MethodHandleFieldAccessor {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T getStatic() {
-		return (T) Double.valueOf(getDoubleStatic());
+	public <T> T get(Object object) {
+		return (T) Double.valueOf(getDouble(object));
 	}
 
 	@Override
-	public void setStatic(Object value) {
-		setDoubleStatic(((Number) value).doubleValue());
+	public void set(Object object, Object value) {
+		setDouble(object, ((Number) value).doubleValue());
 	}
 
 	@Override
-	public void setByteStatic(byte value) {
-		setDoubleStatic(value);
+	public void setByte(Object object, byte value) {
+		setDouble(object, value);
 	}
 
 	@Override
-	public void setCharStatic(char value) {
-		setDoubleStatic(value);
+	public void setChar(Object object, char value) {
+		setDouble(object, value);
 	}
 
 	@Override
-	public void setShortStatic(short value) {
-		setDoubleStatic(value);
+	public void setShort(Object object, short value) {
+		setDouble(object, value);
 	}
 
 	@Override
-	public void setIntStatic(int value) {
-		setDoubleStatic(value);
+	public void setInt(Object object, int value) {
+		setDouble(object, value);
 	}
 
 	@Override
-	public void setLongStatic(long value) {
-		setDoubleStatic(value);
+	public void setLong(Object object, long value) {
+		setDouble(object, value);
 	}
 
 	@Override
-	public void setFloatStatic(float value) {
-		setDoubleStatic(value);
+	public void setFloat(Object object, float value) {
+		setDouble(object, value);
 	}
 
 	@Override
-	public double getDoubleStatic() {
+	public double getDouble(Object object) {
 		try {
 			return (double) getter.invokeExact();
 		} catch (Throwable e) {
@@ -1286,7 +1186,7 @@ class MethodHandleStaticDoubleFieldAccessor extends MethodHandleFieldAccessor {
 	}
 
 	@Override
-	public void setDoubleStatic(double value) {
+	public void setDouble(Object object, double value) {
 		try {
 			setter.invokeExact(value);
 		} catch (Throwable e) {

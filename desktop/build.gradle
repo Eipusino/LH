@@ -84,7 +84,7 @@ dependencies {
 	def libsDir = project(":").projectDir
 
 	compileOnly files(
-			"$libsDir/libs/EndfieldMod-260325a.jar"
+			"$libsDir/libs/EndfieldMod-260327a.jar"
 	)
 }
 

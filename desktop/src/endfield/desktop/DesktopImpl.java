@@ -21,6 +21,7 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Objects;
 
 import static endfield.Vars2.accessibleHelper;
@@ -111,7 +112,9 @@ public class DesktopImpl implements PlatformImpl {
 
 	@Override
 	public MethodAccessor methodAccessor(Method method) {
-		return new DesktopMethodAccessor(method);
+		return (method.getModifiers() & Modifier.STATIC) == 0 ?
+				new DesktopVirtualMethodAccessor(method) :
+				new DesktopStaticMethodAccessor(method);
 	}
 
 	@Override
@@ -130,5 +133,10 @@ public class DesktopImpl implements PlatformImpl {
 		Objects.requireNonNull(dst);
 
 		unsafe.copyMemory(src, srcOffset, dst, dstOffset, numBytes);
+	}
+
+	@Override
+	public long arrayBaseOffset(Class<?> arrayClass) {
+		return unsafe.arrayBaseOffset(arrayClass);
 	}
 }
