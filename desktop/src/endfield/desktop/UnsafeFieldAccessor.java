@@ -1,5 +1,6 @@
 package endfield.desktop;
 
+import endfield.util.AbstractFieldAccessor;
 import endfield.util.FieldAccessor;
 
 import java.lang.reflect.Field;
@@ -9,12 +10,12 @@ import static endfield.desktop.Unsafer.getGetMessage;
 import static endfield.desktop.Unsafer.getSetMessage;
 import static endfield.desktop.Unsafer.unsafe;
 
-public abstract class UnsafeFieldAccessor implements FieldAccessor {
-	protected final Field field;
+public sealed abstract class UnsafeFieldAccessor extends AbstractFieldAccessor {
 	protected final long offset;
 
 	protected UnsafeFieldAccessor(Field f) {
-		field = f;
+		super(f);
+
 		if (Modifier.isStatic(f.getModifiers())) {
 			offset = unsafe.staticFieldOffset(f);
 		} else {
@@ -193,27 +194,12 @@ public abstract class UnsafeFieldAccessor implements FieldAccessor {
 	}
 
 	@Override
-	public Field getField() {
-		return field;
-	}
-
-	@Override
 	public boolean equals(Object obj) {
 		return obj == this || obj instanceof UnsafeFieldAccessor other && other.getField().equals(field);
 	}
-
-	@Override
-	public int hashCode() {
-		return field.hashCode();
-	}
-
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + ": " + field.toString();
-	}
 }
 
-class UnsafeObjectFieldAccessor extends UnsafeFieldAccessor {
+sealed class UnsafeObjectFieldAccessor extends UnsafeFieldAccessor {
 	public UnsafeObjectFieldAccessor(Field f) {
 		super(f);
 	}
@@ -243,7 +229,7 @@ class UnsafeObjectFieldAccessor extends UnsafeFieldAccessor {
 	}
 }
 
-class UnsafeBooleanFieldAccessor extends UnsafeFieldAccessor {
+sealed class UnsafeBooleanFieldAccessor extends UnsafeFieldAccessor {
 	public UnsafeBooleanFieldAccessor(Field f) {
 		super(f);
 	}
@@ -272,7 +258,7 @@ class UnsafeBooleanFieldAccessor extends UnsafeFieldAccessor {
 	}
 }
 
-class UnsafeByteFieldAccessor extends UnsafeFieldAccessor {
+sealed class UnsafeByteFieldAccessor extends UnsafeFieldAccessor {
 	public UnsafeByteFieldAccessor(Field f) {
 		super(f);
 	}
@@ -326,7 +312,7 @@ class UnsafeByteFieldAccessor extends UnsafeFieldAccessor {
 	}
 }
 
-class UnsafeCharFieldAccessor extends UnsafeFieldAccessor {
+sealed class UnsafeCharFieldAccessor extends UnsafeFieldAccessor {
 	public UnsafeCharFieldAccessor(Field f) {
 		super(f);
 	}
@@ -375,7 +361,7 @@ class UnsafeCharFieldAccessor extends UnsafeFieldAccessor {
 	}
 }
 
-class UnsafeShortFieldAccessor extends UnsafeFieldAccessor {
+sealed class UnsafeShortFieldAccessor extends UnsafeFieldAccessor {
 	public UnsafeShortFieldAccessor(Field f) {
 		super(f);
 	}
@@ -429,7 +415,7 @@ class UnsafeShortFieldAccessor extends UnsafeFieldAccessor {
 	}
 }
 
-class UnsafeIntFieldAccessor extends UnsafeFieldAccessor {
+sealed class UnsafeIntFieldAccessor extends UnsafeFieldAccessor {
 	public UnsafeIntFieldAccessor(Field f) {
 		super(f);
 	}
@@ -488,7 +474,7 @@ class UnsafeIntFieldAccessor extends UnsafeFieldAccessor {
 	}
 }
 
-class UnsafeLongFieldAccessor extends UnsafeFieldAccessor {
+sealed class UnsafeLongFieldAccessor extends UnsafeFieldAccessor {
 	public UnsafeLongFieldAccessor(Field f) {
 		super(f);
 	}
@@ -547,7 +533,7 @@ class UnsafeLongFieldAccessor extends UnsafeFieldAccessor {
 	}
 }
 
-class UnsafeFloatFieldAccessor extends UnsafeFieldAccessor {
+sealed class UnsafeFloatFieldAccessor extends UnsafeFieldAccessor {
 	public UnsafeFloatFieldAccessor(Field f) {
 		super(f);
 	}
@@ -606,7 +592,7 @@ class UnsafeFloatFieldAccessor extends UnsafeFieldAccessor {
 	}
 }
 
-class UnsafeDoubleFieldAccessor extends UnsafeFieldAccessor {
+sealed class UnsafeDoubleFieldAccessor extends UnsafeFieldAccessor {
 	public UnsafeDoubleFieldAccessor(Field f) {
 		super(f);
 	}
@@ -665,7 +651,7 @@ class UnsafeDoubleFieldAccessor extends UnsafeFieldAccessor {
 	}
 }
 
-class UnsafeQualifiedObjectFieldAccessor extends UnsafeObjectFieldAccessor {
+final class UnsafeQualifiedObjectFieldAccessor extends UnsafeObjectFieldAccessor {
 	public UnsafeQualifiedObjectFieldAccessor(Field f) {
 		super(f);
 	}
@@ -695,7 +681,7 @@ class UnsafeQualifiedObjectFieldAccessor extends UnsafeObjectFieldAccessor {
 	}
 }
 
-class UnsafeQualifiedBooleanFieldAccessor extends UnsafeBooleanFieldAccessor {
+final class UnsafeQualifiedBooleanFieldAccessor extends UnsafeBooleanFieldAccessor {
 	public UnsafeQualifiedBooleanFieldAccessor(Field f) {
 		super(f);
 	}
@@ -713,7 +699,7 @@ class UnsafeQualifiedBooleanFieldAccessor extends UnsafeBooleanFieldAccessor {
 	}
 }
 
-class UnsafeQualifiedByteFieldAccessor extends UnsafeByteFieldAccessor {
+final class UnsafeQualifiedByteFieldAccessor extends UnsafeByteFieldAccessor {
 	public UnsafeQualifiedByteFieldAccessor(Field f) {
 		super(f);
 	}
@@ -731,7 +717,7 @@ class UnsafeQualifiedByteFieldAccessor extends UnsafeByteFieldAccessor {
 	}
 }
 
-class UnsafeQualifiedCharFieldAccessor extends UnsafeCharFieldAccessor {
+final class UnsafeQualifiedCharFieldAccessor extends UnsafeCharFieldAccessor {
 	public UnsafeQualifiedCharFieldAccessor(Field f) {
 		super(f);
 	}
@@ -749,7 +735,7 @@ class UnsafeQualifiedCharFieldAccessor extends UnsafeCharFieldAccessor {
 	}
 }
 
-class UnsafeQualifiedShortFieldAccessor extends UnsafeShortFieldAccessor {
+final class UnsafeQualifiedShortFieldAccessor extends UnsafeShortFieldAccessor {
 	public UnsafeQualifiedShortFieldAccessor(Field f) {
 		super(f);
 	}
@@ -767,7 +753,7 @@ class UnsafeQualifiedShortFieldAccessor extends UnsafeShortFieldAccessor {
 	}
 }
 
-class UnsafeQualifiedIntFieldAccessor extends UnsafeIntFieldAccessor {
+final class UnsafeQualifiedIntFieldAccessor extends UnsafeIntFieldAccessor {
 	public UnsafeQualifiedIntFieldAccessor(Field f) {
 		super(f);
 	}
@@ -785,7 +771,7 @@ class UnsafeQualifiedIntFieldAccessor extends UnsafeIntFieldAccessor {
 	}
 }
 
-class UnsafeQualifiedLongFieldAccessor extends UnsafeLongFieldAccessor {
+final class UnsafeQualifiedLongFieldAccessor extends UnsafeLongFieldAccessor {
 	public UnsafeQualifiedLongFieldAccessor(Field f) {
 		super(f);
 	}
@@ -803,7 +789,7 @@ class UnsafeQualifiedLongFieldAccessor extends UnsafeLongFieldAccessor {
 	}
 }
 
-class UnsafeQualifiedFloatFieldAccessor extends UnsafeFloatFieldAccessor {
+final class UnsafeQualifiedFloatFieldAccessor extends UnsafeFloatFieldAccessor {
 	public UnsafeQualifiedFloatFieldAccessor(Field f) {
 		super(f);
 	}
@@ -821,7 +807,7 @@ class UnsafeQualifiedFloatFieldAccessor extends UnsafeFloatFieldAccessor {
 	}
 }
 
-class UnsafeQualifiedDoubleFieldAccessor extends UnsafeDoubleFieldAccessor {
+final class UnsafeQualifiedDoubleFieldAccessor extends UnsafeDoubleFieldAccessor {
 	public UnsafeQualifiedDoubleFieldAccessor(Field f) {
 		super(f);
 	}
@@ -839,7 +825,7 @@ class UnsafeQualifiedDoubleFieldAccessor extends UnsafeDoubleFieldAccessor {
 	}
 }
 
-abstract class UnsafeStaticFieldAccessor extends UnsafeFieldAccessor {
+abstract sealed class UnsafeStaticFieldAccessor extends UnsafeFieldAccessor {
 	protected final Object base;
 
 	protected UnsafeStaticFieldAccessor(Field f) {
@@ -850,7 +836,7 @@ abstract class UnsafeStaticFieldAccessor extends UnsafeFieldAccessor {
 	}
 }
 
-class UnsafeStaticObjectFieldAccessor extends UnsafeStaticFieldAccessor {
+sealed class UnsafeStaticObjectFieldAccessor extends UnsafeStaticFieldAccessor {
 	public UnsafeStaticObjectFieldAccessor(Field f) {
 		super(f);
 	}
@@ -878,7 +864,7 @@ class UnsafeStaticObjectFieldAccessor extends UnsafeStaticFieldAccessor {
 	}
 }
 
-class UnsafeStaticBooleanFieldAccessor extends UnsafeStaticFieldAccessor {
+sealed class UnsafeStaticBooleanFieldAccessor extends UnsafeStaticFieldAccessor {
 	public UnsafeStaticBooleanFieldAccessor(Field f) {
 		super(f);
 	}
@@ -905,7 +891,7 @@ class UnsafeStaticBooleanFieldAccessor extends UnsafeStaticFieldAccessor {
 	}
 }
 
-class UnsafeStaticByteFieldAccessor extends UnsafeStaticFieldAccessor {
+sealed class UnsafeStaticByteFieldAccessor extends UnsafeStaticFieldAccessor {
 	public UnsafeStaticByteFieldAccessor(Field f) {
 		super(f);
 	}
@@ -957,7 +943,7 @@ class UnsafeStaticByteFieldAccessor extends UnsafeStaticFieldAccessor {
 	}
 }
 
-class UnsafeStaticCharFieldAccessor extends UnsafeStaticFieldAccessor {
+sealed class UnsafeStaticCharFieldAccessor extends UnsafeStaticFieldAccessor {
 	public UnsafeStaticCharFieldAccessor(Field f) {
 		super(f);
 	}
@@ -1004,7 +990,7 @@ class UnsafeStaticCharFieldAccessor extends UnsafeStaticFieldAccessor {
 	}
 }
 
-class UnsafeStaticShortFieldAccessor extends UnsafeStaticFieldAccessor {
+sealed class UnsafeStaticShortFieldAccessor extends UnsafeStaticFieldAccessor {
 	public UnsafeStaticShortFieldAccessor(Field f) {
 		super(f);
 	}
@@ -1056,7 +1042,7 @@ class UnsafeStaticShortFieldAccessor extends UnsafeStaticFieldAccessor {
 	}
 }
 
-class UnsafeStaticIntFieldAccessor extends UnsafeStaticFieldAccessor {
+sealed class UnsafeStaticIntFieldAccessor extends UnsafeStaticFieldAccessor {
 	public UnsafeStaticIntFieldAccessor(Field f) {
 		super(f);
 	}
@@ -1113,7 +1099,7 @@ class UnsafeStaticIntFieldAccessor extends UnsafeStaticFieldAccessor {
 	}
 }
 
-class UnsafeStaticLongFieldAccessor extends UnsafeStaticFieldAccessor {
+sealed class UnsafeStaticLongFieldAccessor extends UnsafeStaticFieldAccessor {
 	public UnsafeStaticLongFieldAccessor(Field f) {
 		super(f);
 	}
@@ -1170,7 +1156,7 @@ class UnsafeStaticLongFieldAccessor extends UnsafeStaticFieldAccessor {
 	}
 }
 
-class UnsafeStaticFloatFieldAccessor extends UnsafeStaticFieldAccessor {
+sealed class UnsafeStaticFloatFieldAccessor extends UnsafeStaticFieldAccessor {
 	public UnsafeStaticFloatFieldAccessor(Field f) {
 		super(f);
 	}
@@ -1227,7 +1213,7 @@ class UnsafeStaticFloatFieldAccessor extends UnsafeStaticFieldAccessor {
 	}
 }
 
-class UnsafeStaticDoubleFieldAccessor extends UnsafeStaticFieldAccessor {
+sealed class UnsafeStaticDoubleFieldAccessor extends UnsafeStaticFieldAccessor {
 	public UnsafeStaticDoubleFieldAccessor(Field f) {
 		super(f);
 	}
@@ -1284,7 +1270,7 @@ class UnsafeStaticDoubleFieldAccessor extends UnsafeStaticFieldAccessor {
 	}
 }
 
-class UnsafeQualifiedStaticObjectFieldAccessor extends UnsafeStaticObjectFieldAccessor {
+final class UnsafeQualifiedStaticObjectFieldAccessor extends UnsafeStaticObjectFieldAccessor {
 	public UnsafeQualifiedStaticObjectFieldAccessor(Field f) {
 		super(f);
 	}
@@ -1302,7 +1288,7 @@ class UnsafeQualifiedStaticObjectFieldAccessor extends UnsafeStaticObjectFieldAc
 	}
 }
 
-class UnsafeQualifiedStaticBooleanFieldAccessor extends UnsafeStaticBooleanFieldAccessor {
+final class UnsafeQualifiedStaticBooleanFieldAccessor extends UnsafeStaticBooleanFieldAccessor {
 	public UnsafeQualifiedStaticBooleanFieldAccessor(Field f) {
 		super(f);
 	}
@@ -1318,7 +1304,7 @@ class UnsafeQualifiedStaticBooleanFieldAccessor extends UnsafeStaticBooleanField
 	}
 }
 
-class UnsafeQualifiedStaticByteFieldAccessor extends UnsafeStaticByteFieldAccessor {
+final class UnsafeQualifiedStaticByteFieldAccessor extends UnsafeStaticByteFieldAccessor {
 	public UnsafeQualifiedStaticByteFieldAccessor(Field f) {
 		super(f);
 	}
@@ -1334,7 +1320,7 @@ class UnsafeQualifiedStaticByteFieldAccessor extends UnsafeStaticByteFieldAccess
 	}
 }
 
-class UnsafeQualifiedStaticCharFieldAccessor extends UnsafeStaticCharFieldAccessor {
+final class UnsafeQualifiedStaticCharFieldAccessor extends UnsafeStaticCharFieldAccessor {
 	public UnsafeQualifiedStaticCharFieldAccessor(Field f) {
 		super(f);
 	}
@@ -1350,7 +1336,7 @@ class UnsafeQualifiedStaticCharFieldAccessor extends UnsafeStaticCharFieldAccess
 	}
 }
 
-class UnsafeQualifiedStaticShortFieldAccessor extends UnsafeStaticShortFieldAccessor {
+final class UnsafeQualifiedStaticShortFieldAccessor extends UnsafeStaticShortFieldAccessor {
 	public UnsafeQualifiedStaticShortFieldAccessor(Field f) {
 		super(f);
 	}
@@ -1366,7 +1352,7 @@ class UnsafeQualifiedStaticShortFieldAccessor extends UnsafeStaticShortFieldAcce
 	}
 }
 
-class UnsafeQualifiedStaticIntFieldAccessor extends UnsafeStaticShortFieldAccessor {
+final class UnsafeQualifiedStaticIntFieldAccessor extends UnsafeStaticIntFieldAccessor {
 	public UnsafeQualifiedStaticIntFieldAccessor(Field f) {
 		super(f);
 	}
@@ -1382,7 +1368,7 @@ class UnsafeQualifiedStaticIntFieldAccessor extends UnsafeStaticShortFieldAccess
 	}
 }
 
-class UnsafeQualifiedStaticLongFieldAccessor extends UnsafeStaticLongFieldAccessor {
+final class UnsafeQualifiedStaticLongFieldAccessor extends UnsafeStaticLongFieldAccessor {
 	public UnsafeQualifiedStaticLongFieldAccessor(Field f) {
 		super(f);
 	}
@@ -1398,7 +1384,7 @@ class UnsafeQualifiedStaticLongFieldAccessor extends UnsafeStaticLongFieldAccess
 	}
 }
 
-class UnsafeQualifiedStaticFloatFieldAccessor extends UnsafeStaticFloatFieldAccessor {
+final class UnsafeQualifiedStaticFloatFieldAccessor extends UnsafeStaticFloatFieldAccessor {
 	public UnsafeQualifiedStaticFloatFieldAccessor(Field f) {
 		super(f);
 	}
@@ -1414,7 +1400,7 @@ class UnsafeQualifiedStaticFloatFieldAccessor extends UnsafeStaticFloatFieldAcce
 	}
 }
 
-class UnsafeQualifiedStaticDoubleFieldAccessor extends UnsafeStaticDoubleFieldAccessor {
+final class UnsafeQualifiedStaticDoubleFieldAccessor extends UnsafeStaticDoubleFieldAccessor {
 	public UnsafeQualifiedStaticDoubleFieldAccessor(Field f) {
 		super(f);
 	}

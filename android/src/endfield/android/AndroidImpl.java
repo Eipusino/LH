@@ -33,7 +33,7 @@ public class AndroidImpl implements PlatformImpl {
 			throw new RuntimeException(e);
 		}
 	};
-	static Method clone, getPrimitiveClass;
+	static Method clone;
 
 	static {
 		try {
@@ -57,13 +57,6 @@ public class AndroidImpl implements PlatformImpl {
 		try {
 			clone = Object.class.getDeclaredMethod("internalClone");
 			clone.setAccessible(true);
-		} catch (Throwable e) {
-			Log.err(e);
-		}
-
-		try {
-			getPrimitiveClass = Class.class.getDeclaredMethod("getPrimitiveClass", String.class);
-			getPrimitiveClass.setAccessible(true);
 		} catch (Throwable e) {
 			Log.err(e);
 		}
@@ -96,15 +89,25 @@ public class AndroidImpl implements PlatformImpl {
 	}
 
 	@Override
-	public void put(Object src, int srcOffset, Object dst, int dstOffset, int numBytes) {
-		Objects.requireNonNull(src);
-		Objects.requireNonNull(dst);
-
-		Memory.memmove(dst, dstOffset, src, srcOffset, numBytes);
+	public void put(long srcAddress, long destAddress, int bytes) {
+		unsafe.copyMemory(srcAddress, destAddress, bytes);
 	}
 
 	@Override
-	public long arrayBaseOffset(Class<?> arrayClass) {
+	public void put(Object src, int srcOffset, Object dst, int dstOffset, int bytes) {
+		Objects.requireNonNull(src);
+		Objects.requireNonNull(dst);
+
+		Memory.memmove(dst, dstOffset, src, srcOffset, bytes);
+	}
+
+	@Override
+	public int arrayBaseOffset(Class<?> arrayClass) {
 		return unsafe.arrayBaseOffset(arrayClass);
+	}
+
+	@Override
+	public int arrayIndexScale(Class<?> arrayClass) {
+		return unsafe.arrayIndexScale(arrayClass);
 	}
 }

@@ -128,15 +128,25 @@ public class DesktopImpl implements PlatformImpl {
 	}
 
 	@Override
-	public void put(Object src, int srcOffset, Object dst, int dstOffset, int numBytes) {
-		Objects.requireNonNull(src);
-		Objects.requireNonNull(dst);
-
-		unsafe.copyMemory(src, srcOffset, dst, dstOffset, numBytes);
+	public void put(long srcAddress, long destAddress, int bytes) {
+		unsafe.copyMemory(srcAddress, destAddress, bytes);
 	}
 
 	@Override
-	public long arrayBaseOffset(Class<?> arrayClass) {
-		return unsafe.arrayBaseOffset(arrayClass);
+	public void put(Object src, int srcOffset, Object dst, int dstOffset, int bytes) {
+		Objects.requireNonNull(src);
+		Objects.requireNonNull(dst);
+
+		unsafe.copyMemory(src, srcOffset, dst, dstOffset, bytes);
+	}
+
+	@Override
+	public int arrayBaseOffset(Class<?> arrayClass) {
+		return (int) unsafe.arrayBaseOffset(arrayClass);
+	}
+
+	@Override
+	public int arrayIndexScale(Class<?> arrayClass) {
+		return unsafe.arrayIndexScale(arrayClass);
 	}
 }

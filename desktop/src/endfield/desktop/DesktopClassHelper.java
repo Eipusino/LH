@@ -13,7 +13,6 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Objects;
 
-import static endfield.desktop.DesktopConstant.getPrimitiveClass;
 import static endfield.desktop.DesktopImpl.lookup;
 import static endfield.desktop.Unsafer.unsafe;
 
@@ -31,16 +30,6 @@ public class DesktopClassHelper implements ClassHelper {
 			ctypes = lookup.findVarHandle(Constructor.class, "parameterTypes", Class[].class);
 			ptypes = lookup.findVarHandle(MethodType.class, "ptypes", Class[].class);
 		} catch (NoSuchMethodException | IllegalAccessException | NoSuchFieldException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T> Class<T> getPrimitiveClass(String name) {
-		try {
-			return (Class<T>) getPrimitiveClass.invokeExact(name);
-		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
 	}

@@ -1,6 +1,7 @@
 package endfield.android;
 
 import endfield.android.util.field.AndroidField;
+import endfield.util.AbstractFieldAccessor;
 import endfield.util.FieldAccessor;
 
 import java.lang.reflect.Field;
@@ -11,12 +12,11 @@ import static endfield.android.Unsafer.getSetMessage;
 import static endfield.android.Unsafer.unsafe;
 
 @SuppressWarnings("removal")
-public abstract class UnsafeFieldAccessor implements FieldAccessor {
-	protected final Field field;
+public abstract class UnsafeFieldAccessor extends AbstractFieldAccessor {
 	protected final long offset;
 
 	protected UnsafeFieldAccessor(Field f) {
-		field = f;
+		super(f);
 		offset = AndroidField.fieldOffset(f);
 	}
 
@@ -191,23 +191,8 @@ public abstract class UnsafeFieldAccessor implements FieldAccessor {
 	}
 
 	@Override
-	public Field getField() {
-		return field;
-	}
-
-	@Override
 	public boolean equals(Object obj) {
 		return obj == this || obj instanceof UnsafeFieldAccessor other && other.getField().equals(field);
-	}
-
-	@Override
-	public int hashCode() {
-		return field.hashCode();
-	}
-
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + '{' + field.toString() + '}';
 	}
 }
 
