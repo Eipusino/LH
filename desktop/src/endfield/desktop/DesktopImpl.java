@@ -128,12 +128,12 @@ public class DesktopImpl implements PlatformImpl {
 	}
 
 	@Override
-	public void put(long srcAddress, long destAddress, int bytes) {
+	public void put(long srcAddress, long destAddress, long bytes) {
 		unsafe.copyMemory(srcAddress, destAddress, bytes);
 	}
 
 	@Override
-	public void put(Object src, int srcOffset, Object dst, int dstOffset, int bytes) {
+	public void put(Object src, long srcOffset, Object dst, long dstOffset, long bytes) {
 		Objects.requireNonNull(src);
 		Objects.requireNonNull(dst);
 
